@@ -10,7 +10,7 @@ before_install:
 - git config --global user.name "Dreamacro"
 - git config --global user.email chuainian@gmail.com
 - npm install hexo -g
-- sed -i'' "/^ *repo/s~github\.com~${GH_TOKEN}@github.com~" _config.yml
 script:
 - hexo g
+- sed -i'' "/^ *repo/s~github\.com~${GH_TOKEN}@github.com~" _config.yml
 - hexo d
