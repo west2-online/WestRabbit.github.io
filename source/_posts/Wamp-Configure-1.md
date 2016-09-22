@@ -32,7 +32,7 @@ flush privileges
 ```
 skip-grant-tables
 ```
-去掉前面的空格，然后这时候密码就为空了，再进入Mysql Console重复一的步骤即可
+去掉前面的“#“，然后这时候密码就为空了，再进入Mysql Console重复一的步骤即可
 
 ----
 
@@ -45,6 +45,7 @@ Options +Indexs  +FollowSymLinks
 ```
 Options -Indexs  +FollowSymLinks
 ```
+这一步是为了禁止列出目录，避免安全问题
 2、搜索：
 ```
 AllowOverride all
