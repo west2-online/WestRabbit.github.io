@@ -1,5 +1,5 @@
 ---
-title: Wamp Configure 1
+title: PHP集成环境WAMP简单配置指南
 date: 2016-09-20 20:59:34
 tags:
 ---
