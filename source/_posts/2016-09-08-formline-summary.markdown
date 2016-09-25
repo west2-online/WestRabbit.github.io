@@ -7,8 +7,7 @@ author:     "XushengLee"
 catalog:    true
 tags:
      - OpenGL
-     - XushengLee
-     - 14
+     - 14级
 ---
 
 # 目的
