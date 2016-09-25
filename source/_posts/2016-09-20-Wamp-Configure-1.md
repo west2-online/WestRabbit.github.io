@@ -5,6 +5,7 @@ author: "RuphiLau"
 catalog: true
 tags:
      - 14级
+     - 教程
 ---
 # Wamp配置篇（一）
 为了将Wamp应用于实际站点搭设，需要对默认安装好的Wamp进行一些参数上的配置，以达到我们想要的效果

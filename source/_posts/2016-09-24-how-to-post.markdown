@@ -6,8 +6,8 @@ date:       2016-09-24
 author:     "XushengLee"
 catalog:     true
 tags:
-	- Tutorial
-    - 14级
+     - 14级
+     - 教程
 ---
 
 > A post a day, keep bugs away.
@@ -33,7 +33,9 @@ tags:
 文章存放在 `source/_posts` 这个目录下
 格式参照已有的文章
 命名格式也是
-不懂的地方问铷斐或者我（旭升）
+不懂的地方问铷斐或者我（旭升）或者剩下的那几个谁...
+文章的tag:13级、14级、15级、Web、iOS、Java、图像处理、教程、工具、杂
+如果你们在这里没有找到合适的tag，先问一下那几个谁，然后再加...
 
 # 文章上传
 
