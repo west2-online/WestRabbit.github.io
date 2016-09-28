@@ -40,12 +40,12 @@ anchorjs: true                          # if you want to customize anchor. check
 
 
 # Disqus settings
-# disqus_username: hexo-theme-huxblog
+disqus_username: w2blog
 
 # Duoshuo settings
-duoshuo_username: west2
+# duoshuo_username: west2
 # Share component is depend on Comment so we can NOT use share only.
-duoshuo_share: true                     # set to false if you want to use Comment without Sharing
+# duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
 
 # Analytics settings
