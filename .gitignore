@@ -39,3 +39,4 @@ jspm_packages
 .deploy_git
 public
 .DS_Store
+db.json
