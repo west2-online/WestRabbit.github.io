@@ -1,6 +1,14 @@
+---
+title: PHP集成环境WAMP简单配置指南
+date: 2016-09-20 20:59:34
+author: "RuphiLau"
+catalog: true
+tags:
+     - 14级
+     - 教程
+---
 # Wamp配置篇（一）
-
-> 为了将Wamp应用于实际站点搭设，需要对默认安装好的Wamp进行一些参数上的配置，以达到我们想要的效果
+为了将Wamp应用于实际站点搭设，需要对默认安装好的Wamp进行一些参数上的配置，以达到我们想要的效果
 
 ### 一、默认无密码状态
 Wamp的MySQL默认是没有密码的，这对于实际应用而言有诸多的不便，因此，我们先更改个密码。
@@ -28,7 +36,7 @@ flush privileges
 ```
 skip-grant-tables
 ```
-去掉前面的空格，然后这时候密码就为空了，再进入Mysql Console重复一的步骤即可
+去掉前面的“#“，然后这时候密码就为空了，再进入Mysql Console重复一的步骤即可
 
 ----
 
@@ -41,6 +49,7 @@ Options +Indexs  +FollowSymLinks
 ```
 Options -Indexs  +FollowSymLinks
 ```
+这一步是为了禁止列出目录，避免安全问题
 2、搜索：
 ```
 AllowOverride all

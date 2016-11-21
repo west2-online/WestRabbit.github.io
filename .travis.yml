@@ -3,7 +3,8 @@ node_js: stable
 cache:
   directories:
   - node_modules
-  - ~/.npm
+  - $(npm root -g)
+  - $(npm config get prefix)/bin/hexo
 branches:
   only:
   - source

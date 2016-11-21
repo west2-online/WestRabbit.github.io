@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: West2's Blog
+title: West2ers' Blog
 subtitle: To Be A Lean Developer!
-author: West2
+author: West2ers
 language:
 timezone:
 
@@ -19,7 +19,7 @@ permalink_defaults:
 #Custom Setting Start
 
 # Site settings
-SEOTitle: West2的博客 | West2's Blog
+SEOTitle: West2ers的博客 | West2ers' Blog
 header-img: img/home-bg.jpg
 email: West2gold@gmail.com
 description: ""
@@ -40,12 +40,12 @@ anchorjs: true                          # if you want to customize anchor. check
 
 
 # Disqus settings
-# disqus_username: hexo-theme-huxblog
+disqus_username: w2blog
 
 # Duoshuo settings
-duoshuo_username: west2
+# duoshuo_username: west2
 # Share component is depend on Comment so we can NOT use share only.
-duoshuo_share: true                     # set to false if you want to use Comment without Sharing
+# duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
 
 # Analytics settings
@@ -69,10 +69,10 @@ featured-condition-size: 1              # A tag will be featured if the size of 
 
 # Friends
 friends: [
-    # {
-    #     title: "Foo",
-    #     href: "#"
-    # },{
+    {
+         title: "西二官网",
+         href: "http://www.w2fzu.com"
+    }
     #     title: "Bar",
     #     href: "#"
     # },{

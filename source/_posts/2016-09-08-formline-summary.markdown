@@ -6,9 +6,8 @@ date:       2016-08-29
 author:     "XushengLee"
 catalog:    true
 tags:
-     - OpenGL
-     - XushengLee
-     - 14
+     - 14级
+     - 图像处理
 ---
 
 # 目的
