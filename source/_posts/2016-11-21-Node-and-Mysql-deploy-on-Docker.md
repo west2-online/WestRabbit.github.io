@@ -1,7 +1,11 @@
 ---
 title: Docker开发部署Node小结
 date: 2016-11-21 19:22:31
-tags: Node Docker
+author: Dreamacro
+catalog: true
+tags:
+     - 14级
+     - Node
 ---
 
 在Node部署中，遇到过几个比较坑的地方，也都找到了一些解决方案，这里做一个小结，如果有更好的解决方案，请告诉我;)。
