@@ -7,27 +7,27 @@ tags:
 author: RuphiLau
 ---
 
-###一、工厂模式的应用场景
+## 一、工厂模式的应用场景
 > 可以统一管理对象的实例化
 > 1、一个接口有多个实现类，使用者在使用的时候，可以传给工厂一个参数，工厂根据这个参数来选择具体的实现类
 > 2、一个项目中，new了成百上千个某接口的实现类，然后突然有一天，要把这个实现类换名字了，那么是非常可怕的，因为需要修改成百上千个文件，这时候，如果使用工厂模式，则只要修改一个地方就可以
 
-###二、参与者
+## 二、参与者
 1、接口，规范子类需要实现的方法，同时利用多态的特性，来调用子类
 2、接口的实现类
 3、工厂类，根据用户需求来分配实现类
 4、用户类，用户类只需要统一使用工厂类，即可得到具体的实现类
 
-###三、实例说明
+## 三、实例说明
 以形状接口为例，它的实现类是圆形和方形
 1、首先，我们要定义一个形状接口，接口中要求实现类能够实现对自身形状的描述，代码如下：
-```
+```java
 interface Shape {
     public void desc();
 }
 ```
 2、我们再来实现圆形和方形，它们均遵守形状接口
-```
+```java
 class Circle implements Shape {
     public void desc() {
         System.out.println('我是一个圆形');
@@ -40,7 +40,7 @@ class Square implements Shape {
 }
 ```
 3、再来定义一个形状工厂，工厂中，返回值应该是接口的类型（多态的特性），然后提供一个由用户提供的选择参数shapeName，工厂则根据这个参数来返回对象，代码如下：
-```
+```java
 class ShapeFactory {
     public static Shape getInstance(String shapeName) {
         if(shapeName.equalsIngoreCase('circle')) {
@@ -53,7 +53,7 @@ class ShapeFactory {
 }
 ```
 4、接下来就是享受使用工厂模式带来的便利的时候了，且看如下代码：
-```
+```java
 public class Demo {
     public static void main(String[] args) {
         Shape s1 = ShapeFactory.getInstance('circle');
