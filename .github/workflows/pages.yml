@@ -1,0 +1,41 @@
+name: Deploy Pages
+
+on:
+  push:
+    branches:
+      - source
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout hexo code
+      uses: actions/checkout@v2
+
+    - name: setup nodejs
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+
+    - name: reuse cacahe
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+        
+    - name: install package
+      run: |
+        npm ci
+        npx hexo g
+
+    - name: deploy
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v2
+      with:
+        target_branch: master
+        build_dir: public
+        fqdn: blog.w2fzu.com
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
