@@ -96,7 +96,7 @@ a.a === 1 && b.a === 2 && a !== b
 
 [Immutable.js](https://facebook.github.io/immutable-js/) 是比较流行的一个immutable的库，该库自己维护了一个数据结构，优化了每次深拷贝的消耗，对原始对象尽可能的复用。有个流行的图：
 
-![img](http://zhenhua-lee.github.io/img/immutable/change.gif)
+![img](https://zhenhua-lee.github.io/img/immutable/change.gif)
 
 每次修改对象只需要对路径上的节点进行处理，其他节点都可以直接复用，这里运用了一个惰性的思想，如果这个子树没操作过就不需要拷贝，等什么时候使用到了再进行拷贝。
 通过惰性以及复用的这种思想来尽量减少拷贝的操作。

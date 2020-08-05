@@ -21,7 +21,7 @@ tags:
 
 安装完毕后，在新增build target中我们就可以看到多了AppProxy和 Package Tunnrl Provider。我们选择Package Tunnrl Provider，在下一步中照例输入包名作者名等等，完成添加。
 
-![添加Packet Tunnel Provider](http://ww4.sinaimg.cn/large/65e4f1e6gw1f9ztxlxo0qj20ka0eedhh.jpg)
+![添加Packet Tunnel Provider](https://ww4.sinaimg.cn/large/65e4f1e6gw1f9ztxlxo0qj20ka0eedhh.jpg)
 
 
 
@@ -42,7 +42,7 @@ Network Extension不同于其他权限，无法在Xcode的compalities中一键�
 
 效果如图
 
-![](http://ww2.sinaimg.cn/large/65e4f1e6gw1f9zu1xof5nj20gd054dg8.jpg)
+![](https://ww2.sinaimg.cn/large/65e4f1e6gw1f9zu1xof5nj20gd054dg8.jpg)
 
 *PS.你需要同时为主程序和Extension创建profile。*
 
@@ -78,7 +78,7 @@ Network Extension不同于其他权限，无法在Xcode的compalities中一键�
 
    此时，打开系统-Vpn菜单，即可看见我们新建的Vpn条目
 
-   ![](http://ww1.sinaimg.cn/large/65e4f1e6gw1f9zucaehpfj20a40hyaah.jpg)
+   ![](https://ww1.sinaimg.cn/large/65e4f1e6gw1f9zucaehpfj20a40hyaah.jpg)
 
    ​
 
@@ -159,7 +159,7 @@ Network Extension不同于其他权限，无法在Xcode的compalities中一键�
 
 2. 此时，VPN应该能成功启动。
 
-   ![](http://ww1.sinaimg.cn/large/65e4f1e6gw1f9zvofsip3j20b1064wep.jpg)
+   ![](https://ww1.sinaimg.cn/large/65e4f1e6gw1f9zvofsip3j20b1064wep.jpg)
 
 3. 连接成功会manager.connection.status会发生相应改变，因此我们需要在按下连接按钮后监听status，从而知道目前Vpn的连接状态。
 
