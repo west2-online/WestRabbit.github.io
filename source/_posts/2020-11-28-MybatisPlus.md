@@ -176,7 +176,7 @@ mapper类的主要变化就是继承了BaseMapper<T>这个类，一旦继承，�
   
   
 
-除了上述的select外，BaseMapper还提供了其他大量的CRUD方法，各个方法基本见名知意，例如deleteById.selectList等等，具体可以查看BaseMapper类的结构
+除了上述的select外，BaseMapper还提供了其他大量的CRUD方法，各个方法基本见名知意，例如deleteById, selectList等等，具体可以查看BaseMapper类的结构
 
 
 
