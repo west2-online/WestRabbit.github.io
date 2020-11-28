@@ -1,6 +1,6 @@
 ---
 layout:      post
-title:      "Gocv--Go语言调用Opencv4"
+title:      "关于安卓的RecycleView的使用"
 date:       2020-11-28
 author:     "林怀颖"
 catalog:     true
