@@ -5,7 +5,7 @@ author:     "JessieLin"
 tags:
      - 19级
      - Java
-typora-root-url: 2021-10-25-一键生成mapper、mapperxml等文件——MybatisX插件的使用
+typora-root-url:2021-10-25-一键生成mapper、mapperxml等文件——MybatisX插件的使用
 ---
 
 # MybatisX插件使用——为快速开发而生
