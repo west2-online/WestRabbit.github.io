@@ -1,10 +1,10 @@
 ---
-title:Swift-使用Alamofire获取网页数据
-date:2021-10-25
+title: Swift-使用Alamofire获取网页数据
+date: 2021-10-25
 tags:
     - 19级
     - iOS
-author:HeKai
+author: HeKai
 ---
 
 前段时间完成了iOS福大助手校招日历的更新，这里对如何使用网络请求获取福大就业信息网上的内容做一个简单的记录。
