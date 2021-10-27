@@ -1,10 +1,10 @@
 ---
-title: <canvas vs svg>
-date: <2021/10/24>
+title: canvas vs svg
+date: 2021/10/24
 tags: 
-    - <前端>
-    - <D届>
-author: <dogcat-ux>  
+    - 前端
+    - D届
+author: dogcat-ux  
 ---
 
 ## 前言
