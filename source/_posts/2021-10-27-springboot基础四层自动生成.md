@@ -1,6 +1,14 @@
-## # web开发框架renren
+---
+title: Springboot开发工具renren
+date: 2021-10-27
+tags: 
+    - 19级
+    - Java
+author: 林喆智
 
-2021-10-28
+---
+
+## # web开发工具renren
 
 #### 一、renren-fast
 
@@ -71,10 +79,6 @@ renren-generator会自动生成dao，service，controller，entity四个模块�
 
 
 有了这两个工具的帮助 是不是觉得万事开头也没有那么难了呢
-
-mARk-LzZ
-
- 
 
 
 
