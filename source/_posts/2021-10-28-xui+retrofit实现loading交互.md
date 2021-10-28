@@ -1,4 +1,13 @@
-# XUI + Retrofit 完成请求的页面加载
+---
+title: XUI + Retrofit 完成请求的页面加载
+date: 2021-10-28
+tags: 
+    - Android
+    - XUI
+    - Retrofit
+author: bngel
+---
+
 
 >  前言:
 >
