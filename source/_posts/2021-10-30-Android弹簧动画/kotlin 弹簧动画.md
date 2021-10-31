@@ -1,9 +1,10 @@
 ---
-title: <Android 弹簧动画(kotlin)>
-date: <2021.10.26>
+title: Android 弹簧动画(kotlin)
+date: 2021.10.26
 tags: 
-    - <https://developer.android.google.cn/guide/topics/graphics/spring-animation>
-author: <Hintt>
+    - 19级
+    - Android
+author: Hintt
 ---
 
 ## 1.简介
