@@ -28,13 +28,13 @@ Jetpack Compose 是用于构建原生Android界面的新工具包。使用更少
 
 #### 1、创建一个Compose项目
 
-使用Compose首先需要更新[Android Studio Arctic Fox](https://developer.android.google.cn/studio)版本，更新完成后就可以在New Project中看到Compose项目。![](\newpro.png)
+使用Compose首先需要更新[Android Studio Arctic Fox](https://developer.android.google.cn/studio)版本，更新完成后就可以在New Project中看到Compose项目。![](newpro.png)
 
-选择Empty Compose Activity，compose最低支持API21，这里选择使用API24，点击finish完成项目创建。![api](\api.png)
+选择Empty Compose Activity，compose最低支持API21，这里选择使用API24，点击finish完成项目创建。![api](api.png)
 
 可以看到，项目结构发生了改变，res包下的xml资源文件变成了kt代码文件。Activity界面多了个预览窗口。
 
-![image-20211027133144078](\image-20211027133144078.png)
+![image-20211027133144078](image-20211027133144078.png)
 
 到这里新Compose项目就创建完成了。
 
