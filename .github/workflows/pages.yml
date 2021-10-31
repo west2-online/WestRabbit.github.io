@@ -9,21 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout hexo code
+    - name: checkout source code
       uses: actions/checkout@v2
 
     - name: setup nodejs
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
-        node-version: '15.x'
-
-    - name: reuse cacahe
-      uses: actions/cache@v2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+        node-version: '16'
+        cache: npm
         
     - name: install package
       run: |
