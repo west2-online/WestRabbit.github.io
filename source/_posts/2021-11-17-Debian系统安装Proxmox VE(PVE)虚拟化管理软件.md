@@ -1,10 +1,12 @@
 ---
+
 title: Debian系统安装Proxmox VE(PVE)虚拟化管理软件
 date: 2021.11.17
 tags: 
     - Proxmox VE
-    - 19级
+    - B届
 author: 3927
+
 ---
 
 
