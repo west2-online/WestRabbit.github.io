@@ -9,7 +9,6 @@ author: Gatsby
 
 ---
 
-
 # Java的I/O模型
 **来聊一聊Java的BIO和NIO及一些底层原理，有时间下期更新Netty相关内容~**
 ## 模型基本说明
