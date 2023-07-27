@@ -1,0 +1,47 @@
+---
+title: logo设计
+date: 2021/10/31
+tags:
+    - 19级
+    - 美术  
+author: RY
+---
+# logo设计
+设计灵感无处不在。在你每天上下班看到电梯张贴的广告时，或是泡咖啡看到杯子里拉花图案时，工作中途看到窗外掉落的雨滴时亦或是一张图片...但是，当你真正开始设计logo时，往往会脑海一片空白，无法想出一个拍手叫好的创意点子。扁平化的logo看似线条简单配色单一，其实也暗藏玄机呢！要完成一个出色的logo设计首先思路要是正确的！
+## logo设计的几种常见思路
+1. 象征性
+
+象征就是采用视觉图形符号，唤起人们对于某一个抽象意义，观念或者情绪的记忆。象征性标志，是建立在一个名族特定的文化和宗教基础上的、具有相同的生活环境的人群，才能正确传达与理解象征的意义，可以是用一种动物，也可以是一个符号，把企业的理想和气质含蓄的表达出来。
+![img](https://img.zcool.cn/community/01450e5f841be911013e4584fb26f4.jpg@2o.jpg)
+![img](https://img.zcool.cn/community/01214d5f841be911013f31106b2c8e.jpg@2o.jpg)
+2. 极简
+
+极简，发扬了“少即是多”的思想，即用最少的元素表达丰富的涵义。
+极简思路不再追求对称了，但是这并不代表着这是一个简单的设计手法，这个思路要求对细节的把握要出人意料。这种设计思路的logo，一个细节的关键，往往就决定着这个logo的成败！
+![img](https://img-blog.csdnimg.cn/c76c4a480c9844b5a3eb0e82076bbfa6.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16)
+3. 文字法
+
+文字思路法独立其他的设计思路，将文字的情感与企业的个性相结合。可以说是logo设计历史上一种通用型设计思路，这是一种符号的艺术。这种设计思路可以与图形设计思路相结合，也可以单独存在，要清楚不同的字体对视觉传达的情感的不同。就中文来说，简单的分类,比如代表优雅庄重的宋体，历史古韵的楷书，以及中庸的黑体。根据字体的字面、骨骼和体饰都可以分别给人不同的视觉感受。
+![img](https://img-blog.csdnimg.cn/7c220a81604b4afdb0a5b251f78498c4.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16)
+## 在生活中获取设计logo的灵感
+通过生活中的图片来绘制logo
+![img](https://img-blog.csdnimg.cn/9fc9d800ea7840d397711390ce73902e.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16)
+所用到的知识点如下：
+1. 元素主体：全幅、半幅、局部特写
+2. 处理手法：几何化、剪影写意、抽象化、粗描边卡通、渐变
+3. 创意结合：与字母结合、与外框结合、正负形、同构
+根据图片做logo，就要找到一个好的图片，图片要求轮廓清晰，造型尽量优美
+下面是具体的例子：
+- 先降低图片的透明度，按图片的走向勾勒出基本形态。
+![img](https://img-blog.csdnimg.cn/8096947d666245a4a55b1ece30722215.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16)
+- 优化草图
+观察草图，发现鹿角太复杂，像杂草，需要简化；眼睛上方骨头位置有点凸起，要么加大凸起程度，增加脸部立体感，要么干脆舍弃掉；脖子下方很空，可以尝试添加暗部来丰富层次。
+![img](https://img-blog.csdnimg.cn/5f1a6384f22e47b299fb43bf0b40da7b.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16)
+- 添加外框并对其上色
+结合外框来提高整体性同时将鹿的颈部多少与圆结合起来才会更协调，接着调低草图透明度，用圆切出鹿头的造型，然后用形状生成器来生成，鹿角用钢笔刻画就行，用圆切会比较繁琐，钢笔更快一点。
+注意：用圆切的时候把圆的描边线调的细一些，这样不会国与影响对于底部造型，然后先从大的部分开始合并，再逐渐去放大合并一些小细节，最后上色即可。
+![img](https://img-blog.csdnimg.cn/b4834ce418d1402492b17f0366ed9ea7.jpg?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+
+
+
