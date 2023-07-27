@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          基于西二实际情况的学生游戏团队分工 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2020/11/29/2020-11-29-基于西二实际情况的学生游戏团队分工/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#Unity" title="Unity">Unity</a>
+                        
+                    </div>
+                    <h1>基于西二实际情况的学生游戏团队分工</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Guin on
+                        2020-11-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>前段时间参加了网易minigame比赛，虽然第一次正式合作做项目就是参加比赛有点操之过急，暴露了团队了很多问题，最终结果也不尽如人意，没能进入决赛，不过还是有一些经验可以谈一谈的。国内网站上这种内容挺少的，基本上都是大公司的职位分工，小团队的分工顶多也只有职位，没有很多具体的内容，故写下此篇。</p>
+<h2 id="二、团队情况概述和对比"><a href="#二、团队情况概述和对比" class="headerlink" title="二、团队情况概述和对比"></a>二、团队情况概述和对比</h2><p>当时我们是6人组队，4个程序，1个策划，1个美工，这在比赛中已经算是人多了，然而人数优势并没有在开发中体现出来，原因是团队构成过于不合理。赛后看了一下别人的队伍构成，2-3人的队伍每个职位都只有一个人，美术、程序、策划工作较为独立，策划出策划案、程序实现、美术提供素材，合作很简单，就不赘述了。4-8人的团队构成比较讲究，以6人为例，程序、策划各1-2个，而且很有可能是1个，其他的是美术,也就是说美术岗位人数应该最多。</p>
+<h2 id="三、合理团队构成分析"><a href="#三、合理团队构成分析" class="headerlink" title="三、合理团队构成分析"></a>三、合理团队构成分析</h2><p>美术岗位最多而其他岗位人尽量少的原因在于，第一，团队对美术资源的需求量很大，动画、原画、UI等都需要美术负责；第二，美术之间的合作比较容易，只需要确定一个画风，每个人独立完成工作即可，而策划可能会因为意见不合而打起来，除非是有专业的分工，比如数值、系统、主策划，不过学生团队通常很难做到这点，基本都有自己的点子，干的都是主策的活，程序合作的困难就不必多说了，你们应该比我都懂，就算是大型游戏团队也会控制程序的数量。</p>
+<h2 id="四、基于现状的团队合作方式"><a href="#四、基于现状的团队合作方式" class="headerlink" title="四、基于现状的团队合作方式"></a>四、基于现状的团队合作方式</h2><p>  现状是我们的团队是由程序员组成的，因为考核主要是以程序为主，就算在c届想进行考核改革也比较困难，因为unity组缺少美术方面的人才，布置考核任务和审核也不知道如何着手，所以这届可能会考虑特招游戏美术的分支或是与美术组合作。<br>  扯远了，回到正题，如果合作方式得当，就可以发挥程序员人多优势，我通过这次比赛经历和网上了解到的一些信息，总结了一点游戏合作方面的小建议。<br>1.应该有一个人担任主程序，负责和策划沟通、发放任务。与策划合作方面，主程要充分理解策划案，不明确的地方要和策划反复确认，有时也会提出一些对策划案的修改建议。与其他程序合作方面，主程要为策划案的各个系统想个大概的程序实现方式，分析可行性，可行性低的部分退给策划修改。布置分工时，多个系统间有交互的情况下，应重点考虑的是系统程序衔接处的具体实现，以及变量、方法名的规定，这里举个栗子，我们项目中有个功能是要改变怪物的移动方向，我想到两种实现方式：<br>  ①基于物理的方式，怪物靠addforce实现移动，玩家也靠addforce来使怪物冲锋方向发生偏移，应该写清楚怪物的移动是靠addforce实现的。<br>  ②通过不断改变坐标来使怪物冲刺，也就是transform.Translate(direction * Time.deltaTime, Space.World);那么玩家改变怪物方向的时候就需要改变怪物脚本里的direction。<br>  主程应该重点关注衔接处都实现，不写清楚的话，玩家和怪物两个系统很可能不能交互。<br>2.后续实现时肯定会有主程序注意不到的细节，再举个栗子，我们项目中有个“捕兽夹”物品，碰到怪物时怪物会使怪物进入不能移动的状态，写物品的人不知道触发时要怎么控制怪物状态，当时整合项目的人就自己写了每个物品衔接的部分，其实正确的做法应该直接把怪物的状态改变方法告诉写物品的人，让写物品的人写 当碰到怪物物品碰撞体时要改变的怪物状态，而不是让整合项目的人写，不然相当于多了一个中间人要了解两边的代码，沟通成本太高。<br>3.整合项目的人应该是谁也是个问题，通常情况下，应该由程序负责整合项目，策划负责实时监控，但西二的策划多少会点引擎和程序，因此让策划整合项目效率反而更高（省去了监控，各种参数也可以在整合的时候就调整），也让项目更加符合策划的预期。</p>
+<h2 id="五、小结"><a href="#五、小结" class="headerlink" title="五、小结"></a>五、小结</h2><p>  其实学生游戏团队的最大问题就在于时间通常是零散的，每个人也都有各自的事情，想要紧密合作比较困难，但就像指导老师之前说的一样，最重要的还是每个人都要有一份团队责任感，将团队建设好、把项目完成好的责任感，有了这个，在团队开发中遇到的困难也就都能克服了。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/11/29/2020-11-29-利用echart实现中国地图与世界地图/" data-toggle="tooltip" data-placement="top" title="利用echart实现中国地图与世界地图">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/28/2020-11-28-使用Java中的Optional/" data-toggle="tooltip" data-placement="top" title="使用Java中的Optional">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#Unity" title="Unity">Unity</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2020/11/29/2020-11-29-%E5%9F%BA%E4%BA%8E%E8%A5%BF%E4%BA%8C%E5%AE%9E%E9%99%85%E6%83%85%E5%86%B5%E7%9A%84%E5%AD%A6%E7%94%9F%E6%B8%B8%E6%88%8F%E5%9B%A2%E9%98%9F%E5%88%86%E5%B7%A5/";
+    var disqus_url = "https://blog.w2fzu.com/2020/11/29/2020-11-29-%E5%9F%BA%E4%BA%8E%E8%A5%BF%E4%BA%8C%E5%AE%9E%E9%99%85%E6%83%85%E5%86%B5%E7%9A%84%E5%AD%A6%E7%94%9F%E6%B8%B8%E6%88%8F%E5%9B%A2%E9%98%9F%E5%88%86%E5%B7%A5/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

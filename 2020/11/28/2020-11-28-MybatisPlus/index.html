@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          MybatisPlus -- 一个Mybatis的增强框架 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2020/11/28/2020-11-28-MybatisPlus/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#18级" title="18级">18级</a>
+                        
+                    </div>
+                    <h1>MybatisPlus -- 一个Mybatis的增强框架</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Forestj on
+                        2020-11-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="MybatisPlus-–-一个Mybatis的增强框架"><a href="#MybatisPlus-–-一个Mybatis的增强框架" class="headerlink" title="MybatisPlus – 一个Mybatis的增强框架"></a>MybatisPlus – 一个Mybatis的增强框架</h1><p>在使用Mybatis时，所有的查询sql语句都需要程序员手动来编写，其中，单表的，最基础的sql语句更是占据了其中很大一部分，这些语句没有太多的技术含量，却要消耗大量宝贵的时间。于是，MybatisPlus出现了，借助MybatisPlus，我们可以自动生成大量的单表sql语句，提升开发效率。</p>
+<h2 id="前置技能"><a href="#前置技能" class="headerlink" title="前置技能"></a>前置技能</h2><ul>
+<li><p>SpringBoot</p>
+</li>
+<li><p>Mybatis</p>
+</li>
+</ul>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MyBatis-<span class="keyword">Plus</span> （简称 MP）是一个 MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。</span><br><span class="line">																--来自MyBatis-<span class="keyword">Plus</span>官方文档</span><br></pre></td></tr></table></figure>
+
+<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><p>数据库准备</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">CREATE DATABASE mpstudy;</span><br><span class="line">USE mpstudy;</span><br><span class="line"></span><br><span class="line">DROP TABLE IF EXISTS user;</span><br><span class="line">CREATE TABLE `user`</span><br><span class="line">(</span><br><span class="line">	id int(11) NOT NULL COMMENT &#x27;主键ID&#x27;,</span><br><span class="line">	`name` VARCHAR(30) NULL DEFAULT NULL COMMENT &#x27;姓名&#x27;,</span><br><span class="line">	age INT(11) NULL DEFAULT NULL COMMENT &#x27;年龄&#x27;,</span><br><span class="line">	email VARCHAR(50) NULL DEFAULT NULL COMMENT &#x27;邮箱&#x27;,</span><br><span class="line">	PRIMARY KEY (id)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">DELETE FROM user;</span><br><span class="line">INSERT INTO user (id, name, age, email) VALUES</span><br><span class="line">(1, &#x27;Jone&#x27;, 18, &#x27;test1@baomidou.com&#x27;),</span><br><span class="line">(2, &#x27;Jack&#x27;, 20, &#x27;test2@baomidou.com&#x27;),</span><br><span class="line">(3, &#x27;Tom&#x27;, 28, &#x27;test3@baomidou.com&#x27;),</span><br><span class="line">(4, &#x27;Sandy&#x27;, 21, &#x27;test4@baomidou.com&#x27;),</span><br><span class="line">(5, &#x27;Billie&#x27;, 24, &#x27;test5@baomidou.com&#x27;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><em>数据库参考自官方文档</em></p>
+<p>新建一个SpringBoot工程，并引入MyBatis-Plus的依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-plus-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>引入MyBatis-Plus依赖之后最好不要重复引入Mybatis依赖</li>
+</ul>
+<p>项目配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">12345</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/mpstudy?useSSL=false&amp;serverTimezone=CTT&amp;useUnicode=true&amp;characterEncoding=UTF-8</span></span><br><span class="line"></span><br><span class="line"><span class="attr">mybatis-plus:</span> <span class="comment"># 这里是mybatis-plus，而不是mybatis</span></span><br><span class="line">  <span class="attr">mapper-locations:</span> <span class="string">classpath:mapperxml/*.xml</span></span><br><span class="line">  <span class="attr">configuration:</span></span><br><span class="line">    <span class="attr">map-underscore-to-camel-case:</span> <span class="literal">true</span> <span class="comment"># 开启驼峰命名</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>项目基础结构搭建</p>
+<ul>
+<li><strong>实体类</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@TableName(value = &quot;`user`&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 主键ID</span></span><br><span class="line">    <span class="meta">@TableId(value = &quot;id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    </span><br><span class="line">     <span class="comment">//姓名</span></span><br><span class="line">    <span class="meta">@TableField(value = &quot;`name`&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    </span><br><span class="line">     <span class="comment">//年龄</span></span><br><span class="line">    <span class="meta">@TableField(value = &quot;age&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    </span><br><span class="line">     <span class="comment">//邮箱</span></span><br><span class="line">    <span class="meta">@TableField(value = &quot;email&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ul>
+<li>@TableName中可以标识数据库的表名，当表名和实体类名不一致(不能自动转换)时必须配置</li>
+<li>@TableId标识数据库主键，value值为数据库列名，虽然大部分时候MybatisPlus可以自动识别主键，但是偶尔会有问题，这个注解一般都要配</li>
+<li>@TableField标识非主键列，value值为数据库列名,一致(或可以转换)时可以省略</li>
+</ul>
+<ul>
+<li><strong>mapper</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserMapper</span> <span class="keyword">extends</span> <span class="title">BaseMapper</span>&lt;<span class="title">User</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>mapper类的主要变化就是继承了BaseMapper<T>这个类，一旦继承，就会自动实现BaseMapper中定义好的各种方法，不用我们来写sql了</p>
+<ul>
+<li><p>写个方法测试一下</p>
+<p>controller</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">UserService userService;</span><br><span class="line">  </span><br><span class="line"><span class="meta">@GetMapping(&quot;/user/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">(<span class="meta">@PathVariable(value = &quot;id&quot;)</span> Integer id)</span></span>&#123;</span><br><span class="line">    User user = userService.findUserById(id);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>service</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">UserMapper userMapper;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">findUserById</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userMapper.selectById(id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成，运行一下看看效果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://192.168.1.6:12345/user/1</span><br><span class="line">&#123;<span class="string">&quot;id&quot;</span>:1,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Jone&quot;</span>,<span class="string">&quot;age&quot;</span>:18,<span class="string">&quot;email&quot;</span>:<span class="string">&quot;test1@baomidou.com&quot;</span>&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>除了上述的select外，BaseMapper还提供了其他大量的CRUD方法，各个方法基本见名知意，例如deleteById, selectList等等，具体可以查看BaseMapper类的结构</p>
+<p>至此，通过BaseMapper，我们已经实现了最简单的CRUD。</p>
+<h2 id="service层接口"><a href="#service层接口" class="headerlink" title="service层接口"></a>service层接口</h2><p>很多时候，我们的Service层承担的功能比较少，比如上文的查询用户，service层只调用了mapper层并返回数据，对于这一类简单的查询，我们是否可以更简化呢？</p>
+<p>答案是可以的，借助MybatisPlus提供的service层接口。</p>
+<p>修改我们的service层</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserService</span> <span class="keyword">extends</span> <span class="title">IService</span>&lt;<span class="title">User</span>&gt;</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">extends</span> <span class="title">ServiceImpl</span>&lt;<span class="title">UserMapper</span>, <span class="title">User</span>&gt; <span class="keyword">implements</span> <span class="title">UserService</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>让service层的接口继承IService<T>,让实现类继承ServiceImpl&lt;U, V&gt;,这样，就成功引入了service层的CRUD接口，在IService中，同样有着大量的例如save(),update(),getOne()等方法，具体可以查看IService接口的定义，他们都已经被自动实现了</p>
+<p>现在，我们在controller里就可以直接通过service调用这些方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;user/&#123;id&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">getUser</span><span class="params">(<span class="meta">@PathVariable(value = &quot;id&quot;)</span> Integer id)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userService.getById(id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果和之前完全相同</p>
+<h2 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h2><p>上述所演示的查询都是最简单的查询，在真实业务中，绝大部分的查询都需要拼接条件，这时候，可以使用MybatisPlus提供的Wrapper类来进行条件的拼接。</p>
+<p>这里假设我们要查询年龄&gt;x的用户,我们可以这么写</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">findUserAgeGt</span><span class="params">(Integer age)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// gt表示某个列的值大于参数值</span></span><br><span class="line">    QueryWrapper&lt;User&gt; wrapper = <span class="keyword">new</span> QueryWrapper&lt;User&gt;().gt(<span class="string">&quot;age&quot;</span>, age);</span><br><span class="line">    <span class="keyword">return</span> userMapper.selectList(wrapper);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，代码中定义了QueryWrapper<T>(更新时可以使用UpdateWrapper)，在这个类中可以通过链式的方式来拼接条件语句。除了where后面的条件语句，还可以拼接group by， order by, having等语句，具体的各类方法可以到官方文档进行查看，这里就不详细列出了。文档地址：<a target="_blank" rel="noopener" href="https://baomidou.com/guide/wrapper.html#abstractwrapper">https://baomidou.com/guide/wrapper.html#abstractwrapper</a></p>
+<ul>
+<li><p>查询部分字段</p>
+<p>很多时候我们并不会去查询一整张表，可能只会查询其中的部分字段，通过QueryWrapper的select方法，我们可以实现只查询部分字段。</p>
+<p>select()方法的签名</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> QueryWrapper&lt;T&gt; <span class="title">select</span><span class="params">(String... columns)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，select方法可以接收不固定数量的String参数，这些参数就是要查询的列名。</p>
+<p>以查询所有的用户姓名为例，在Service中，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">findName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//select方法传了一个&quot;name&quot;,代表只查询name这一列</span></span><br><span class="line">    QueryWrapper&lt;User&gt; wrapper = <span class="keyword">new</span> QueryWrapper&lt;User&gt;().select(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">    List&lt;User&gt; users = userMapper.selectList(wrapper);</span><br><span class="line">    <span class="comment">//通过java8的流特性将查询到的数据映射为Name</span></span><br><span class="line">    <span class="keyword">return</span> users.stream().map(User::getName).collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Jone, Jack, Tom, Sandy, Billie]</span><br></pre></td></tr></table></figure>
+
+<p>这样，我们就做到了只查询部分列，当然，在QueryWrapper中也可以拼接其他的查询条件。</p>
+<h2 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h2><p>当查询到的数据条目非常多时，我们有必要对数据进行分页，减少一次传输的数据量，在MybatisPlus中，有内置的分页插件，可以简单的帮助我们完成分页操作。</p>
+<p>首先，需要进行分页参数的配置(来自官方文档)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MybatisPlusConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PaginationInterceptor <span class="title">paginationInterceptor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        PaginationInterceptor paginationInterceptor = <span class="keyword">new</span> PaginationInterceptor();</span><br><span class="line">        <span class="comment">// 设置请求的页面大于最大页后操作， true调回到首页，false 继续请求  默认false</span></span><br><span class="line">        <span class="comment">// paginationInterceptor.setOverflow(false);</span></span><br><span class="line">        <span class="comment">// 设置最大单页限制数量，默认 500 条，-1 不受限制</span></span><br><span class="line">        <span class="comment">// paginationInterceptor.setLimit(500);</span></span><br><span class="line">        <span class="comment">// 开启 count 的 join 优化,只针对部分 left join</span></span><br><span class="line">        paginationInterceptor.setCountSqlParser(<span class="keyword">new</span> JsqlParserCountOptimize(<span class="keyword">true</span>));</span><br><span class="line">        <span class="keyword">return</span> paginationInterceptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置完成以后，就可以直接使用了</p>
+<p>以分页查询所有用户为例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> IPage&lt;User&gt; <span class="title">findByPage</span><span class="params">(<span class="keyword">int</span> pageSize, <span class="keyword">int</span> pageNum)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//pageSize为一页的大小，pageNum为当前页的页码(从1开始)</span></span><br><span class="line">    Page&lt;User&gt; userList = userMapper.selectPage(<span class="keyword">new</span> Page&lt;&gt;(pageNum, pageSize), <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">return</span> userList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们构造了一个Page对象，并传入selectPage方法，这样，MybatisPlus就会自动帮我们处理好分页查询</p>
+<p>再来看看返回的Page的部分常用数据结构</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Page</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">IPage</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查询数据列表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> List&lt;T&gt; records = Collections.emptyList();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 总数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">long</span> total = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 每页显示条数，默认 10</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">long</span> size = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前页</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">long</span> current = <span class="number">1</span>;</span><br><span class="line">    ...</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上就是分页查询会返回的数据结构，查询完成后就可以直接获得这些数据。</p>
+<ul>
+<li>注解写sql并自动注入page</li>
+</ul>
+<p>对于一些复杂的查询接口，我们可能会通过mapper或注解方式手写sql，在这些地方，我们也可以通过传入Page让MybatisPlus帮我们自动拼接分页参数</p>
+<p>下面以分页查询用户为例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserMapper</span> <span class="keyword">extends</span> <span class="title">BaseMapper</span>&lt;<span class="title">User</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Select(&quot;select * from user&quot;)</span></span><br><span class="line">    <span class="function">Page&lt;User&gt; <span class="title">findUserByPage</span><span class="params">(Page page)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在UserMapper中添加如下方法，注意要传一个Page参数且返回类型也为Page.</p>
+<p>调用该方法，查看日志</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">==&gt;  Preparing: <span class="keyword">SELECT</span> id,`<span class="type">name</span>`,age,email <span class="keyword">FROM</span> `<span class="keyword">user</span>` <span class="keyword">WHERE</span> id=?</span><br><span class="line">==&gt; Parameters: <span class="number">1</span>(<span class="type">Integer</span>)</span><br><span class="line">&lt;==    <span class="keyword">Columns</span>: id, <span class="type">name</span>, age, email</span><br><span class="line">&lt;==        <span class="keyword">Row</span>: <span class="number">1</span>, Jone, <span class="number">18</span>, test1@baomidou.com</span><br><span class="line">&lt;==      Total: <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>可以发现这个方法被自动拼接了分页语句，通过这种方式，我们同样可以实现分页。</p>
+<p>至此，MybatisPlus的一些基础功能已经介绍完毕，想更深入的了解可以去查看官方文档。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/11/28/2020-11-28-Gocv--Go语言调用Opencv4/" data-toggle="tooltip" data-placement="top" title="Gocv--Go语言调用Opencv4">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/28/2020-11-28-Unity中的A寻路算法/" data-toggle="tooltip" data-placement="top" title="Unity中的A*寻路算法">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#18级" title="18级">18级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2020/11/28/2020-11-28-MybatisPlus/";
+    var disqus_url = "https://blog.w2fzu.com/2020/11/28/2020-11-28-MybatisPlus/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

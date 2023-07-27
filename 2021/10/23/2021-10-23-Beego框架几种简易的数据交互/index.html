@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Beego框架几种简易的数据交互 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/23/2021-10-23-Beego框架几种简易的数据交互/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>Beego框架几种简易的数据交互</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 北朔 on
+                        2021-10-23
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Beego框架几种简易的数据交互"><a href="#Beego框架几种简易的数据交互" class="headerlink" title="Beego框架几种简易的数据交互"></a>Beego框架几种简易的数据交互</h1><p>关于beego框架的安装可以自行百度了，还是很容易找的。(<del>不混字数了</del>)</p>
+<p>bee工具装好之后，打开cmd面板输入<code>bee</code>检查后，输入<code>new bee 项目名</code>，回车就可以了。</p>
+<p>例如 <code>bee new my_project</code></p>
+<h3 id="1-小小白数据库操作"><a href="#1-小小白数据库操作" class="headerlink" title="1.小小白数据库操作"></a>1.小小白数据库操作</h3><p>在注册完数据库驱动之后，如果不知道也不懂百度找的代码不会用的话，建议使用这个无脑函数，只要传入sql语句和对应参数即可。</p>
+<p><em><strong>建表也可以用这个函数</strong></em></p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">func ModifyDB(sql string, <span class="keyword">args</span> ...interface&#123;&#125;) (int64, <span class="keyword">error</span>) &#123;</span><br><span class="line">    result, <span class="keyword">err</span> := <span class="keyword">db</span>.Exec(sql, <span class="keyword">args</span>...)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">    	<span class="keyword">log</span>.Println(<span class="keyword">err</span>)</span><br><span class="line">    	<span class="keyword">return</span> 0, <span class="keyword">err</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">count</span>, <span class="keyword">err</span> := result.RowsAffected()</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">    	<span class="keyword">log</span>.Println(<span class="keyword">err</span>)</span><br><span class="line">    	<span class="keyword">return</span> 0, <span class="keyword">err</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">count</span>, nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-模板渲染"><a href="#2-模板渲染" class="headerlink" title="2.模板渲染"></a>2.模板渲染</h3><p>对于一些简易数据，比如username，user_head_img。</p>
+<p>H5文件代码：</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="template-variable">&#123;&#123;<span class="name">.Username</span>&#125;&#125;</span><span class="xml"></span></span><br><span class="line"><span class="xml"></span><span class="template-variable">&#123;&#123;<span class="name">.UserHeadImg</span>&#125;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>Go代码:(在对应路由的controller对应方法中<del>一般是Get</del>)</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">func (c *TestController) Get()&#123;</span><br><span class="line">    c<span class="selector-class">.Data</span><span class="selector-attr">[<span class="string">&quot;UserHeadImg&quot;</span>]</span> = <span class="string">&quot;图片路径&quot;</span></span><br><span class="line">    c<span class="selector-class">.Data</span><span class="selector-attr">[<span class="string">&quot;Username&quot;</span>]</span> = <span class="string">&quot;user&quot;</span></span><br><span class="line"></span><br><span class="line">    c<span class="selector-class">.TplName</span> = <span class="string">&quot;test.html&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但在一些特定场景，我们需要对一系列数据渲染，并按块显示在Web页面，如果前端摸鱼<del>(就是你全栈)</del>，优先使用以下方式。</p>
+<p>先对块状的显示H5代码进行编写。</p>
+<p>举个栗子：</p>
+<figure class="highlight handlebars"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;home-block-item&quot;</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;/detail?id=</span></span></span><span class="template-variable">&#123;&#123;<span class="name">.Id</span>&#125;&#125;</span><span class="xml"><span class="tag"><span class="string"> style=&quot;</span><span class="attr">font-size:</span> <span class="attr">20px</span>; <span class="attr">color:</span>#<span class="attr">fff</span>; <span class="attr">padding:</span> <span class="attr">0</span> <span class="attr">20px</span> <span class="attr">0</span> <span class="attr">0</span>; <span class="attr">float:</span> <span class="attr">left</span>&quot;&quot;&gt;</span></span><span class="template-variable">&#123;&#123;<span class="name">.Title</span>&#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;font-size: 15px; color:#fff; float: right;padding: 0 20px 0 0; &quot;</span>&gt;</span>点赞量：</span><span class="template-variable">&#123;&#123;<span class="name">.Like</span>&#125;&#125;</span><span class="xml"> || 浏览量：</span><span class="template-variable">&#123;&#123;<span class="name">.Read</span>&#125;&#125;</span><span class="xml"> || </span><span class="template-variable">&#123;&#123;<span class="name">.Author</span>&#125;&#125;</span><span class="xml"> || </span><span class="template-variable">&#123;&#123;<span class="name">.Tag</span>&#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;font-size: 15px; color: #fff; float: left&quot;</span>&gt;</span>简介：</span><span class="template-variable">&#123;&#123;<span class="name">.Short</span>&#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">br</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>可以看见需要传递的有 Id, Title, Like, Read, Author, Tag, Short 七个数据块。而对应用来说肯定是多个Id，多个块数据，因此从数据库里面取出来采用切片的方式。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Blog <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id	    <span class="keyword">string</span></span><br><span class="line">    UserId  <span class="keyword">string</span></span><br><span class="line">    Title   <span class="keyword">string</span></span><br><span class="line">    Short   <span class="keyword">string</span></span><br><span class="line">    Author  <span class="keyword">string</span></span><br><span class="line">    Tag	    <span class="keyword">string</span></span><br><span class="line">    Content <span class="keyword">string</span></span><br><span class="line">    Like    <span class="keyword">string</span></span><br><span class="line">    Read    <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> BlogBlockParam <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id         <span class="keyword">string</span></span><br><span class="line">    Title      <span class="keyword">string</span></span><br><span class="line">    Tag        <span class="keyword">string</span></span><br><span class="line">    Short      <span class="keyword">string</span></span><br><span class="line">    Author     <span class="keyword">string</span></span><br><span class="line">    Like       <span class="keyword">string</span></span><br><span class="line">    Read       <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeBlogBlocks</span><span class="params">(blogs []Blog)</span> <span class="title">template</span>.<span class="title">HTML</span></span> &#123;</span><br><span class="line">    htmlHome := <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> _, blog := <span class="keyword">range</span> blogs &#123;</span><br><span class="line">        homeParam := BlogBlockParam&#123;&#125;</span><br><span class="line"></span><br><span class="line">        homeParam.Id = blog.Id</span><br><span class="line">        homeParam.Title = blog.Title</span><br><span class="line">        homeParam.Author = blog.Author</span><br><span class="line">        homeParam.Short = blog.Short</span><br><span class="line">        homeParam.Tag = blog.Tag</span><br><span class="line">        homeParam.Like = blog.Like</span><br><span class="line">        homeParam.Read = blog.Read</span><br><span class="line"></span><br><span class="line">        <span class="comment">//处理变量</span></span><br><span class="line">        <span class="comment">//ParseFile解析该文件，用于插入变量</span></span><br><span class="line">        <span class="comment">//template.ParseFiles后的参数就是H5模板文件的路径，在Beego框架中H5文件都是放在view文件夹下。</span></span><br><span class="line">        t, _ := template.ParseFiles(<span class="string">&quot;views/block.html&quot;</span>)</span><br><span class="line">        buffer := bytes.Buffer&#123;&#125;</span><br><span class="line">        <span class="comment">//就是将html文件里面的比那两替换为穿进去的数据</span></span><br><span class="line">        t.Execute(&amp;buffer, homeParam)</span><br><span class="line">        htmlHome += buffer.String()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> template.HTML(htmlHome)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现这个函数返回的是H5代码，因此后端代码在controller中也需要调用正确。</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在H5文件中对应位置使用该参数</span></span><br><span class="line"><span class="section">&#123;&#123;.Contetent&#125;&#125;</span></span><br><span class="line"><span class="section">----------------------------</span></span><br><span class="line"><span class="comment">//在Controller下调用则是</span></span><br><span class="line">func (c *TestController) Get()&#123;</span><br><span class="line"><span class="code">    //参数就是数据切片，从Mysql中用select取出来</span></span><br><span class="line"><span class="code">    c.Data[&quot;Content&quot;] = MakeBlogBlocks(blogList)</span></span><br><span class="line"><span class="code">    </span></span><br><span class="line"><span class="code">    c.TplName = &quot;test.html&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Json传递"><a href="#3-Json传递" class="headerlink" title="3.Json传递"></a>3.Json传递</h3><p>第二种方法传递数据在Web页面的好看程度取决于全栈师傅的功底，如果你有个大腿前端，你就可以把数据送给他，让大腿直接进行高级渲染。</p>
+<p>而你只需要从数据库取出数据，通过json传递给前端处理即可。</p>
+<p>数据库取数据代码：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//根据Id来返回数据</span></span><br><span class="line">func FindMesWithId(Id string) <span class="selector-attr">[]</span>orm<span class="selector-class">.Params</span> &#123;</span><br><span class="line">    <span class="comment">//开启调试模式，可以更好发现sql的操作是否正确</span></span><br><span class="line">    orm<span class="selector-class">.Debug</span> = true</span><br><span class="line">	</span><br><span class="line">    sql = <span class="string">&quot;select * from mes_info where id=&quot;</span> + Id</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">var</span> Mes <span class="selector-attr">[]</span>orm<span class="selector-class">.Params</span></span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">i</span>, e := db<span class="selector-class">.Raw</span>(sql)<span class="selector-class">.Values</span>(&amp;Mes)</span><br><span class="line">    fmt<span class="selector-class">.Println</span>(<span class="string">&quot;输出是:&quot;</span>,i)</span><br><span class="line">    <span class="keyword">if</span> e != nil &#123;</span><br><span class="line">    	fmt<span class="selector-class">.Println</span>(<span class="string">&quot;Raw出错&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt<span class="selector-class">.Println</span>(<span class="string">&quot;var是正常的&quot;</span>)  </span><br><span class="line"></span><br><span class="line">    return Mes</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em><strong>(代码里面的print是从学长那学来的print大法，懒人不调试专用)</strong></em></p>
+<p>数据库取到的数据在对应路由的controller中直接丢给前端就好了。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Mes <span class="keyword">struct</span> &#123;</span><br><span class="line">    Id        <span class="keyword">string</span></span><br><span class="line">    Intro     <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">result := models.FindMesWithId(Id)</span><br><span class="line"><span class="keyword">var</span> mes [<span class="number">1</span>]Mes</span><br><span class="line"><span class="keyword">for</span> _, n := <span class="keyword">range</span> result &#123;</span><br><span class="line">    <span class="comment">//n[&quot;参数&quot;],其中的参数是数据库中的列名</span></span><br><span class="line">    mes[<span class="number">0</span>].Id = n[<span class="string">&quot;id&quot;</span>].(<span class="keyword">string</span>)</span><br><span class="line">    mes[<span class="number">0</span>].Intro = n[<span class="string">&quot;mes_intro&quot;</span>].(<span class="keyword">string</span>)</span><br><span class="line">&#125;</span><br><span class="line">c.Data[<span class="string">&quot;json&quot;</span>] = <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;<span class="string">&quot;mes&quot;</span>: mes, <span class="string">&quot;code&quot;</span>: <span class="number">0</span>&#125;</span><br><span class="line">c.ServeJSON()</span><br></pre></td></tr></table></figure>
+
+<p>如果需要多条数据，那就需要对sql语句修改了，可以看看sql的limit语法，这样取回的数据就有多个，之后在for range中依旧一一赋值再传递即可。</p>
+<h3 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h3><p>在做项目之前，一定要对数据交互做好交流，最好写好API文档，这样之后前后端对接会比较方便。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/24/2021-10-24-Uniy打包时去边框和实现窗体透明穿透/" data-toggle="tooltip" data-placement="top" title="Uniy打包时去边框和实现窗体透明穿透">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/22/2021-10-22-how_to_upload/" data-toggle="tooltip" data-placement="top" title="如何上传博客">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/23/2021-10-23-Beego%E6%A1%86%E6%9E%B6%E5%87%A0%E7%A7%8D%E7%AE%80%E6%98%93%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/23/2021-10-23-Beego%E6%A1%86%E6%9E%B6%E5%87%A0%E7%A7%8D%E7%AE%80%E6%98%93%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

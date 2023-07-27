@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          UI设计规范及动态海报 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2023/07/27/2021-10-28-UI设计规范及动态海报/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                          <a class="tag" href="/tags/#美工" title="美工">美工</a>
+                        
+                    </div>
+                    <h1>UI设计规范及动态海报</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 若曳 on
+                        2023-07-27
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="UI设计规范及动态海报"><a href="#UI设计规范及动态海报" class="headerlink" title="UI设计规范及动态海报"></a>UI设计规范及动态海报</h1><p> 很多初学者在开始做移动端UI设计的时候，往往对界面的一些尺寸规范不是十分清楚，很多时候都是凭借自己的感觉和经验去绘制界面，心里并没有一个清晰的概念，导致做出来的页面总是不那么尽如人意。本文整理的一些UI界面的设计规范方便初学者进一步理解界面设计。除此之外，本文还会介绍设计成员中的一员——动态海报的设计。</p>
+<h1 id="UI设计规范"><a href="#UI设计规范" class="headerlink" title="UI设计规范"></a>UI设计规范</h1><h2 id="手机端尺寸规范"><a href="#手机端尺寸规范" class="headerlink" title="手机端尺寸规范"></a>手机端尺寸规范</h2><table>
+<thead>
+<tr>
+<th>显示屏尺寸</th>
+<th>分辨率尺寸</th>
+<th>状态栏高度</th>
+<th>导航栏高度</th>
+<th>标签栏高度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>iphoneSE:4英寸</td>
+<td>640×1136px</td>
+<td>40px</td>
+<td>88px</td>
+<td>98px</td>
+</tr>
+<tr>
+<td>iphone6s/7/8:4.7英</td>
+<td>750×1334px</td>
+<td>40px</td>
+<td>88px</td>
+<td>98px</td>
+</tr>
+<tr>
+<td>iphone6s/7/8plus:5.5英寸</td>
+<td>1242×2208px</td>
+<td>60px</td>
+<td>132px</td>
+<td>147px</td>
+</tr>
+<tr>
+<td>iphoneX:5.8英寸</td>
+<td>1125×2436px</td>
+<td>132px</td>
+<td>132px</td>
+<td>147px</td>
+</tr>
+</tbody></table>
+<h2 id="APP布局规范"><a href="#APP布局规范" class="headerlink" title="APP布局规范"></a>APP布局规范</h2><p>APP常用边距：32px、30px、24px、20px;<br>卡片常用边距：20px、24px、30px、40px,不低于16px;<br>内容列表布局：最小高度80px;<br>界面图片设计比例：16:9、4:3、3:2、1:1、1:0.618;<br>图标统一：造型规则、圆角大小（直角矩形，圆角矩形，半圆角矩形）、线条粗细、图形样式、复杂程度、设计语言保持统一；<br>色彩统一：确定产品需要的色彩数量，确定色相的主色以及辅助色，点缀色，确定字体和各个模块的颜色；</p>
+<h2 id="文字规范和切图规范"><a href="#文字规范和切图规范" class="headerlink" title="文字规范和切图规范"></a>文字规范和切图规范</h2><ul>
+<li>文字规范<br>常用字体：华文黑体、谷歌思源、冬青、苹方；<br>字体颜色和字体粗细：字体颜色设置一般很少用纯黑色，一般用深灰色和浅灰色、细体和粗体（注意要用字体本身的字重，不能用 PS 的加粗功能）通过字重来区分重要信息和次要信息，进行信息层级的划分。</li>
+<li>切图规范<br>  切图对象：icon、不规则图形；<br>  搜索栏：标注尺寸，圆角大小，背景值，不透明度；<br>  标注工具：Markman、PXcook；<br>  标注内容：字号大小，颜色，不透明度，各图标及列表之间的间距；<br>  切图的命名规范：1.用英文命名，不要拼音；2.每一部分用下划线分隔；切图可能需要多个属性的英文单词拼凑起来 ，那么在多个英文单词中间它需要有一个下划线的分隔才能解释清楚整一个切片的命名到底是什么；3.两倍图在名字最后要加@2X，三倍图要加@3X。（在导出的时候它的命名规范是最后要加@2X，这样便于开发分清楚。）<h2 id="图标设计规范"><a href="#图标设计规范" class="headerlink" title="图标设计规范"></a>图标设计规范</h2></li>
+</ul>
+<p>1.尺寸</p>
+<p>应用图标：设计图标时建1024×1024px的尺寸，定稿后输出其他尺寸。<br>功能图标：以界面的大小为标准，常见尺寸有48×48px、32×32px和24×24px，通常为4的倍数。</p>
+<p>2.网格和参考线</p>
+<p>应用图标：将设计完成的图形放在图标栅格系统中，根据参考线来调整大小和位置。<br>功能图标：通常尺寸比较小，需要把画布放大进行设计，可以使用网格和参考线来辅助设计。网格一般在菜单“视图”中开启。</p>
+<p>3.图标展示</p>
+<div align=middle><img src="https://img-blog.csdnimg.cn/e024f78db819443bbe83ea49ba9d1605.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBAQl9SWV9Q,size_20,color_FFFFFF,t_70,g_se,x_16#pic_centerr" width="50%" alt=""/></div>
+
+<h1 id="动态海报"><a href="#动态海报" class="headerlink" title="动态海报"></a>动态海报</h1><p>动态海报是动态设计的其中一员，具备动态的同时兼具功能性与视觉创意性。在动态海报中，简单的图形元素结合多变的动态形式就可使设计锦上添花，更加有趣高效地向受众传达信息。动态海报通过元素的的旋转、位移、渐入等变化形式，在二维平面内实现了延伸扩展，在时间的推移下向观众传达更多的信息。</p>
+<h2 id="动态海报制作及学习教程推荐"><a href="#动态海报制作及学习教程推荐" class="headerlink" title="动态海报制作及学习教程推荐"></a>动态海报制作及学习教程推荐</h2><ul>
+<li>推荐使用的工具：AE</li>
+<li>AE 适用范围：适用于从事设计和视频特技的机构，包括电视台、动画制作公司、个人后期制作工作室以及多媒体工作室。目前是十分流行火爆的后期制作软件，许多电影特效，电视广告、片头动画都出自AE合成。</li>
+<li>动态海报展示：</li>
+</ul>
+<div align=middle><img src="https://img-blog.csdnimg.cn/53a5d91cbb4442049f3cfb9d1d6d656e.gif#pic_center" ></div>
+
+<ul>
+<li>除了AE，PS也可以制作动态海报</li>
+</ul>
+<p><strong>其基本步骤就是</strong></p>
+<ul>
+<li>建立画布</li>
+<li>设置独立图层</li>
+<li>设置每帧画面</li>
+<li>导出GIF（储存为web所有格式，导出gif动态图）</li>
+</ul>
+<div align=middle><img align="center" src="https://img-blog.csdnimg.cn/232f0c7b38344e61b4dab85e2cc959e4.gif#pic_center" width="90%" alt=""/></div>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>Ui设计规范，动态海报介绍到此为止，具体学习还得多看多操作，先从临摹开始，多学学别人的作品，鉴赏优秀作品，提高自己的审美能力，规范自己的设计，只有这样，自己的水平才能不断的提高。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/12/02/2021-12-2-java反射机制/" data-toggle="tooltip" data-placement="top" title="<java反射机制>">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                          <a class="tag" href="/tags/#美工" title="美工">美工</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2023/07/27/2021-10-28-UI%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E5%8F%8A%E5%8A%A8%E6%80%81%E6%B5%B7%E6%8A%A5/";
+    var disqus_url = "https://blog.w2fzu.com/2023/07/27/2021-10-28-UI%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83%E5%8F%8A%E5%8A%A8%E6%80%81%E6%B5%B7%E6%8A%A5/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

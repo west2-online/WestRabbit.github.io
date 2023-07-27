@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          视图控制器中的各种的方法 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2017/05/01/2017-05-01-视图控制器中的各种的方法/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                    </div>
+                    <h1>视图控制器中的各种的方法</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by zhangsihuai on
+                        2017-05-01
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>ViewController是每个iOS开发者都在打交道的东西，了解它的生命周期、它各种方法的正确使用和调用会对我们有很大的帮助</p>
+</blockquote>
+<h3 id="控制器的创建"><a href="#控制器的创建" class="headerlink" title="控制器的创建"></a>控制器的创建</h3><ul>
+<li>控制器普通创建（与Xib关联或者是纯代码）会调用<code>init：</code>方法。</li>
+<li>控制器从Storyboard创建，先调用该控制器的方法<code>initWithCoder:</code>对各个属性进行解码，接着<code>awakeFromNib</code>被调用，并不会调用自定的<code>init：</code>方法<blockquote>
+<p>编译过程中，项目里用到的 SB 文件也会被编译，并以 storyboardc 为扩展名保存在最终的 app 包内。这个文件和 .bundle 或者 .framework 类似，实际上是一个文件夹，里面存储了一个描述该编译后的 SB 信息的 Info.plist 文件，以及一系列 .nib 文件。原来的 SB 中的每个对象 (或者说，一般就是每个 View Controller) 将会被编译为一个单独的 .nib，而 .nib 中包含了编码后的对应的对象层级。在加载一个 SB，并从中读取单个 View Controller 时，首先系统会找到编译后的 .storyboardc 文件，从 Info.plist 中获取所需的 View Controller 类型和 nib 的关系，来完成 UIStoryboard 的初始化。接下来读取对应的某个 nib，并使用 UINibDecoder 进行解码，将 nib 二进制还原为实际的对象，最后调用该对象的 initWithCoder: 完成各个属性的解码。在完成这些工作后，awakeFromNib 被调用，来通知开发者从 nib 的加载已经完毕。 —来自 <a target="_blank" rel="noopener" href="https://onevcat.com/">王巍博客</a></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="控制器中的方法"><a href="#控制器中的方法" class="headerlink" title="控制器中的方法"></a>控制器中的方法</h3><ul>
+<li>用于初始化 <code>init:</code> 和 <code>initWithCoder:</code></li>
+</ul>
+<p>初始化方法中一般用于对控制器的属性进行初始化或者赋值操作，最好不要编写自定义的<code>init:</code>代码，因为如果视图控制器切换至故事版的话，<code>init:</code>方法将不会被调用</p>
+<ul>
+<li>视图的加载 <code>viewDidLoad</code></li>
+</ul>
+<p>在视图层次结构准备就绪之后，视图再被呈现给用户之前会被调用一次，可以在该方法中做一些一次性的操作。</p>
+<ul>
+<li><p>用于接收有关视图的可视性通知 <code>viewWillAppear</code>   <code>viewDidAppear</code>   <code>viewWillDisappear</code>   <code>viewDidDisappear</code></p>
+<ul>
+<li>viewWillAppear:<br>当视图控制器已经准备好，且视图即将被放入视图窗口时，过渡动画尚未开始，此方法会被调用。<br>在这个时刻，视图对用户还是不可见的，不要启动任何视图动画，不会起任何作用。</li>
+<li>viewDidAppear:<br>当视图在视图窗口展示出来，且过渡动画完成后，此方法被调用。<br>在这里启动或恢复任何想要呈现给用户的视图动画。</li>
+<li>viewWillDisappear:<br>当视图将要从屏幕上隐藏起来时调用。有可能是其它的视图控制器要接管屏幕，也有可能是该控制器要出栈。</li>
+<li>viewDidDisappear:<br>当视图控制器的过渡动画完成时调用。</li>
+</ul>
+</li>
+<li><p>用于视图的布局 <code>viewWillLayoutSubviews</code> <code>viewDidLayoutSubviews</code> </p>
+</li>
+</ul>
+<p>视图的布局，在这里可以取得<code>view</code>中的正确尺寸。</p>
+<h3 id="合理的使用控制器的各个方法"><a href="#合理的使用控制器的各个方法" class="headerlink" title="合理的使用控制器的各个方法"></a>合理的使用控制器的各个方法</h3><blockquote>
+<p>列举高效使用声明周期中各个事件的例子</p>
+</blockquote>
+<ol>
+<li>在<code>viewDidLoad:</code> 查看数据源是否可用。如果可用则更新UI。</li>
+<li>若每次都需要暂时最新的信息，则在<code>viewWillAppear:</code>中更新UI元素。</li>
+<li>在<code>viewDidAppear:</code>中开始动画，恢复事件，如：视频、音频的播放。</li>
+<li>使用<code>viewWillDisappear:</code>中停止动画</li>
+<li>使用<code>viewDidDisappear:</code>中销毁内存中复杂的数据结构、注销各类的应用事件的通知。</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/05/02/2017-05-03-display-arrangement-mac/" data-toggle="tooltip" data-placement="top" title="使用CGBeginDisplayConfiguration切换 Mac 显示器排列">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/04/01/2017-04-01- 前端模块化/" data-toggle="tooltip" data-placement="top" title="前端模块化">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2017/05/01/2017-05-01-%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%AD%E7%9A%84%E5%90%84%E7%A7%8D%E7%9A%84%E6%96%B9%E6%B3%95/";
+    var disqus_url = "https://blog.w2fzu.com/2017/05/01/2017-05-01-%E8%A7%86%E5%9B%BE%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B8%AD%E7%9A%84%E5%90%84%E7%A7%8D%E7%9A%84%E6%96%B9%E6%B3%95/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

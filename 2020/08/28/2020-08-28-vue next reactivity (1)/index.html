@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          vue next reactivity (1) - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2020/08/28/2020-08-28-vue next reactivity (1)/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                          <a class="tag" href="/tags/#18级" title="18级">18级</a>
+                        
+                    </div>
+                    <h1>vue next reactivity (1)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by XieLeRu on
+                        2020-08-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>本文将系统的了解vue next中的reactivity部分，文章内容会很长，会涉及到许多知识，阅读本篇文章至少需要</p>
+<ol>
+<li>js原型和原型链基础</li>
+<li>ts基础</li>
+</ol>
+<p>对于vue3涉及到的proxy部分，最好也先有个了解，不过文章会做阐述。本篇文章是该系列的第一篇文章。</p>
+<h2 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h2><p>首先对reactive有一个感性的认识，reactive即响应式，我们下面用reactive函数创建了一个proxy对象，用effect函数创建了一个副作用函数，创建的时候将会立即执行一次，当obj的text发生改变的时候这个函数将会执行</p>
+<p>最后document.body.innerText 转变为”hello world”</p>
+<p><del>突然感觉这里和React中的useEffect莫名相似</del></p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; effect, reactive &#125; <span class="keyword">from</span> <span class="string">&#x27;@vue/reactivity&#x27;</span></span><br><span class="line"><span class="keyword">const</span> obj = reactive(&#123; <span class="attr">text</span>: <span class="string">&#x27;hello&#x27;</span> &#125;)</span><br><span class="line">effect (<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">document</span>.body.innerText = obj.text</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  obj.text += <span class="string">&#x27;world&#x27;</span></span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="proxy"><a href="#proxy" class="headerlink" title="proxy"></a>proxy</h2><p>如果你对proxy已经了解过了，可以跳过这一块</p>
+<p>ES6原生提供Proxy构造函数，用来生成Proxy实例</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br></pre></td></tr></table></figure>
+
+<p>参数中第一个是目标对象（被代理的对象），第二个是用来定制拦截行为的</p>
+<p>我们先看一个小例子</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, &#123;</span><br><span class="line">  <span class="attr">set</span>: <span class="function"><span class="keyword">function</span> (<span class="params">target, propKey, value, receiver</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`setting <span class="subst">$&#123;propKey&#125;</span>!`</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, propKey, value, receiver);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>备注： 这里首先知道一下Reflect，对于proxy里面的拦截行为，其实在Reflect中都有一个对应的方法，这些方法是原先的默认方法，也就是如果你不自己写get这个方法，会默认执行这个方法，所以我们在做自己的事情后，也要调用原先的这个方法，保证原先默认操作的执行。</p>
+<p>上述我们代理了一个<code>&#123;&#125;</code>（空）对象，并且定制了set的行为,如果我们尝试对obj进行写操作，给obj赋值count</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj.count = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>那么控制台将会显示</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  setting count!</span></span><br></pre></td></tr></table></figure>
+
+<p>如果我们有下面这个函数</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fn = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> num2 = obj.num1</span><br><span class="line">    <span class="built_in">document</span>.body.innerText = num2.toString()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数是依赖于obj的num1的，我们又可以通过proxy监听num1的设置（通过set方法）</p>
+<p>这样我们就可以在里面去触发这个函数</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">`setting <span class="subst">$&#123;propKey&#125;</span>!`</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 以下是替换</span></span><br><span class="line"><span class="keyword">const</span> oldValue = target[propKey]</span><br><span class="line"><span class="keyword">const</span> newValue = value</span><br><span class="line">fn()</span><br><span class="line"><span class="comment">// ...statement</span></span><br></pre></td></tr></table></figure>
+
+<p>这样num2的值在每一次obj.num1的值发生变化的时候，都可以动态的发生改变</p>
+<p>以上只是一个非常小的demo，我们非常初步的实现了响应式, 实际上Vue源代码非常复杂</p>
+<p>刚才说到proxy的第二个参数handler，这个参数里面有许多可以定制的方法，具体可以参考ES文档，下面举出几种比较常用的方法</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 其中target表示目标对象，propertyKey表示键，receiver表示代理对象(proxy实例)</span></span><br><span class="line"><span class="keyword">const</span> get = <span class="function">(<span class="params">target, propertyKey, receiver</span>) =&gt;</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// value代表新的值</span></span><br><span class="line"><span class="keyword">const</span> set = <span class="function">(<span class="params">target, propertyKey, value, receiver</span>) =&gt;</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个函数值对in运算符生效，对for...in循环不生效</span></span><br><span class="line"><span class="keyword">const</span> has = <span class="function">(<span class="params">target, key</span>) =&gt;</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对对象属性使用delete方法的时候触发</span></span><br><span class="line"><span class="keyword">const</span> deleteProperty = <span class="function">(<span class="params">target, key</span>) =&gt;</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 for..in || Object.getOwnPropertyNames() || </span></span><br><span class="line"><span class="comment">// Object.getOwnPropertySymbols() || Object.keys() 下触发</span></span><br><span class="line"><span class="keyword">const</span> ownKeys = <span class="function">(<span class="params">target</span>) =&gt;</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果还想更一步的了解proxy，可以参考<a target="_blank" rel="noopener" href="https://es6.ruanyifeng.com/#docs/proxy%EF%BC%8C%E8%BF%99%E9%87%8C%E4%B8%8D%E5%86%8D%E8%B5%98%E8%BF%B0">https://es6.ruanyifeng.com/#docs/proxy，这里不再赘述</a></p>
+<h2 id="Reactive"><a href="#Reactive" class="headerlink" title="Reactive"></a>Reactive</h2><p>我们接下来详细的看一下源码里的reactive是怎么实现的</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">reactive</span>(<span class="params">target: <span class="built_in">object</span></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// if trying to observe a readonly proxy, return the readonly version.</span></span><br><span class="line">  <span class="keyword">if</span> (target &amp;&amp; (target <span class="keyword">as</span> Target)[ReactiveFlags.IS_READONLY]) &#123;</span><br><span class="line">    <span class="keyword">return</span> target</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> createReactiveObject(</span><br><span class="line">    target,</span><br><span class="line">    <span class="literal">false</span>,</span><br><span class="line">    mutableHandlers,</span><br><span class="line">    mutableCollectionHandlers</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先判断一下这个传进来的对象是否是只读的，如果是只读的话，直接返回。下面是ReactiveFlags的一些定义</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="built_in">enum</span> ReactiveFlags &#123;</span><br><span class="line">  SKIP = <span class="string">&#x27;__v_skip&#x27;</span>, <span class="comment">// 跳过，不被代理</span></span><br><span class="line">  IS_REACTIVE = <span class="string">&#x27;__v_isReactive&#x27;</span>, <span class="comment">// 是响应式的</span></span><br><span class="line">  IS_READONLY = <span class="string">&#x27;__v_isReadonly&#x27;</span>, <span class="comment">// 是只读的</span></span><br><span class="line">  RAW = <span class="string">&#x27;__v_raw&#x27;</span> <span class="comment">// 存放原始对象的引用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们预先设置了这个是跳过的不被代理的，那么就不会被做成响应式的</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ReactiveFlags, reactive, isReactive &#125; <span class="keyword">from</span> <span class="string">&#x27;@vue/reactivity&#x27;</span></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  [ReactiveFlags.skip]: <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> proxyObj = reactive(obj)</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(proxyObj)) <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p>这些ReactiveFlags一般情况下不会用到，在一些高级场景可能会用到，因此可以不必太在意这些值。</p>
+<p>我们看一下createReactiveObject这个方法</p>
+<p>函数传递四个参数，第一个参数表明原始对象，第二个参数是否只读，第三个和第四个参数分别对集合元素和非集合元素传递了proxy构造函数的第二个参数handler</p>
+<p>首先如果目标对象不是对象，那么是不可代理的，直接返回</p>
+<p>如果目标对象已经是一个proxy了，而且不是只读的响应式proxy，这个时候可能调用了readonly方法，也需要重新生成proxy</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createReactiveObject</span>(<span class="params"></span></span></span><br><span class="line"><span class="params"><span class="function">  target: Target,</span></span></span><br><span class="line"><span class="params"><span class="function">  isReadonly: <span class="built_in">boolean</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">  baseHandlers: ProxyHandler&lt;<span class="built_in">any</span>&gt;,</span></span></span><br><span class="line"><span class="params"><span class="function">  collectionHandlers: ProxyHandler&lt;<span class="built_in">any</span>&gt;</span></span></span><br><span class="line"><span class="params"><span class="function"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!isObject(target)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (__DEV__) &#123;</span><br><span class="line">      <span class="built_in">console</span>.warn(<span class="string">`value cannot be made reactive: <span class="subst">$&#123;<span class="built_in">String</span>(target)&#125;</span>`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> target</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// target is already a Proxy, return it.</span></span><br><span class="line">  <span class="comment">// exception: calling readonly() on a reactive object</span></span><br><span class="line">  <span class="keyword">if</span> (</span><br><span class="line">    target[ReactiveFlags.RAW] &amp;&amp;</span><br><span class="line">    !(isReadonly &amp;&amp; target[ReactiveFlags.IS_REACTIVE])</span><br><span class="line">  ) &#123;</span><br><span class="line">    <span class="keyword">return</span> target</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来根据是否只读获取到map，判断是否已经存在于map中，存在就返回，否则调用getTargetType函数获取目标对象类型</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxyMap = isReadonly ? readonlyMap : reactiveMap</span><br><span class="line">  <span class="keyword">const</span> existingProxy = proxyMap.get(target)</span><br><span class="line">  <span class="keyword">if</span> (existingProxy) &#123;</span><br><span class="line">    <span class="keyword">return</span> existingProxy</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// only a whitelist of value types can be observed.</span></span><br><span class="line">  <span class="keyword">const</span> targetType = getTargetType(target)</span><br><span class="line">  <span class="keyword">if</span> (targetType === TargetType.INVALID) &#123;</span><br><span class="line">    <span class="keyword">return</span> target</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(</span><br><span class="line">    target,</span><br><span class="line">    targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers</span><br><span class="line">  )</span><br><span class="line">  proxyMap.set(target, proxy)</span><br><span class="line">  <span class="keyword">return</span> proxy</span><br></pre></td></tr></table></figure>
+
+<p>以下是getTargetType函数以及一些依赖，当target内部有skip这个标志的时候，表示这个对象跳过，不监听</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="built_in">enum</span> TargetType &#123;</span><br><span class="line">  INVALID = <span class="number">0</span>,</span><br><span class="line">  COMMON = <span class="number">1</span>,</span><br><span class="line">  COLLECTION = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">targetTypeMap</span>(<span class="params">rawType: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">switch</span> (rawType) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;Object&#x27;</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;Array&#x27;</span>:</span><br><span class="line">      <span class="keyword">return</span> TargetType.COMMON</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;Map&#x27;</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;Set&#x27;</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;WeakMap&#x27;</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">&#x27;WeakSet&#x27;</span>:</span><br><span class="line">      <span class="keyword">return</span> TargetType.COLLECTION</span><br><span class="line">    <span class="attr">default</span>:</span><br><span class="line">      <span class="keyword">return</span> TargetType.INVALID</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getTargetType</span>(<span class="params">value: Target</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> value[ReactiveFlags.SKIP] || !<span class="built_in">Object</span>.isExtensible(value)</span><br><span class="line">    ? TargetType.INVALID</span><br><span class="line">    : targetTypeMap(toRawType(value))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的toRawType函数比较有意思</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> objectToString = <span class="built_in">Object</span>.prototype.toString</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> toTypeString = (value: unknown): <span class="function"><span class="params">string</span> =&gt;</span></span><br><span class="line">  objectToString.call(value)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> toRawType = (value: unknown): <span class="function"><span class="params">string</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> toTypeString(value).slice(<span class="number">8</span>, -<span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们如果将对象用Object原型上的toString方法打印会出现[Object, Object]这样</p>
+<p>通过这样我们就可以判断对象的类型，通过返回的值，我们会调用不同的handle</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(</span><br><span class="line">    target,</span><br><span class="line">    targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers</span><br><span class="line">  )</span><br><span class="line">proxyMap.set(target, proxy)</span><br><span class="line"><span class="keyword">return</span> proxy</span><br></pre></td></tr></table></figure>
+
+<p>刚才我们使用了reactive方法使得数据变为响应式的，实际上，还有三种类似的方法。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>shallowReactive</td>
+<td>定义浅响应式数据</td>
+</tr>
+<tr>
+<td>readonly</td>
+<td>定义只读的响应式数据</td>
+</tr>
+<tr>
+<td>shallowReadonly</td>
+<td>定义只读的浅响应式数据,这意味着深层次的数据可以被修改</td>
+</tr>
+</tbody></table>
+<p>接下来我们用isReactive以及isReadonly以及isProxy方法看一下他们的表现</p>
+<p>实际上isProxy 是 isReactive 以及 isReadonly 的或</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">isReactive</span>(<span class="params">value: unknown</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isReadonly(value)) &#123;</span><br><span class="line">    <span class="keyword">return</span> isReactive((value <span class="keyword">as</span> Target)[ReactiveFlags.RAW])</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> !!(value &amp;&amp; (value <span class="keyword">as</span> Target)[ReactiveFlags.IS_REACTIVE])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">isReadonly</span>(<span class="params">value: unknown</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> !!(value &amp;&amp; (value <span class="keyword">as</span> Target)[ReactiveFlags.IS_READONLY])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">isProxy</span>(<span class="params">value: unknown</span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> isReactive(value) || isReadonly(value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; </span><br><span class="line">  effect,</span><br><span class="line">  reactive,</span><br><span class="line">  shallowReactive,</span><br><span class="line">  <span class="keyword">readonly</span>,</span><br><span class="line">  shallowReadonly,</span><br><span class="line">  isReactive,</span><br><span class="line">  isReadonly，</span><br><span class="line">  isProxy</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;@vue/reactivity&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> reactiveProxy = reactive(&#123; <span class="attr">foo</span>: &#123; <span class="attr">bar</span>: <span class="number">1</span> &#125; &#125;)</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(reactiveProxy)) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(isReadonly(reactiveProxy)) <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(isProxy(reactiveProxy)) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(isReactive(reactiveProxy.foo)) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> shallowReactiveProxy = shallowReactive(&#123; <span class="attr">foo</span>: &#123; <span class="attr">bar</span>: <span class="number">1</span> &#125; &#125;)</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(shallowReactiveProxy)) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(isReadonly(shallowReactiveProxy)) <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(isProxy(shallowReactiveProxy)) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(isReactive(shallowReactiveProxy.foo)) <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> readonlyProxy = <span class="keyword">readonly</span>(&#123; <span class="attr">foo</span>: <span class="number">1</span> &#125;)</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(readonlyProxy)) <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(isReadonly(readonlyProxy)) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(isProxy(readonlyProxy)) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> shallowReadonlyProxy = shallowReadonly(&#123; <span class="attr">foo</span>: <span class="number">1</span> &#125;)</span><br><span class="line"><span class="built_in">console</span>.log(isReactive(shallowReadonlyProxy)) <span class="comment">// false</span></span><br><span class="line"><span class="built_in">console</span>.log(isReadonly(shallowReadonlyProxy)) <span class="comment">// true</span></span><br><span class="line"><span class="built_in">console</span>.log(isProxy(shallowReadonlyProxy)) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 再看看他们在实际运转的时候的表现</span></span><br><span class="line">effect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(reactiveProxy.foo.bar)</span><br><span class="line">&#125;)</span><br><span class="line">reactiveProxy.foo.bar = <span class="number">2</span> <span class="comment">// 有效</span></span><br><span class="line">reactiveProxy.foo = &#123; <span class="attr">bar</span> : <span class="number">2</span> &#125; <span class="comment">// 有效</span></span><br><span class="line"></span><br><span class="line">effect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(shallowReactiveProxy.foo.bar)</span><br><span class="line">&#125;)</span><br><span class="line">shallowReactiveProxy.foo.bar = <span class="number">2</span> <span class="comment">// 无效</span></span><br><span class="line">shallowReactiveProxy.foo = &#123; <span class="attr">bar</span> : <span class="number">2</span> &#125; <span class="comment">// 有效</span></span><br><span class="line"></span><br><span class="line">effect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(readonlyProxy.foo.bar)</span><br><span class="line">&#125;)</span><br><span class="line">readonlyProxy.foo.bar = <span class="number">2</span> <span class="comment">// Set operation on key &quot;bar&quot; failed: target is readonly.</span></span><br><span class="line">readonlyProxy.foo = &#123; <span class="attr">bar</span> : <span class="number">2</span> &#125; <span class="comment">// Set operation on key &quot;foo&quot; failed: target is readonly.</span></span><br><span class="line"></span><br><span class="line">effect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(shallowReadonlyProxy.foo.bar)</span><br><span class="line">&#125;)</span><br><span class="line">shallowReadonlyProxy.foo.bar = <span class="number">2</span> <span class="comment">// ok</span></span><br><span class="line">shallowReadonlyProxy.foo = &#123; <span class="attr">bar</span> : <span class="number">2</span> &#125; <span class="comment">// Set operation on key &quot;foo&quot; failed: target is readonly.</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>关于vue next reactivity api第一篇到这里就暂时先告一段落了，本节比较粗略的说明了proxy的用法，介绍了reactive是什么东西，看了一些源码，了解了内部的一些实现。接下来会深入这四个reactive函数内部去看proxy的handler是怎么样的。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/11/26/万物互联-java/" data-toggle="tooltip" data-placement="top" title="万物互联---Java与Esp8266的梦幻联动">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/07/31/2020-07-30-RecyclerView之StickyHeader/" data-toggle="tooltip" data-placement="top" title="RecyclerView之StickyHeader">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                          <a class="tag" href="/tags/#18级" title="18级">18级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2020/08/28/2020-08-28-vue%20next%20reactivity%20(1)/";
+    var disqus_url = "https://blog.w2fzu.com/2020/08/28/2020-08-28-vue%20next%20reactivity%20(1)/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          我的网易面试经历 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2018/04/16/2018-4-16-网易面试经历/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                          <a class="tag" href="/tags/#面经" title="面经">面经</a>
+                        
+                    </div>
+                    <h1>我的网易面试经历</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by zhangsihuai on
+                        2018-04-16
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="我的网易面试经历"><a href="#我的网易面试经历" class="headerlink" title="我的网易面试经历"></a>我的网易面试经历</h3><p>提早30分钟到达，签到后坐下来不到5分钟就叫号了…</p>
+<h4 id="一面："><a href="#一面：" class="headerlink" title="一面："></a>一面：</h4><p>面试官一开始夸了我的简历，说竟然是彩色的，太高级了吧（哈哈哈，<br>一面的内容都是基础的，计算机基础居多，印象中问了：</p>
+<h4 id="计算机基础："><a href="#计算机基础：" class="headerlink" title="计算机基础："></a>计算机基础：</h4><ul>
+<li>画一下<code>网络五层协议</code>，分别说说各层都做了什么事情</li>
+<li><code>tcp</code>与<code>udp</code>的区别</li>
+<li>在草稿纸上画一下<code>tcp</code>的建立连接和断开连接的过程，并说说标志位(<code>ACK</code>, <code>ASN</code>,<code>FIN</code>)的作用</li>
+<li><code>http</code>的全过程</li>
+<li><code>https</code> 与 <code>http</code> 的区别， 画一下<code>https</code>通信的示意图，非对称加密和对称加密加密的对象分别是什么</li>
+<li><code>ICMP</code>报文类型有几种，作用在网络中的哪一层</li>
+</ul>
+<h4 id="客户端相关的："><a href="#客户端相关的：" class="headerlink" title="客户端相关的："></a>客户端相关的：</h4><ul>
+<li>说一下<code>MVC</code>，并画出<code>MVC</code>各层的关系</li>
+<li><code>UIViewController</code>的生命周期， 应用的生命周期</li>
+<li><code>UIView</code> 和 <code>CALayer</code> 的区别</li>
+<li><code>frame</code> 和 <code>bounds</code> 分别是用来做什么的</li>
+<li><code>weak</code> 和 <code>assign</code> 的区别</li>
+</ul>
+<h4 id="比较主观的问题："><a href="#比较主观的问题：" class="headerlink" title="比较主观的问题："></a>比较主观的问题：</h4><ul>
+<li>为什么要做<code>iOS</code>开发而不做<code>后端</code>开发 </li>
+<li>你有什么想问我的吗？</li>
+</ul>
+<h4 id="没答出来的orz："><a href="#没答出来的orz：" class="headerlink" title="没答出来的orz："></a>没答出来的orz：</h4><ul>
+<li>说一下数据库的<code>ACID</code>，<code>事务</code> 和 <code>范式</code></li>
+<li>了解过<code>CDN</code>吗</li>
+</ul>
+<p>一面能想起来的就上面这些，刚开始比较紧张，但回答了几个问题之后就冷静下来了，反而是在二面的时候一直紧张得答不上来</p>
+<p>一面完去体验了一下猪场的食堂，感觉还不错，米饭很好吃，在经过了漫长的等待，快要睡着的时候，终于开始二面啦</p>
+<h4 id="二面："><a href="#二面：" class="headerlink" title="二面："></a>二面：</h4><blockquote>
+<p>二面的内容都是项目为主，面试官从项目经历中入手，涉及到的问题也比较多，问题太多能记下来的如下</p>
+</blockquote>
+<ul>
+<li>介绍一下简历上的项目</li>
+<li>在自己的项目中有遇到了什么棘手的问题吗？怎么解决的？</li>
+<li>什么情况下会导致<code>循环引用</code>，分别怎么解决</li>
+<li>面试官给看了一段代码，问这段代码有什么问题，代码的内容就是<code>block</code>中持有了一个成员变量<code>ivar</code>导致了循环引用，要怎么解决?</li>
+<li>有了解过检测循环引用的检测工具吗？如果让你来做一个检测工具，你会怎么做</li>
+<li>项目中是怎样存储数据的呢？</li>
+<li>有 <code>A</code> <code>B</code> <code>C</code> <code>D</code> 四个任务，他们分别工作在不同的线程中，使用信号量，使得 <code>A</code> <code>B</code> <code>C</code> 完成之后<code>D</code> 任务才能执行</li>
+<li>你有什么想问我的吗？</li>
+<li>能记起来的就那么多了…</li>
+</ul>
+<p>然后又是漫长的等待…</p>
+<h4 id="HR面"><a href="#HR面" class="headerlink" title="HR面"></a>HR面</h4><blockquote>
+<p>感觉也问了挺多问题的呢，只是那个时候已经非常疲劳，头痛得不行，好多内容也忘记了…</p>
+</blockquote>
+<ul>
+<li>你找实习会考虑的因素有哪些</li>
+<li>项目中，让你成长最多（技术之外的）的是哪个项目</li>
+<li>平时是怎么学习的呢？渠道和方法有哪些</li>
+<li>除了学习之外，你会做什么事情</li>
+<li>你觉得你比别人最大优势是什么</li>
+<li>读研吗？为什么不读？</li>
+<li>有收到其它的公司的offer吗</li>
+<li>你有什么想问我的吗？</li>
+</ul>
+<p>总的来说问题就这些啦，面试中就数据库相关的问题没有答上来，其它的问题都有回答上来（不知道对不对，接下来的5-7天就慢慢等待了🙏</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/11/01/2018-11-1-JAVA编程规约/" data-toggle="tooltip" data-placement="top" title="Java开发规约">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/04/01/2018-04-01-可选值/" data-toggle="tooltip" data-placement="top" title="Swift-可选值">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                          <a class="tag" href="/tags/#面经" title="面经">面经</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2018/04/16/2018-4-16-%E7%BD%91%E6%98%93%E9%9D%A2%E8%AF%95%E7%BB%8F%E5%8E%86/";
+    var disqus_url = "https://blog.w2fzu.com/2018/04/16/2018-4-16-%E7%BD%91%E6%98%93%E9%9D%A2%E8%AF%95%E7%BB%8F%E5%8E%86/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          使用Java中的Optional - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2020/11/28/2020-11-28-使用Java中的Optional/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>使用Java中的Optional</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by ZhimengChen on
+                        2020-11-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><code>NullPointerException</code>是非常常见的异常。由于它，程序往往需要大量使用<code>if-else</code>代码块来处理空值，这使得代码看起来不简洁 <del>优雅</del> ，且不方便自己和他人阅读。本文介绍如何用Optional类来处理<code>null</code>值问题。</p>
+<h2 id="Optional类"><a href="#Optional类" class="headerlink" title="Optional类"></a>Optional类</h2><p>先来看一段代码：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String isocode = user.get<span class="constructor">Address()</span>.get<span class="constructor">Country()</span>.get<span class="constructor">Isocode()</span>.<span class="keyword">to</span><span class="constructor">UpperCase()</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码在任何一个方法调用时，都有可能抛出<code>NullPointerException</code>。<br>而通常我们的处理方式是不断地利用<code>if</code>代码块来确保上一步的值不为空并执行下一步代码。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">if</span> (user != null) &#123;</span><br><span class="line">    <span class="attribute">Address</span> address = user.getAddress();</span><br><span class="line">    <span class="attribute">if</span> (address != null) &#123;</span><br><span class="line">        <span class="attribute">Country</span> country = address.getCountry();</span><br><span class="line">        <span class="attribute">if</span> (country != null) &#123;</span><br><span class="line">            <span class="attribute">String</span> isocode = country.getIsocode();</span><br><span class="line">            <span class="attribute">if</span> (isocode != null) &#123;</span><br><span class="line">                <span class="attribute">isocode</span> = isocode.toUpperCase();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>嗯，一股切割器cutter的味道。</p>
+<p>Optional类是Java8为了解决<code>null</code>值判断问题，借鉴<strong>google guava</strong>类库的Optional类而引入的一个同名Optional类，使用Optional类可以避免显式的<code>null</code>值判断（<code>null</code>的防御性检查），避免<code>null</code>导致的NPE（<code>NullPointerException</code>）。</p>
+<h2 id="如何创建Optional实例"><a href="#如何创建Optional实例" class="headerlink" title="如何创建Optional实例"></a>如何创建Optional实例</h2><p><strong>Optional类没有公共构造函数。</strong> 但是确提供了三个静态方法在不同情形下根据需求创建Optional实例。</p>
+<h3 id="Optional-of"><a href="#Optional-of" class="headerlink" title="Optional.of()"></a><code>Optional.of()</code></h3><p>这个方法要求你传入一个不为空的值（不一定是引用类型，也可以是原始类型），<br>所以下面这种写法还是会抛出一个<code>NullPointerException</code>异常：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">Optional</span>.</span></span><span class="keyword">of</span>(null);</span><br></pre></td></tr></table></figure>
+
+<p>可见Optional并不能完全避免<code>NullPointerException</code>，关键在于你是否正确以及规范地使用它。<br>但大多数情况下，我们使用Optional正是由于无法确定值是否为空。在这种情况下，我们使用下面这个方法。</p>
+<h3 id="Optional-ofNullable"><a href="#Optional-ofNullable" class="headerlink" title="Optional.ofNullable()"></a><code>Optional.ofNullable()</code></h3><p>这个方法允许你传入空值或者非空值。</p>
+<h3 id="Optional-empty"><a href="#Optional-empty" class="headerlink" title="Optional.empty()"></a><code>Optional.empty()</code></h3><p>这个方法会返回一个包装空值的Optional实例。也许你会觉得它会有点鸡肋（我一开始也是这么认为的）。<br>考虑以下代码：</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> dividend = <span class="number">10</span>, divisor = <span class="number">0</span>;</span><br><span class="line"><span class="built_in">int</span> result = dividend / divisor;</span><br><span class="line"><span class="keyword">Optional</span>&lt;<span class="keyword">Integer</span>&gt; o = <span class="keyword">Optional</span>.of(result);</span><br></pre></td></tr></table></figure>
+<p>显然它会在运行期抛出<code>ArithmeticException</code>异常，这使得后续对于<code>o</code>的可能存在的操作因异常而终止。</p>
+<p>改写如下：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">int</span> dividend = <span class="number">10</span>, divisor = <span class="number">0</span>;</span><br><span class="line">Optional&lt;Integer&gt; o;</span><br><span class="line"><span class="keyword">try</span> &#123;    </span><br><span class="line">    <span class="built_in">int</span> result = dividend<span class="operator"> / </span>divisor;    </span><br><span class="line">    o = <span class="module-access"><span class="module"><span class="identifier">Optional</span>.</span></span><span class="keyword">of</span>(result);</span><br><span class="line">&#125; catch (ArithmeticException e) &#123;  </span><br><span class="line">    o = <span class="module-access"><span class="module"><span class="identifier">Optional</span>.</span></span>empty<span class="literal">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="访问Optional实例的值"><a href="#访问Optional实例的值" class="headerlink" title="访问Optional实例的值"></a>访问Optional实例的值</h2><h3 id="get"><a href="#get" class="headerlink" title="get()"></a><code>get()</code></h3><p>它的源码：</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> T <span class="keyword">get</span>() &#123;    </span><br><span class="line">    <span class="keyword">if</span> (value == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">NoSuchElementException</span>(<span class="string">&quot;No value present&quot;</span>);    </span><br><span class="line">    &#125;    </span><br><span class="line">   <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当Optional实例包装的是一个空值时，它会抛出<code>NoSuchElementException</code>。</p>
+<p>所以在调用<code>get()</code>方法前我们还是需要判断Optional是否包装空值。<br>使用<code>ifPresent()</code>方法来判断其包装的是否是空值：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public static String get<span class="constructor">Gender(Student <span class="params">student</span>)</span> &#123;</span><br><span class="line">    Optional&lt;Student&gt; stuOpt =  <span class="module-access"><span class="module"><span class="identifier">Optional</span>.</span></span><span class="keyword">of</span><span class="constructor">Nullable(<span class="params">student</span>)</span>;</span><br><span class="line">     <span class="keyword">if</span>(stuOpt.is<span class="constructor">Present()</span>) &#123;</span><br><span class="line">            return stuOpt.get<span class="literal">()</span>.get<span class="constructor">Gender()</span>;</span><br><span class="line">     &#125;</span><br><span class="line">       </span><br><span class="line">     return <span class="string">&quot;Unkown&quot;</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>而这其实是一种很糟糕的写法，因为这种用法<strong>不但没有减少null的防御性检查，而且增加了Optional包装的过程，违背了Optional设计的初衷，因此开发中要避免这种糟糕的使用。</strong> 下文会介绍相对更好的写法。</p>
+<h3 id="获取默认值"><a href="#获取默认值" class="headerlink" title="获取默认值"></a>获取默认值</h3><p> Optional提供了两种方法来返回默认值。</p>
+<h4 id="orElse"><a href="#orElse" class="headerlink" title="orElse()"></a><code>orElse()</code></h4><p> <code>orElse()</code>会在Optional有值时返回它的值，否则就会返回传入的默认值。<br> <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">void</span> <span class="function"><span class="title">main</span>(<span class="params"><span class="built_in">String</span>[] args</span>)</span> &#123;</span><br><span class="line">        System.out.println(getGender(<span class="literal">null</span>));    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">String</span> <span class="function"><span class="title">getGender</span>(<span class="params">Student student</span>)</span> &#123;</span><br><span class="line">        Student stuOpt = Optional.ofNullable(student).orElse(<span class="keyword">new</span> Student();        </span><br><span class="line">        <span class="keyword">return</span> stuOpt.getGender();    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="orElseGet"><a href="#orElseGet" class="headerlink" title="orElseGet()"></a><code>orElseGet()</code></h4><p> <code>orElseGet()</code>则稍有不同，它会在Optional有值时返回其值，否则就会执行作为参数传入的Supplier实例的<code>get()</code>方法，并返回其执行结果。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">void</span> <span class="function"><span class="title">main</span>(<span class="params"><span class="built_in">String</span>[] args</span>)</span> &#123;</span><br><span class="line">        System.out.println(getGender(<span class="literal">null</span>));    </span><br><span class="line">    &#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">String</span> <span class="function"><span class="title">getGender</span>(<span class="params">Student student</span>)</span> &#123;</span><br><span class="line">        Student stuOpt = Optional.ofNullable(student).orElseGet(Student::<span class="keyword">new</span>);      </span><br><span class="line">        <span class="keyword">return</span> stuOpt.getGender();    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="两者的不同之处"><a href="#两者的不同之处" class="headerlink" title="两者的不同之处"></a>两者的不同之处</h4><ul>
+<li><code>orElse()</code>是<strong>EAGER</strong>的，也就是说无论Optional的值是否为空，它都会执行。</li>
+<li><code>orElseGet()</code>是<strong>LAZY</strong>的，只有当Optional的值为空时，才会执行。</li>
+</ul>
+<p>由于由以上差异，我们要根据业务场景谨慎选择，尤其是涉及服务调用或数据查询等耗时操作时。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d81a5f7c9c4e">【java8新特性】Optional详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jdon.com/52008">Java Optional使用的最佳实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhangboyu/p/7580262.html">理解、学习与使用 Java 中的 Optional</a></li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/11/29/2020-11-29-基于西二实际情况的学生游戏团队分工/" data-toggle="tooltip" data-placement="top" title="基于西二实际情况的学生游戏团队分工">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/28/2020-11-25-关于安卓的RecycleView的使用/" data-toggle="tooltip" data-placement="top" title="关于安卓的RecycleView的使用">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2020/11/28/2020-11-28-%E4%BD%BF%E7%94%A8Java%E4%B8%AD%E7%9A%84Optional/";
+    var disqus_url = "https://blog.w2fzu.com/2020/11/28/2020-11-28-%E4%BD%BF%E7%94%A8Java%E4%B8%AD%E7%9A%84Optional/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

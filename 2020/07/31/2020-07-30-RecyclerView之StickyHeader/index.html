@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          RecyclerView之StickyHeader - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2020/07/31/2020-07-30-RecyclerView之StickyHeader/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#18级" title="18级">18级</a>
+                        
+                    </div>
+                    <h1>RecyclerView之StickyHeader</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by NOS-AE on
+                        2020-07-31
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><em>这篇文章主要是介绍一下StikeyHeader我自己的实现方式，至于RecyclerView自身的padding，item的margin等，有需要的话可以自己加上</em><br><br></p>
+<h1 id="需要实现的核心内容"><a href="#需要实现的核心内容" class="headerlink" title="需要实现的核心内容"></a>需要实现的核心内容</h1><ul>
+<li>同一个组的标题始终显示在顶部</li>
+<li>下一个组的标题到达顶部时，把上一个”赖着不走”的标题给顶走</li>
+</ul>
+<h1 id="利器：ItemDecoration"><a href="#利器：ItemDecoration" class="headerlink" title="利器：ItemDecoration"></a>利器：ItemDecoration</h1><p>我使用了ItemDecoration实现粘性头部，可拔插设计，且实现方便<br><br>没了解过的小伙伴可以先康康 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/b46a4ff7c10a">参考链接</a></p>
+<h1 id="Header分析"><a href="#Header分析" class="headerlink" title="Header分析"></a>Header分析</h1><p>先从简单的入手：实现Header，也就是没有Sticky效果，Header会始终跟着列表滑动而滑动<br><br><br>首先我们把同一个标题下的Items看作是一个组，那就是要实现组内的第一个Item增加一个Header，此时自然就想到需要重写<code>getItemOffsets</code>方法，给需要的Item增加额外空间，然后重写<code>onDraw</code>方法绘制Header</p>
+<h1 id="Header实现"><a href="#Header实现" class="headerlink" title="Header实现"></a>Header实现</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HeaderDecoration</span></span>(</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> callback: Callback</span><br><span class="line">): RecyclerView.ItemDecoration() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> mHeight = dp2px(<span class="number">30f</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mPaint = Paint().apply &#123;</span><br><span class="line">        color = <span class="number">0xFFC5C5C5</span>.toInt()</span><br><span class="line">        style = Paint.Style.FILL</span><br><span class="line">        isAntiAlias = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mTextPaint = TextPaint().apply &#123;</span><br><span class="line">        color = <span class="number">0xff353535</span>.toInt()</span><br><span class="line">        textSize = sp2dp(<span class="number">14f</span>)</span><br><span class="line">        isAntiAlias = <span class="literal">true</span></span><br><span class="line">        baselineShift = (textSize / <span class="number">2</span> - descent()).toInt()</span><br><span class="line">        textAlign = Paint.Align.CENTER</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 给组内第一个Item增加额外空间来绘制Header</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getItemOffsets</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">        outRect: <span class="type">Rect</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        view: <span class="type">View</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        parent: <span class="type">RecyclerView</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        state: <span class="type">RecyclerView</span>.<span class="type">State</span></span></span></span><br><span class="line"><span class="params"><span class="function">    )</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.getItemOffsets(outRect, view, parent, state)</span><br><span class="line">        <span class="keyword">val</span> pos = parent.getChildAdapterPosition(view)</span><br><span class="line">        <span class="keyword">if</span> (isFirstInGroup(pos)) &#123;</span><br><span class="line">            outRect.top = mHeight</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 绘制Header</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onDraw</span><span class="params">(c: <span class="type">Canvas</span>, parent: <span class="type">RecyclerView</span>, state: <span class="type">RecyclerView</span>.<span class="type">State</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onDraw(c, parent, state)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> left = <span class="number">0f</span></span><br><span class="line">        <span class="keyword">val</span> right = parent.width.toFloat()</span><br><span class="line">        <span class="keyword">val</span> childCount = parent.childCount</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">0</span> until childCount) &#123;</span><br><span class="line">            <span class="keyword">val</span> child = parent.getChildAt(i)</span><br><span class="line">            <span class="keyword">val</span> pos = parent.getChildAdapterPosition(child)</span><br><span class="line">            <span class="keyword">if</span> (pos == RecyclerView.NO_POSITION || !isFirstInGroup(pos)) <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">val</span> top = child.top - mHeight.toFloat()</span><br><span class="line">            <span class="keyword">val</span> bottom = top + mHeight.toFloat()</span><br><span class="line">            c.drawRect(left, top, right, bottom, mPaint)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">val</span> title = callback.getGroupTitle(pos)</span><br><span class="line">            c.drawText(title, left, top + mHeight / <span class="number">2</span> + mTextPaint.baselineShift, mTextPaint)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断item是否所在组的内第一个item</span></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">isFirstInGroup</span><span class="params">(pos: <span class="type">Int</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (pos &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">        <span class="keyword">val</span> index = callback.getGroupIndex(pos)</span><br><span class="line">        <span class="keyword">val</span> preIndex = callback.getGroupIndex(pos - <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> index != preIndex</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 回调获取item所在组的下标和标题</span></span><br><span class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">Callback</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">getGroupIndex</span><span class="params">(pos: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">getGroupTitle</span><span class="params">(pos: <span class="type">Int</span>)</span></span>: String</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>代码说明</strong>：</p>
+<ul>
+<li><p>代码是kotlin</p>
+</li>
+<li><p>TextPaint和Paint在绘制上没有差别！对某些细节有疑问的可以参考一下<a target="_blank" rel="noopener" href="https://stackoverflow.com/a/61435196/11136727">我在StackOverflow上的回答</a></p>
+</li>
+<li><p>在getItemOffsets中判断当前需要增加空间的Item是否第组内第一个Item，是的话就增加一个mHeight的高度</p>
+</li>
+<li><p>在onDraw中遍历布局中的itemView，判断这个itemView是不是组内第一个Item，是的话就把Header绘制到这个itemView的正上方，标题则通过回调获得<br></p>
+</li>
+</ul>
+<p><strong>使用</strong></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rv.addItemDecoration(HeaderDecoration(<span class="keyword">object</span> : GroupDecoration.Callback &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getGroupIndex</span><span class="params">(pos: <span class="type">Int</span>)</span></span>: <span class="built_in">Int</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> findParent(pos) <span class="comment">// 具体怎么找到GroupIndex自己实现</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getGroupTitle</span><span class="params">(pos: <span class="type">Int</span>)</span></span>: String &#123;</span><br><span class="line">            <span class="keyword">return</span> findParentTitle(pos) <span class="comment">// 同上，自己实现</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;))</span><br></pre></td></tr></table></figure>
+
+<h1 id="StickyHeader分析"><a href="#StickyHeader分析" class="headerlink" title="StickyHeader分析"></a>StickyHeader分析</h1><ul>
+<li>StickyHeader是绘制在itemView之上的，所以需要在onDrawOver中绘制。</li>
+<li>StickyHeader要么一直处于顶部不动，要么跟着组内最后一个Item滑走</li>
+</ul>
+<p>由此得出实现思路：判断当前RecyclerView最顶部可见的item是不是在组中的最后一个item，是的话，StickyHeader的bottom就要与这个itemView的bottom重合，视觉上就是跟着这个itemView滑走，否则直接在顶部把StickyHeader绘制出来<br></p>
+<p>另外我在实现StickyHeader时发现，之前onDraw绘制的Header，在视觉上不会影响StickyHeader的显示，并且还能巧妙地和onDrawOver绘制的StickyHeader结合形成”下面标题把当前标题顶上去”的效果，所以onDraw的代码不用动，主要添加onDrawOver的实现即可<br><br></p>
+<h1 id="StickyHeader实现"><a href="#StickyHeader实现" class="headerlink" title="StickyHeader实现"></a>StickyHeader实现</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 绘制StickyHeader</span></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onDrawOver</span><span class="params">(c: <span class="type">Canvas</span>, parent: <span class="type">RecyclerView</span>, state: <span class="type">RecyclerView</span>.<span class="type">State</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.onDrawOver(c, parent, state)</span><br><span class="line">    <span class="keyword">val</span> manager = parent.layoutManager <span class="keyword">as</span> LinearLayoutManager</span><br><span class="line">    <span class="comment">// 找到RecyclerView第一个可见的itemView在adapter中的位置</span></span><br><span class="line">    <span class="keyword">val</span> firstPos = manager.findFirstVisibleItemPosition()</span><br><span class="line">    <span class="keyword">if</span> (firstPos == RecyclerView.NO_POSITION)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isLastInGroup(firstPos)) &#123;</span><br><span class="line">        <span class="comment">// 标题要跟着组内最后一个滑走</span></span><br><span class="line">        <span class="keyword">val</span> child = parent.findViewHolderForAdapterPosition(firstPos)?.itemView ?: <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">val</span> bottom = min(child.bottom, mHeight).toFloat()</span><br><span class="line">        <span class="keyword">val</span> top = bottom - mHeight.toFloat()</span><br><span class="line">        <span class="keyword">val</span> left = <span class="number">0f</span></span><br><span class="line">        <span class="keyword">val</span> right = parent.width.toFloat()</span><br><span class="line">        c.drawRect(left, top, right, bottom, mPaint)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> title = callback.getGroupTitle(firstPos)</span><br><span class="line">        c.drawText(title, left, top + mHeight / <span class="number">2</span> + mTextPaint.baselineShift, mTextPaint)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 直接绘制在顶部</span></span><br><span class="line">        <span class="keyword">val</span> top = <span class="number">0f</span></span><br><span class="line">        <span class="keyword">val</span> bottom = mHeight.toFloat()</span><br><span class="line">        <span class="keyword">val</span> left = <span class="number">0f</span></span><br><span class="line">        <span class="keyword">val</span> right = parent.width.toFloat()</span><br><span class="line">        c.drawRect(left, top, right, bottom, mPaint)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> title = callback.getGroupTitle(firstPos)</span><br><span class="line">        c.drawText(title, left, top + mHeight / <span class="number">2</span> + mTextPaint.baselineShift, mTextPaint)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断item是否所在组的内最后一个item</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">isLastInGroup</span><span class="params">(pos: <span class="type">Int</span>)</span></span>: <span class="built_in">Boolean</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (pos &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">    <span class="keyword">val</span> index = callback.getGroupIndex(pos)</span><br><span class="line">    <span class="keyword">val</span> preIndex = callback.getGroupIndex(pos + <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> index != preIndex</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>代码说明:</strong></p>
+<ul>
+<li>如果item是组内最后一个item，需要用min函数确定StickyHeader的位置，保证StickyHeader能正确显示并随itemView滑出屏幕<br></li>
+</ul>
+<p><strong>使用:</strong></p>
+<ul>
+<li>类似上面普通的Header使用</li>
+</ul>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>以上就是我实现StickyHeader的实现方法</p>
+<p>理解了StickyHeader的实现，类似的例如<strong>CoveredHeader</strong>（即下一个header不是顶走上一个header，而是直接覆盖在上面）也能轻松地自己手动实现</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/08/28/2020-08-28-vue next reactivity (1)/" data-toggle="tooltip" data-placement="top" title="vue next reactivity (1)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/07/30/2020-07-30-理解Golang中的Channel/" data-toggle="tooltip" data-placement="top" title="理解 Golang 中的 Channel">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#18级" title="18级">18级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2020/07/31/2020-07-30-RecyclerView%E4%B9%8BStickyHeader/";
+    var disqus_url = "https://blog.w2fzu.com/2020/07/31/2020-07-30-RecyclerView%E4%B9%8BStickyHeader/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

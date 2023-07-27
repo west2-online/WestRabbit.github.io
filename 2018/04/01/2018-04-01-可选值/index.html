@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Swift-可选值 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2018/04/01/2018-04-01-可选值/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                    </div>
+                    <h1>Swift-可选值</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by zhangsihuai on
+                        2018-04-01
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="可选值"><a href="#可选值" class="headerlink" title="可选值"></a>可选值</h3><blockquote>
+<p>Optional是Swift中的一种枚举类型，用来表达某个类型的可能值。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">enum Optional&lt;Wrapped&gt; &#123;</span><br><span class="line">	case none</span><br><span class="line">	case some(Wrapped)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="表示方式"><a href="#表示方式" class="headerlink" title="表示方式"></a>表示方式</h4><ul>
+<li>可选值遵守了<code>ExpressibleByNilLiteral</code>协议，因此可以用<code>nil</code>来替代<code>.none</code></li>
+<li>而非可选值可以直接表示成可选值</li>
+<li><code>return idx</code> 等价于 <code>return .some(idx)</code></li>
+<li>可选值类型的表示可以在类型的后面加上<code>?</code>进行表示，如<code>Int?</code>表示<code>Optional&lt;Int&gt;</code>类型</li>
+</ul>
+<h4 id="解包"><a href="#解包" class="headerlink" title="解包"></a>解包</h4><ul>
+<li>要使用可选值中实际的值的话需要进行<code>解包</code>操作</li>
+<li>因为可选值是枚举类型，所以可以使用<code>switch</code>语法来取出可选值中的值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let array = [1, 2, 3]</span><br><span class="line">switch array.first &#123;</span><br><span class="line">	case .some(let first):</span><br><span class="line">		print(first) // 输出 1</span><br><span class="line">	case .none:</span><br><span class="line">		break</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">switch array.first &#123;</span><br><span class="line">	case let first?:</span><br><span class="line">		print(first) // 输出 1</span><br><span class="line">	case nil:</span><br><span class="line">		break</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="可选绑定"><a href="#可选绑定" class="headerlink" title="可选绑定"></a>可选绑定</h5><ul>
+<li>使用<code>switch</code>的方式太过繁琐</li>
+<li>使用<code>if let</code>语法来进行可选绑定<code>optional binding</code>，进行解包操作，并且可以和布尔语句进行搭配</li>
+</ul>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">let</span> <span class="built_in">first</span> = <span class="built_in">array</span>.<span class="built_in">first</span>, <span class="built_in">first</span> &gt; <span class="number">0</span> &#123;</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">first</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以在<code>if</code>语句中绑定多个值，并且后面的绑定值可以依据前面成功的解包值来进行操作</li>
+</ul>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> viewController<span class="variable">s:</span> [Strin<span class="variable">g:</span> UIViewController] = [<span class="string">&quot;Home&quot;</span>: HomeViewController]</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> vc = viewControllers[<span class="string">&quot;Home&quot;</span>],</span><br><span class="line">	<span class="keyword">let</span> homeVC = vc <span class="keyword">as</span>? HomeViewController &#123;</span><br><span class="line">		// <span class="keyword">do</span> something</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>while let</code>语句和<code>if let</code>类似，<code>while</code>语句在当前可选值为<code>nil</code>的时候停止循环</li>
+</ul>
+<figure class="highlight nim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="built_in">array</span>: [<span class="type">Int</span>?] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="keyword">nil</span>]</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">iterator</span> = <span class="built_in">array</span>.makeIterator() // 迭代器返回最后一个元素后会返回<span class="keyword">nil</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">let</span> value = <span class="keyword">iterator</span>.next() &#123;</span><br><span class="line">	print(value) // <span class="number">1</span> <span class="number">2</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="双重可选值"><a href="#双重可选值" class="headerlink" title="双重可选值"></a>双重可选值</h4><ul>
+<li>一个可选值本身可以被当作值被另一个可选值包装，导致可选值嵌套在可选值中</li>
+<li><code>Optional&lt;Optional&lt;Int&gt;&gt;</code> = <code>Int??</code></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let array: [Int??] = [1, 2, 3, nil]</span><br><span class="line">for a in array &#123;</span><br><span class="line">    print(a)</span><br><span class="line">&#125;</span><br><span class="line">输出：</span><br><span class="line">Optional(Optional(1))</span><br><span class="line">Optional(Optional(2))</span><br><span class="line">Optional(Optional(3))</span><br><span class="line">nil</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可以使用<code>case</code>做模式匹配，”脱去”最外层的可选值，<code>nil</code>元素也被过滤掉了</li>
+<li><code>case let a?</code>是<code>case .some(let a)</code>的一种写法</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let array: [Int??] = [1, 2, 3, nil]</span><br><span class="line">for case let a? in array &#123;</span><br><span class="line">    print(a)</span><br><span class="line">&#125;</span><br><span class="line">输出：</span><br><span class="line">Optional(1)</span><br><span class="line">Optional(2)</span><br><span class="line">Optional(3)</span><br></pre></td></tr></table></figure>
+
+<h4 id="可选链"><a href="#可选链" class="headerlink" title="可选链"></a>可选链</h4><ul>
+<li><code>Swift</code>中没办法向一个<code>nil</code>对象发送消息，但可选链可以实现一样的效果</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let str: String? = &quot;abc&quot;</span><br><span class="line">let upperStr = str?.uppercased() // Optional&lt;&quot;ABC&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var str: String?</span><br><span class="line">let upperStr = str?.uppercased() // nil</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可选链的执行结果都是可选值，<code>str</code>不为<code>nil</code>的时候，可以得到执行<code>uppercased</code>饭后之后的值。若<code>str</code>为<code>nil</code>则<code>?</code>后面的方法都不会被调用。因为得到的结果需要考虑<code>str</code>是否为<code>nil</code>的情况，所以将值设置为可选值。</li>
+<li>可选链是一个展平操作</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let str: String? = &quot;abc&quot;</span><br><span class="line">let upperStr = str?.uppercased().lowercased() </span><br><span class="line">// 结果是 Optional(&quot;ABC&quot;) 而不是 Optional(Optional(&quot;abc&quot;))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>可选链对于下标和函数调用也适用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var closure: ((Int) -&gt; ())?</span><br><span class="line">closure?(1) // closure 为 nil 不执行</span><br><span class="line"></span><br><span class="line">let dict = [&quot;one&quot;: 1, &quot;two&quot;: 2]</span><br><span class="line">dict?[&quot;one&quot;] // Optional(1)</span><br><span class="line">dict?[&quot;three&quot;] // nil</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过可选链进行赋值，先判断当前变量是否为<code>nil</code>，不为<code>nil</code>的进行赋值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var a: Int? = 0</span><br><span class="line">a? = 1</span><br><span class="line">a // Optional(1)</span><br><span class="line"></span><br><span class="line">var b: Int?</span><br><span class="line">b? = 1</span><br><span class="line">b // nil</span><br></pre></td></tr></table></figure>
+
+<h3 id="与可选值有关的高阶函数"><a href="#与可选值有关的高阶函数" class="headerlink" title="与可选值有关的高阶函数"></a>与可选值有关的高阶函数</h3><h4 id="1-map"><a href="#1-map" class="headerlink" title="1. map"></a>1. map</h4><ul>
+<li>这个方法接受一个闭包，如果可选值有内容则调用这个闭包进行转换</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var dict = [&quot;one&quot;: &quot;1&quot;, &quot;two&quot;: &quot;2&quot;]</span><br><span class="line">let result = dict[&quot;one&quot;].map&#123; Int($0) &#125;</span><br><span class="line">// Optional(Optional(1))</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>上面的代码中我们从字典中取出字符串”1”，并将其转换为<code>Int</code>类型，但因为<code>String</code>转换成<code>Int</code>不一定能成功，所以返回的是<code>Int?</code>类型，而且字典通过键不一定能取得到值，所以<code>map</code>返回的也是一个<code>Optional</code>，所以最后上述代码<code>result</code>的类型为<code>Int??</code>类型。</li>
+<li>要解决这种问题，需要一个<code>展平</code>操作</li>
+</ul>
+<h4 id="2-flatMap"><a href="#2-flatMap" class="headerlink" title="2. flatMap"></a>2. flatMap</h4><ul>
+<li><code>flatMap</code>可以把结果展平成为单个可选值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var dict = [&quot;one&quot;: &quot;1&quot;, &quot;two&quot;: &quot;2&quot;]</span><br><span class="line">let result = dict[&quot;one&quot;].flatMap&#123; Int($0) &#125;</span><br><span class="line">// Optional(1)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意，这个方法是作用在<code>Optioanl</code>的方法，而不是作用在<code>Sequence</code>上的</li>
+<li>作用在<code>Sequence</code>上的<code>flatMap</code>方法在<code>Swift4.1</code>中被更名为<code>compactMap</code>，该方法可以将序列中的<code>nil</code>过滤出去</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let array = [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, nil]</span><br><span class="line">let result = array.compactMap&#123; $0 &#125; // [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]</span><br><span class="line"></span><br><span class="line">let array = [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;four&quot;]</span><br><span class="line">let result = array.compactMap&#123; Int($0) &#125; // [1, 2, 3]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="可选值与Equatable"><a href="#可选值与Equatable" class="headerlink" title="可选值与Equatable"></a>可选值与Equatable</h3><ul>
+<li>可选值有<code>==</code>操作符，可以用来进行可选值与非可选值之间的比较，前提是可选值中的类型是可比较的</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">==&lt;</span></span><span class="type">T</span>: <span class="type">Equatable</span><span class="operator">&gt;</span>(lhs: <span class="type">T</span>?, rhs: <span class="type">T</span>?) -&gt; <span class="type">Bool</span> &#123;</span><br><span class="line">	<span class="keyword">switch</span> (lhs, rhs) &#123;</span><br><span class="line">	<span class="keyword">case</span> (<span class="literal">nil</span>, <span class="literal">nil</span>): <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">	<span class="keyword">case</span> <span class="keyword">let</span> (x<span class="operator">?</span>, y<span class="operator">?</span>): <span class="keyword">return</span> x <span class="operator">==</span> y</span><br><span class="line">	<span class="keyword">case</span> (<span class="keyword">_</span><span class="operator">?</span>, <span class="literal">nil</span>), (<span class="literal">nil</span>, <span class="keyword">_</span><span class="operator">?</span>): <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>但是，这样并不是说明可选值类型遵守了<code>Equatable</code>协议，可选值在<code>Swift4</code>之前是没有实现<code>Equatable</code>的</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a <span class="operator">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="literal">nil</span>]</span><br><span class="line"><span class="keyword">let</span> b <span class="operator">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="literal">nil</span>]</span><br><span class="line">a <span class="operator">==</span> b <span class="comment">// 在Swift4之前无法进行判等，Swift4.1可以</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Swift4.1</code>进行的改进：</li>
+</ul>
+<blockquote>
+<p>Swift 4.1’s Optional, Array and Dictionary now conform to Equatable and Hashable whenever their underlying values or elements conform to these protocols.</p>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/04/16/2018-4-16-网易面试经历/" data-toggle="tooltip" data-placement="top" title="我的网易面试经历">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/04/01/2018-04-01-并发编程艺术-底层原理/" data-toggle="tooltip" data-placement="top" title="Java并发编程艺术-并发机制的底层原理实现">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2018/04/01/2018-04-01-%E5%8F%AF%E9%80%89%E5%80%BC/";
+    var disqus_url = "https://blog.w2fzu.com/2018/04/01/2018-04-01-%E5%8F%AF%E9%80%89%E5%80%BC/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

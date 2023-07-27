@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          初探iOS Network Extension(新手向)  - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2016/11/21/2016-11-12-learn-NetworkExtenison/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#14级" title="14级">14级</a>
+                        
+                          <a class="tag" href="/tags/#教程" title="教程">教程</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                    </div>
+                    <h1>初探iOS Network Extension(新手向) </h1>
+                    <h2 class="subheading">Network Extension听着很高大上。然而用上NEKit,我们可以分分钟钟写出个代理App</h2>
+                    <span class="meta">
+                        Posted by yicheng on
+                        2016-11-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>经过一番申请，我们西二在线iOS团队成功申请得到了Network Extension的Entitlement。于是，我们开始研究ne的开发。本文使用Swift语言及NEKit开源库制作一个简单的代理软件。</p>
+</blockquote>
+<h2 id="一、-安装NEProviderTargetTemplates-pkg"><a href="#一、-安装NEProviderTargetTemplates-pkg" class="headerlink" title="一、 安装NEProviderTargetTemplates.pkg"></a>一、 安装NEProviderTargetTemplates.pkg</h2><p>由于未知原因苹果在mac OS 10.12中删除了这个文件，因此我们需要从10.11系统中提取或<a target="_blank" rel="noopener" href="https://www.dropbox.com/s/6f1rxfjkk0ha89n/NEProviderTargetTemplates.pkg?dl=0">下载</a>。</p>
+<p>安装完毕后，在新增build target中我们就可以看到多了AppProxy和 Package Tunnrl Provider。我们选择Package Tunnrl Provider，在下一步中照例输入包名作者名等等，完成添加。</p>
+<p><img src="https://ww4.sinaimg.cn/large/65e4f1e6gw1f9ztxlxo0qj20ka0eedhh.jpg" alt="添加Packet Tunnel Provider"></p>
+<h2 id="二、申请Profile"><a href="#二、申请Profile" class="headerlink" title="二、申请Profile"></a>二、申请Profile</h2><p>Network Extension不同于其他权限，无法在Xcode的compalities中一键启用，需要在Apple Developer中心手动申请profile。申请过程中会让选择additional entitlement，钩上我们的ne证书,生成并下载倒入Xcode。</p>
+<p>同时编辑entitlememts文件，加入下列内容。</p>
+<figure class="highlight plist"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.developer.networking.networkextension<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>packet-tunnel-provider<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>app-proxy-provider<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">string</span>&gt;</span>content-filter-provider<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>效果如图</p>
+<p><img src="https://ww2.sinaimg.cn/large/65e4f1e6gw1f9zu1xof5nj20gd054dg8.jpg"></p>
+<p><em>PS.你需要同时为主程序和Extension创建profile。</em></p>
+<h2 id="三、第一次建立VPN链接"><a href="#三、第一次建立VPN链接" class="headerlink" title="三、第一次建立VPN链接"></a>三、第一次建立VPN链接</h2><h3 id="创建VPN-profile"><a href="#创建VPN-profile" class="headerlink" title="创建VPN profile"></a>创建VPN profile</h3><ol>
+<li><p>首先，我们需要在主程序中像系统生名一个ProviderManager，即设置VPN中的栏目。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> manager <span class="operator">=</span> <span class="type">NETunnelProviderManager</span>()</span><br><span class="line"><span class="keyword">let</span> conf <span class="operator">=</span> <span class="type">NETunnelProviderProtocol</span>()</span><br><span class="line">conf.serverAddress <span class="operator">=</span> <span class="string">&quot;Rabbit&quot;</span> <span class="comment">//任意值,显示在设置-VPN-Detial中</span></span><br><span class="line">manager.protocolConfiguration <span class="operator">=</span> conf</span><br><span class="line">manager.localizedDescription <span class="operator">=</span> <span class="string">&quot;Rabbit VPN&quot;</span></span><br><span class="line">manager.enable <span class="operator">=</span> <span class="type">True</span> <span class="comment">//使VPN在系统中变为选中的状态</span></span><br></pre></td></tr></table></figure>
+
+<p>​</p>
+</li>
+</ol>
+<ol start="2">
+<li><p>将manager保存至系统中。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">manager.saveToPreferencesWithCompletionHandler&#123;</span><br><span class="line">	error <span class="keyword">in</span></span><br><span class="line">    <span class="keyword">if</span> error <span class="operator">!=</span> <span class="literal">nil</span>&#123;<span class="built_in">print</span>(error);<span class="keyword">return</span>;&#125;</span><br><span class="line">    <span class="comment">//Todo</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，打开系统-Vpn菜单，即可看见我们新建的Vpn条目</p>
+<p><img src="https://ww1.sinaimg.cn/large/65e4f1e6gw1f9zucaehpfj20a40hyaah.jpg"></p>
+<p>​</p>
+<ol start="3">
+<li><p>此时如果save方法调用多次，会出现VPN 1 VPN 2等多个描述文件 ，因此，苹果也要求，在创建前应读取当前的managers。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">NETunnelProviderManager</span>.loadAllFromPreferencesWithCompletionHandler&#123; </span><br><span class="line">    (managers, error) <span class="keyword">in</span></span><br><span class="line">    <span class="keyword">guard</span> <span class="keyword">let</span> managers <span class="operator">=</span> managers <span class="keyword">else</span>&#123;<span class="keyword">return</span>&#125;</span><br><span class="line">    <span class="keyword">let</span> manager: <span class="type">NETunnelProviderManager</span></span><br><span class="line">    <span class="keyword">if</span> managers.count <span class="operator">&gt;</span> <span class="number">0</span> &#123;</span><br><span class="line">        manager <span class="operator">=</span> managers[<span class="number">0</span>]</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        manager <span class="operator">=</span> <span class="keyword">self</span>.createProviderManager()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Todo</span></span><br><span class="line">    <span class="comment">// manager.saveToPreferences.......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="简单配置extension"><a href="#简单配置extension" class="headerlink" title="简单配置extension"></a>简单配置extension</h3><ol>
+<li><p>打开extension中的模板文件，对应Swift版本与父类修改语法。主要需要以下两个函数控制VPN状态</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">startTunnelWithOptions</span>(<span class="params">options</span>: [<span class="params">String</span> : <span class="type">NSObject</span>]<span class="operator">?</span>, <span class="params">completionHandler</span>: (<span class="type">NSError</span>?) -&gt; <span class="type">Void</span>)</span> </span><br><span class="line"><span class="comment">//启动VPN时调用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">stopTunnelWithReason</span>(<span class="params">reason</span>: <span class="type">NEProviderStopReason</span>, <span class="params">completionHandler</span>: () -&gt; <span class="type">Void</span>)</span></span><br><span class="line"><span class="comment">//停止VPN时调用</span></span><br></pre></td></tr></table></figure></li>
+<li><p>此时我们仅仅需要测试VPN连接是否能正常建立。因此我们只需要在startTunnelWithOptions中调用setTunnelNetworkSettings方法即可。当completionHandler()执行后VPN连接就会显示在手机上了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">startTunnelWithOptions</span>(<span class="params">options</span>: [<span class="params">String</span> : <span class="type">NSObject</span>]<span class="operator">?</span>, <span class="params">completionHandler</span>: (<span class="type">NSError</span>?) -&gt; <span class="type">Void</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">let</span> ipv4Settings <span class="operator">=</span> <span class="type">NEIPv4Settings</span>(addresses: [<span class="string">&quot;10.0.0.1&quot;</span>], subnetMasks: [<span class="string">&quot;255.255.255.0&quot;</span>])</span><br><span class="line">	<span class="comment">// 这里RemoteAddress可任意填写。</span></span><br><span class="line">	<span class="keyword">let</span> networkSettings <span class="operator">=</span> <span class="type">NEPacketTunnelNetworkSettings</span>(tunnelRemoteAddress: <span class="string">&quot;8.8.8.8&quot;</span>)</span><br><span class="line">	networkSettings.<span class="type">MTU</span> <span class="operator">=</span> <span class="number">1500</span></span><br><span class="line">	networkSettings.<span class="type">IPv4Settings</span> <span class="operator">=</span> ipv4Settings</span><br><span class="line">	setTunnelNetworkSettings(networkSettings) &#123;</span><br><span class="line">	    error <span class="keyword">in</span></span><br><span class="line">	    <span class="keyword">guard</span> error <span class="operator">==</span> <span class="literal">nil</span> <span class="keyword">else</span> &#123;</span><br><span class="line">	    	nslog(error.debugDescription)</span><br><span class="line">	        completionHandler(error)</span><br><span class="line">	        <span class="keyword">return</span></span><br><span class="line">	    &#125;</span><br><span class="line">	    completionHandler(<span class="literal">nil</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​</p>
+</li>
+</ol>
+<h3 id="启动VPN"><a href="#启动VPN" class="headerlink" title="启动VPN"></a>启动VPN</h3><ol>
+<li><p>启动VPN很简单，只需对ProviderManager执行startVPNTunnelWithOptions()方法即可</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try!</span> manager.connection.startVPNTunnelWithOptions([:])</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意，如果在创建VPN Save后立刻执行startVPN，会遇到报错说Domain=“null”。此时说明系统还未准备好。所以应将启动代码放到 loadFromPreferences 的Block中。</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">saveToPreferences&#123;</span><br><span class="line">   error <span class="keyword">in</span></span><br><span class="line">   <span class="operator">.....</span></span><br><span class="line">   manager.loadFromPreferencesWithCompletionHandler&#123;</span><br><span class="line">	    <span class="keyword">if</span> <span class="variable">$0</span> <span class="operator">!=</span> <span class="literal">nil</span>&#123;<span class="built_in">print</span>(<span class="variable">$0</span>)&#125;</span><br><span class="line">	    manager.startVPN<span class="operator">.........</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>此时，VPN应该能成功启动。</p>
+<p><img src="https://ww1.sinaimg.cn/large/65e4f1e6gw1f9zvofsip3j20b1064wep.jpg"></p>
+</li>
+<li><p>连接成功会manager.connection.status会发生相应改变，因此我们需要在按下连接按钮后监听status，从而知道目前Vpn的连接状态。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">loadProviderManager &#123; [<span class="keyword">unowned</span> <span class="keyword">self</span>] (manager) -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">let</span> manager <span class="operator">=</span> manager &#123;</span><br><span class="line">        <span class="type">NSNotificationCenter</span>.defaultCenter().addObserverForName(<span class="string">&quot;VpnStatusChanged&quot;</span>, object: manager.connection.status, queue: <span class="type">NSOperationQueue</span>.mainQueue(), usingBlock: &#123; [<span class="keyword">unowned</span> <span class="keyword">self</span>] (notification) -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line">            <span class="keyword">self</span>.updateStatus(manager)</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​</p>
+</li>
+</ol>
+<h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h3><ul>
+<li><p>Extension debug不同于正常的程序，尽量使用NSlog代替print，即可在系统日志中查看到内容。同时，如果需要Debug，可通过Xcode-&gt;Debug-&gt;Attach To Process 选择你的Tunnel名进行debug</p>
+</li>
+<li><p>若在此时启动VPN时不断提示Connection intrupt、Connection invalid ，一般是因为target配置错误导致启动失败、崩溃。比如Carthage添加了framwork却没有执行copy-framwork等等……</p>
+<p>​</p>
+</li>
+</ul>
+<h2 id="四、导入NEKit"><a href="#四、导入NEKit" class="headerlink" title="四、导入NEKit"></a>四、导入NEKit</h2><p>Extension中导入NEKit后进行简单配置，导入规则等等可参照NEKit的项目<a target="_blank" rel="noopener" href="https://github.com/zhuhaow/Specht">Specht</a>配置相应启动停止函数。注意：目前NEKit在Swift3环境下仍然存在相应问题，将导致连接在网络请求下很快崩溃断开，可考虑先使用Swift2.3版本进行操作。</p>
+<h2 id="五、监听网络状态改变"><a href="#五、监听网络状态改变" class="headerlink" title="五、监听网络状态改变"></a>五、监听网络状态改变</h2><ul>
+<li><p>这里是苹果的一个大坑。当网络状态改变 例如发生 WiFi-&gt;4G 切换时，若保持VPN连接，则会在状态栏上显示一个暗色的WiFi图标。反之，则会发生让手机在WiFI连接的状态下走流量等奇怪问题。</p>
+</li>
+<li><p>NEProvider 中存在属性 </p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">var</span> defaultPath: <span class="type">NWPath</span>? &#123; <span class="keyword">get</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>表明当前系统的网络请求路径。我们可以通过KVO监听他的改变。当defaultPath与之前状态发生改变，且当</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defaultPath.status <span class="operator">==</span> .<span class="type">Satisfied</span></span><br></pre></td></tr></table></figure>
+
+<p>时，我们可以认定系统网络进行了切换。此时我们需要重启VPN及重启代理服务器。</p>
+<p>重连VPN方法非常简单，只需要再次调用StartVPN函数即可。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">NSLog</span>(<span class="string">&quot;Network Environment Changed&quot;</span>)</span><br><span class="line"><span class="keyword">let</span> delayTime <span class="operator">=</span> dispatch_time(<span class="type">DISPATCH_TIME_NOW</span>, <span class="type">Int64</span>(<span class="number">1</span> <span class="operator">*</span> <span class="type">Double</span>(<span class="type">NSEC_PER_SEC</span>)))</span><br><span class="line">dispatch_after(delayTime, dispatch_get_main_queue()) &#123;</span><br><span class="line">    <span class="comment">// 延迟1s确保系统就绪</span></span><br><span class="line">    <span class="keyword">self</span>.startTunnelWithOptions(<span class="literal">nil</span>)&#123;<span class="keyword">_</span> <span class="keyword">in</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时我们需要重启proxyServer，否则会发生部分连接在WiFi环境下继续使用4G网络出口等问题。</p>
+<figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span>.<span class="keyword">stop</span>()</span><br><span class="line">proxyServer.<span class="keyword">stop</span>()</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="六、传递配置文件"><a href="#六、传递配置文件" class="headerlink" title="六、传递配置文件"></a>六、传递配置文件</h2><p>我们需要在主程序中传递类似账号、密码、端口、加密方式等参数给我们的VPN组件。</p>
+<ul>
+<li><p>主程序写入</p>
+<p>还记得之前的NETunnelProviderProtocol吗？我们可以把配置放在NETunnelProviderProtocol的providerConfiguration中</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> conf <span class="operator">=</span> [<span class="string">&quot;port&quot;</span>:<span class="number">1000</span>,<span class="string">&quot;method&quot;</span>:<span class="string">&quot;AES-256-CFB&quot;</span>,<span class="string">&quot;password&quot;</span>:<span class="string">&quot;hello&quot;</span>]</span><br><span class="line"><span class="keyword">let</span> providerProtocol <span class="operator">=</span> manager.protocolConfiguration <span class="keyword">as!</span> <span class="type">NETunnelProviderProtocol</span></span><br><span class="line">providerProtocol.providerConfiguration <span class="operator">=</span> conf</span><br><span class="line">manager.protocolConfiguration <span class="operator">=</span> orignConf</span><br></pre></td></tr></table></figure>
+
+<p>注意：设置要在save之前，否则会不生效。</p>
+</li>
+<li><p>Extension中读取：</p>
+<p>NETunnelProvider存着我们的配置 </p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">var</span> protocolConfiguration: <span class="type">NEVPNProtocol</span> &#123; <span class="keyword">get</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此我们只要直接读取就好啦~</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> conf <span class="operator">=</span> (protocolConfiguration <span class="keyword">as!</span> <span class="type">NETunnelProviderProtocol</span>).providerConfiguration <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="type">NSLog</span>(<span class="string">&quot;[ERROR] No ProtocolConfiguration Found&quot;</span>)</span><br><span class="line">    exit(<span class="type">EXIT_FAILURE</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> address <span class="operator">=</span> conf[<span class="string">&quot;address&quot;</span>] <span class="keyword">as!</span> <span class="type">String</span></span><br><span class="line"><span class="keyword">let</span> port <span class="operator">=</span> conf[<span class="string">&quot;port&quot;</span>] <span class="keyword">as!</span> <span class="type">Int</span></span><br><span class="line"><span class="operator">...</span> </span><br></pre></td></tr></table></figure>
+
+<p>大功告成。</p>
+<p>​</p>
+</li>
+</ul>
+<h2 id="七、结语"><a href="#七、结语" class="headerlink" title="七、结语"></a>七、结语</h2><p>此时，我们的一个非常简单的一个利用NEKit进行的简单代理软件就完成了。其实NE开发中最困难和最多坑的地方NEKit已经帮我们解决了。本文只是帮住在像我一样在进行NetworkExtension开发尝试的iOS萌新，和我自己对这两天折腾的一个记录及学习笔记。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/11/21/2016-11-21-Node-and-Mysql-deploy-on-Docker/" data-toggle="tooltip" data-placement="top" title="Docker开发部署Node小结">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/11/05/2016-11-05-CORS/" data-toggle="tooltip" data-placement="top" title="反向代理解决跨域问题">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#14级" title="14级">14级</a>
+                        
+                          <a class="tag" href="/tags/#教程" title="教程">教程</a>
+                        
+                          <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2016/11/21/2016-11-12-learn-NetworkExtenison/";
+    var disqus_url = "https://blog.w2fzu.com/2016/11/21/2016-11-12-learn-NetworkExtenison/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

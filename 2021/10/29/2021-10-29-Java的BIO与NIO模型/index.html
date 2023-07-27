@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Java的BIO与NIO模型 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/29/2021-10-29-Java的BIO与NIO模型/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                    </div>
+                    <h1>Java的BIO与NIO模型</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Gatsby on
+                        2021-10-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Java的I-O模型"><a href="#Java的I-O模型" class="headerlink" title="Java的I/O模型"></a>Java的I/O模型</h1><p><strong>来聊一聊Java的BIO和NIO及一些底层原理，有时间下期更新Netty相关内容~</strong></p>
+<h2 id="模型基本说明"><a href="#模型基本说明" class="headerlink" title="模型基本说明"></a>模型基本说明</h2><ul>
+<li>什么是I/O模型：就是用什么样的通道进行数据发送和接收，很大程度上决定了程序通信的性能</li>
+<li>Java共支持3种网络编程模型I/O模式：<strong>BIO、NIO、AIO</strong><h2 id="传统Java的I-O模型"><a href="#传统Java的I-O模型" class="headerlink" title="传统Java的I/O模型"></a>传统Java的I/O模型</h2></li>
+</ul>
+<p><strong>BIO：同步并阻塞（传统阻塞型）</strong></p>
+<ul>
+<li>服务器为每一个新连接建立一个<strong>新线程</strong>进行处理，如果连接没有数据也会<strong>阻塞等待</strong>（不做任何事情）造成不必要的线程开销（示意图如下）   PS：BIO -&gt; blocking io</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1634968592403-19ea959e-9012-45f0-b473-6add16e56504.png#clientId=u8dd99deb-8deb-4&from=paste&height=540&id=u2058aa70&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1080&originWidth=1692&originalType=binary&ratio=1&size=156893&status=done&style=none&taskId=u6c5af940-efef-4856-b1f0-bf1f5517e8a&width=846" alt="image.png"></p>
+<h2 id="现在Java的I-O模型"><a href="#现在Java的I-O模型" class="headerlink" title="现在Java的I/O模型"></a>现在Java的I/O模型</h2><p><strong>NIO：同步非阻塞</strong></p>
+<ul>
+<li>服务器的一个线程能处理多个请求（连接），客户端发送的连接请求会注册到多路复用器上，多路复用器轮询到连接有I/O请求就进行处理（示意图如下） PS：NIO -&gt; non-blocking io</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1634969539437-85b2dbeb-d501-47a8-9228-9d1850a79dff.png#clientId=u8dd99deb-8deb-4&from=paste&height=464&id=u858182a6&margin=%5Bobject%20Object%5D&name=image.png&originHeight=928&originWidth=1728&originalType=binary&ratio=1&size=164506&status=done&style=none&taskId=u2d984264-cd7c-462d-ab8a-6da46e4139e&width=864" alt="image.png"><br><strong>AIO：异步非阻塞（非重点）</strong></p>
+<ul>
+<li><p>引入了异步通道的概念，采用Proactor模式，简化了程序编写，有效的请求才会启动线程，它的特点是先由操作系统完成后才通知服务端程序启动线程去处理，一般适用于连接数较多且连接时长较长的应用</p>
+<h2 id="BIO、NIO、AIO使用场景分析"><a href="#BIO、NIO、AIO使用场景分析" class="headerlink" title="BIO、NIO、AIO使用场景分析"></a>BIO、NIO、AIO使用场景分析</h2></li>
+<li><p>BIO适用于连接数小且固定的架构，对服务器资源占用高，一般只在JDK1.4以前（唯一选择）</p>
+</li>
+<li><p>NIO适用于连接数目多且连接比较短的架构，如聊天服务器，弹幕系统，编程复杂，JDK1.4开始才有</p>
+</li>
+<li><p>AIO适用于连接数目多且连接比较长的架构，如相册服务器，充分调用OS参与并发操作，JDK1.7后出现</p>
+<h1 id="Java-BIO-编程"><a href="#Java-BIO-编程" class="headerlink" title="Java BIO 编程"></a>Java BIO 编程</h1><h2 id="BIO基本介绍"><a href="#BIO基本介绍" class="headerlink" title="BIO基本介绍"></a>BIO基本介绍</h2></li>
+<li><p>Java BIO就是传统的Java I/O编程，其相关类和接口在 java.io</p>
+</li>
+<li><p>BIO（Blocking IO）：同步阻塞，服务器为每个连接请求建立新的线程，如果没有事情做也会阻塞等待，直到断开链接，这样会造成<strong>不必要的线程开销</strong></p>
+</li>
+<li><p>对于BIO的架构可以通过线程池机制改善（多个客户连接服务器）</p>
+</li>
+<li><p>BIO<strong>占用资源高</strong>，适用于连接数比较小且固定的架构，但是代码简单</p>
+<h2 id="Java-BIO-工作机制"><a href="#Java-BIO-工作机制" class="headerlink" title="Java BIO 工作机制"></a>Java BIO 工作机制</h2><p><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1634970912928-f704d2a7-bb6d-4237-9a21-098c95363e80.png#clientId=u8dd99deb-8deb-4&from=paste&height=469&id=u108b2819&margin=%5Bobject%20Object%5D&name=image.png&originHeight=937&originWidth=1487&originalType=binary&ratio=1&size=92727&status=done&style=none&taskId=u1323aeeb-fa47-4aca-b8c4-3ff23b56910&width=743.5" alt="image.png"></p>
+</li>
+</ul>
+<p><strong>BIO工作流程</strong></p>
+<ol>
+<li>服务端启动一个<strong>ServerSocket</strong></li>
+<li>客户端启动<strong>Socket</strong>对服务器进行通信，服务器对每一个客户端线程之间建立通讯</li>
+<li>客户端线程请求结束后，断开链接，服务端线程结束<h2 id="Java-BIO问题分析"><a href="#Java-BIO问题分析" class="headerlink" title="Java BIO问题分析"></a>Java BIO问题分析</h2></li>
+</ol>
+<ul>
+<li><p>每个请求都需要创建独立的线程，为客户端数据Read/Write</p>
+</li>
+<li><p>当并发数大的时候，要创建大量线程来处理链接，系统资源占用大</p>
+</li>
+<li><p>建立连接后，线程如果暂时没有数据可读，就阻塞在Read上，造成线程资源浪费</p>
+<h1 id="Java-NIO-编程"><a href="#Java-NIO-编程" class="headerlink" title="Java NIO 编程"></a>Java NIO 编程</h1><h2 id="NIO基本介绍"><a href="#NIO基本介绍" class="headerlink" title="NIO基本介绍"></a>NIO基本介绍</h2></li>
+<li><p>Java NIO 全称 <strong>Java non-blocking IO</strong>是JDK1.4开始提供的新API，是<strong>同步非阻塞</strong>的</p>
+</li>
+<li><p>NIO相关类都放在java.nio包下，并对原<strong>java.io</strong>包中的很多类进行改写</p>
+</li>
+<li><p>NIO有三大核心部分：<strong>Channel（通道）、Buffer（缓冲区）、Selector（选择器）</strong></p>
+</li>
+<li><p>NIO是<strong>面向缓冲区，或者面向块编程</strong>的，不是简单的read和write，数据读取到一个它稍后处理的缓冲区，也可按需要在缓冲区前后移动读取数据</p>
+</li>
+<li><p>NIO的<strong>非阻塞模式</strong>：一个线程从某通道读取数据的时候，<strong>仅能得到目前可用的数据</strong>，当没有可用的数据时，什么都不会获取，会去做别的事情（<strong>因为数据是块的，所以等它攒到一定大小直到可用的时候再给就行，而不会因为数据是散装的要一直阻塞等待浪费线程！！！</strong>）</p>
+</li>
+<li><p>这样就能将很多请求交由一个线程处理，大幅度减少线程开销</p>
+<h2 id="NIO和BIO"><a href="#NIO和BIO" class="headerlink" title="NIO和BIO"></a>NIO和BIO</h2></li>
+<li><p>BIO以<strong>流</strong>的形式处理数据，NIO以<strong>块</strong>的形式处理数据</p>
+</li>
+<li><p>BIO是<strong>阻塞的</strong>，NIO是<strong>非阻塞的</strong></p>
+</li>
+<li><p>BIO的流是<strong>字节流</strong>和<strong>字符流</strong>，<strong>而NIO的块基于</strong>Channel（通道）<strong>和</strong>Buffer（缓冲区）<strong>读取数据</strong>，<strong>Selector（选择器）</strong>监听多个通道的<strong>事件（连接请求，数据到达）</strong></p>
+<h2 id="NIO三大核心"><a href="#NIO三大核心" class="headerlink" title="NIO三大核心"></a>NIO三大核心</h2><h3 id="关系图"><a href="#关系图" class="headerlink" title="关系图"></a>关系图</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1635350190420-d6f28f65-c638-4f7a-b43b-cce036ec56fe.png#clientId=u39e72bc5-ad24-4&from=paste&height=388&id=u1e9a116c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=775&originWidth=713&originalType=binary&ratio=1&size=64457&status=done&style=none&taskId=uda6c6720-f25a-4f3a-b442-61e2c8ec45f&width=356.5" alt="image.png"></p>
+</li>
+<li><p>每一个Channel都会对应一个Buffer</p>
+</li>
+<li><p>Selector对应一个服务器线程，一个线程对应多个Channel</p>
+</li>
+<li><p>Selector选择哪个是由Channel的<strong>事件Event</strong>决定的</p>
+</li>
+<li><p>Selector会根据事件安排在各个通道上<strong>切换</strong></p>
+</li>
+<li><p>Buffer是缓冲区，其实就是一个内存块，底层就是一个数组（bytebuffer）</p>
+</li>
+<li><p>Buffer的读写是双向，既可以读也可以写，像底层操作系统的系统通道也是双向的</p>
+<h3 id="缓冲区（Buffer）"><a href="#缓冲区（Buffer）" class="headerlink" title="缓冲区（Buffer）"></a>缓冲区（Buffer）</h3></li>
+</ul>
+<p><strong>Buffer的本质 -&gt; 可以读写的数据内存块（容器对象）</strong><br><strong>数据的读写必须经过buffer</strong><br><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1635350731165-5f50e014-141c-469f-a466-65ff54c64e5a.png#clientId=u39e72bc5-ad24-4&from=paste&height=187&id=u6cfaeedb&margin=%5Bobject%20Object%5D&name=image.png&originHeight=374&originWidth=1490&originalType=binary&ratio=1&size=44597&status=done&style=none&taskId=ub208bdfc-9bdb-45af-8ad9-b8b347dabd0&width=745" alt="image.png"><br>Buffer类的基本信息<br><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1635350922717-25b3639b-745b-413a-9b85-2c9413106b76.png#clientId=u39e72bc5-ad24-4&from=paste&height=278&id=u3832962c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=556&originWidth=1733&originalType=binary&ratio=1&size=325206&status=done&style=none&taskId=u80d89859-a964-4d80-9b17-764ad74a601&width=866.5" alt="image.png"><br>Buffer类相关方法（比较灵活）<br><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1635350965708-f70069ce-71b8-4df0-828b-a2ef4875948b.png#clientId=u39e72bc5-ad24-4&from=paste&height=442&id=ue7394780&margin=%5Bobject%20Object%5D&name=image.png&originHeight=884&originWidth=1709&originalType=binary&ratio=1&size=816120&status=done&style=none&taskId=u3ffdeddf-a714-4b4d-b769-351a618cc86&width=854.5" alt="image.png"></p>
+<h3 id="通道（Channel）"><a href="#通道（Channel）" class="headerlink" title="通道（Channel）"></a>通道（Channel）</h3><p><strong>NIO通道与BIO的流的区别</strong></p>
+<ul>
+<li><strong>通道可以同时进行读写，流只能读或者写</strong></li>
+<li><strong>通道可以异步读写数据，流只能同步</strong></li>
+<li><strong>通道可以从缓冲区读&amp;写数据</strong></li>
+</ul>
+<p><strong>常用Channel类</strong></p>
+<ul>
+<li>BIO的Stream是<strong>单向</strong>的，NIO的Channel是<strong>双向</strong>的</li>
+<li>常用的Channel类：<strong>ServerSocketChannel</strong>（类似ServerSocket）和<strong>SocketChannel</strong>（类似Socket）</li>
+<li><strong>Filechannel -&gt;文件读写通道</strong></li>
+<li><strong>DatagramChannel -&gt; UDP数据读写通道</strong></li>
+<li><strong>ServerSocketChannel &amp; SocketChannel -&gt; TCP读写通道</strong></li>
+</ul>
+<h3 id="Selector（选择器）"><a href="#Selector（选择器）" class="headerlink" title="Selector（选择器）"></a>Selector（选择器）</h3><ul>
+<li>Java的NIO，用非阻塞IO模式，得益于<strong>Selector</strong></li>
+<li><strong>多个Channel以事件的方式注册到同一个Selector -&gt; 这样Selector可监控多个通道是否有事件发生 -&gt; 一个线程管理多个通道的连接和请求</strong></li>
+<li><strong>只有有事件发生时才回去读写，减少线程开销（线程上下文切换）</strong></li>
+<li>线程在非阻塞IO的空闲时间在其他有需要的通道上执行IO操作，节约了时间</li>
+<li><strong>Netty的IO线程NioEventLoop（事件）</strong></li>
+</ul>
+<p><strong>示意图</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/22873239/1635407374160-ebd36ce9-7ebd-45b9-ab42-01c4ab154caf.png#clientId=u108c2a2c-2a37-4&from=paste&height=359&id=uf2d3d246&margin=%5Bobject%20Object%5D&name=image.png&originHeight=717&originWidth=737&originalType=binary&ratio=1&size=239011&status=done&style=none&taskId=ua38dee8e-9788-4f38-a7ce-0b3b57e2b16&width=368.5" alt="image.png"></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li>尚硅谷Netty【韩顺平】：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1DJ411m7NR">https://www.bilibili.com/video/BV1DJ411m7NR</a></li>
+<li>推荐一个I/O形象解释：<a target="_blank" rel="noopener" href="https://blog.csdn.net/szxiaohe/article/details/81542605">https://blog.csdn.net/szxiaohe/article/details/81542605</a></li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/30/2021-10-31从协程与任务了解Unity的多线程处理/" data-toggle="tooltip" data-placement="top" title="简单了解Unity中的异步实现差异">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/29/2021-10-29-Vue3组件通信小结/" data-toggle="tooltip" data-placement="top" title="Vue3组件通信小结">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/29/2021-10-29-Java%E7%9A%84BIO%E4%B8%8ENIO%E6%A8%A1%E5%9E%8B/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/29/2021-10-29-Java%E7%9A%84BIO%E4%B8%8ENIO%E6%A8%A1%E5%9E%8B/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

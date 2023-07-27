@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          埋点介绍 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/28/2021-10-29-埋点介绍 /">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#产品" title="产品">产品</a>
+                        
+                    </div>
+                    <h1>埋点介绍</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 卢恬英 on
+                        2021-10-28
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="1-埋点定义"><a href="#1-埋点定义" class="headerlink" title="1.埋点定义"></a>1.埋点定义</h1><ul>
+<li><p>埋点就是在应用服务内埋一些监测点，记录用户对产品进行的操作，获取用户数据。通过分析这些数据，我们就可以对产品进行更新，贴合用户使用。（埋点它如同每个城市的摄像头一样，每一个摄像头就是一个城市的埋点，监控着这个区域发生的一切，并且记录下来。）</p>
+<h1 id="2-埋点模式"><a href="#2-埋点模式" class="headerlink" title="2.埋点模式"></a>2.埋点模式</h1><h2 id="1）私有化部署"><a href="#1）私有化部署" class="headerlink" title="1）私有化部署"></a>1）私有化部署</h2><p> 一些对安全性要求高的公司，会自主研发一个数据系统</p>
+<h2 id="2）接入第三方服务"><a href="#2）接入第三方服务" class="headerlink" title="2）接入第三方服务"></a>2）接入第三方服务</h2><ul>
+<li>优点有研发成本低，几乎能满足企业对数据埋点的要求。</li>
+<li>缺点有无法定制个性化埋点方案，存在数据风险等。</li>
+</ul>
+</li>
+</ul>
+<p><strong>​</strong></p>
+<h1 id="3-埋点方式"><a href="#3-埋点方式" class="headerlink" title="3.埋点方式"></a>3.埋点方式</h1><h2 id="1）代码埋点"><a href="#1）代码埋点" class="headerlink" title="1）代码埋点"></a>1）代码埋点</h2><p>   实施埋点的研发将代码结合到业务代码中,实现用户行为数据的采集常用于—些复杂的业务场景的数据采集,分前后端。</p>
+<h2 id="2）可视化埋点"><a href="#2）可视化埋点" class="headerlink" title="2）可视化埋点"></a>2）可视化埋点</h2><p>   对可交互元素(如:图片、按钮、链接等)，直接在界面上进行操作实现的数据埋点采集一些与后端没有产生交互行为。</p>
+<h2 id="3）全埋点"><a href="#3）全埋点" class="headerlink" title="3）全埋点"></a>3）全埋点</h2><pre><code>SDK默认采集APP或者网页浏览页面、激活、启动等前端数据,不需要与后端产生交互行为。
+</code></pre>
+<h1 id="4-采集的手段"><a href="#4-采集的手段" class="headerlink" title="4.采集的手段"></a>4.采集的手段</h1><ul>
+<li><p>应用数据的采集工具通常为埋点代码，通常有三种：js文件，SDK，http请求</p>
+</li>
+<li><p>通常随不同的平台，有不一样的埋点手段，目前常见的平台包括移动端，PC端，移动设备和服务器。</p>
+<h1 id="5-埋点的分类"><a href="#5-埋点的分类" class="headerlink" title="5.埋点的分类"></a>5.埋点的分类</h1><h2 id="1-点击事件"><a href="#1-点击事件" class="headerlink" title="1)点击事件"></a>1)点击事件</h2></li>
+<li><p>用户在应用/网站内的每一次点击，都记为一次点击事件。</p>
+<h2 id="2-曝光事件"><a href="#2-曝光事件" class="headerlink" title="2)曝光事件"></a>2)曝光事件</h2></li>
+<li><p>曝光事件可以统计应用/网站内的某些区域是否被用户有效浏览。比如某个推荐区域，某个按钮等等。</p>
+</li>
+<li><p>用来衡量流量的分发效率，提高流量价值，吸引用户</p>
+<h2 id="3-页面事件"><a href="#3-页面事件" class="headerlink" title="3)页面事件"></a>3)页面事件</h2></li>
+<li><p>页面事件通常是指页面的各种维度信息的统计,通常统计的信息有：</p>
+<ul>
+<li>浏览器信息，如版本、语言、编码 ······</li>
+<li>访问信息，如用户账号、访问时长 ······</li>
+<li>来源信息，如广告来源、界面url ······</li>
+</ul>
+</li>
+</ul>
+<p>注：url是统一资源定位符，是互联网上标准资源的地址。互联网上的每个文件都有唯一的一个url，它包含的信息指出文件的位置以及浏览器应该怎么处理它。</p>
+<h1 id="6-关键指标"><a href="#6-关键指标" class="headerlink" title="6.关键指标"></a>6.关键指标</h1><ul>
+<li><p>UV：独立访客访问数，一台电脑终端为一个访客，通常是算IP的。</p>
+</li>
+<li><p>PV：页面访问量，每打开一次页面PV计数+1，刷新页面也是算是加1个访问量的；</p>
+</li>
+<li><p>CTR（点击率）=点击数/曝光数</p>
+</li>
+<li><p>退出次数：计算从该页面离开网站的次数，用来衡量该页面的质量。</p>
+</li>
+<li><p>退出率：退出次数/页面PV。</p>
+</li>
+<li><p>页面停留时长：下一页面时间与本页面时间之差，一般取中位数。</p>
+<h1 id="7-埋点的作用"><a href="#7-埋点的作用" class="headerlink" title="7.埋点的作用"></a>7.埋点的作用</h1></li>
+<li><p>从大数据背后分析用户的习惯和喜好，找到更符合用户兴趣的产品和服务。</p>
+</li>
+<li><p>采集信息，进行多维度分析，挖掘用户需求，提高产品价值</p>
+</li>
+</ul>
+<p>​</p>
+<p>​</p>
+<p>​</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/28/2021-10-28-xui+retrofit实现loading交互/" data-toggle="tooltip" data-placement="top" title="XUI + Retrofit 完成请求的页面加载">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/27/2021-10-27-springboot基础四层自动生成/" data-toggle="tooltip" data-placement="top" title="Springboot开发工具renren">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#产品" title="产品">产品</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/28/2021-10-29-%E5%9F%8B%E7%82%B9%E4%BB%8B%E7%BB%8D%20/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/28/2021-10-29-%E5%9F%8B%E7%82%B9%E4%BB%8B%E7%BB%8D%20/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

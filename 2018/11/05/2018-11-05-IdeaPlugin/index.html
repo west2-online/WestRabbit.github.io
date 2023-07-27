@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          IDEA&amp;Android Studio Plugin开发 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2018/11/05/2018-11-05-IdeaPlugin/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                    <h1>IDEA&amp;Android Studio Plugin开发</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by CoderQiang on
+                        2018-11-05
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>如果敲代码时总是会有一些<span data-type="color" style="color:#F5222D">规律、重复</span>和<span data-type="color" style="color:#F5222D">浪费时间</span>的工作，那么你就可以好好考虑一下能否通过 <span data-type="color" style="color:#F5222D">脚本或插件</span> 的方式提高工作效率。idea 本身自带众多实用代码插件，getter,setter,代码补全… 且其第三方插件采用<span data-type="color" style="color:rgb(79, 79, 79)"><span data-type="background" style="background-color:rgb(255, 255, 255)">集中发布模式</span></span>，可以让开发者快速安装和发布插件，这点要优于 eclipse。<br>开发插件之前，得看看idea平台给我提供了哪些接口给我们使用，使用接口前最好简单了解下背后的实现原理。</p>
+<p>这篇文章包含：</p>
+<ol>
+<li>VFS(Virtual File System)  虚拟文件系统</li>
+<li>Program Structure Interface  程序结构接口</li>
+<li>创建 idea plugin</li>
+<li>plugin 代码编写及安装<h3 id="VFS"><a href="#VFS" class="headerlink" title="VFS"></a>VFS</h3>IDEA的文件系统 Virtual File System 目标:</li>
+</ol>
+<blockquote>
+<p>The virtual file system (VFS) is a component of <em>IntelliJ Platform</em> that encapsulates most of its activity for working with files. It serves the following main purposes:</p>
+<ul>
+<li>Providing a universal API for working with files regardless of their actual location (on disk, in archive, on a HTTP server etc.)【提供一个通用的API处理文件，不论其位置(是在硬盘上，压缩文件里，网络服务器上等) 】</li>
+<li>Tracking file modifications and providing both old and new versions of the file content when a modification is detected.【跟踪文件的修改，并且在检测到修改时，提供文件内容的旧版本和新版本】</li>
+<li>Providing a possibility to associate additional persistent data with a file in the VFS.【<span data-type="color" style="color:rgb(51, 51, 51)"><span data-type="background" style="background-color:rgb(255, 255, 255)">提供将持久数据与VFS中的文件关联的可能性</span></span>】</li>
+</ul>
+</blockquote>
+<p>第一个目的和Linux的VFS差不多，都是为了提供 统一的上层接口，以此 屏蔽 底层各种不同的文件系统，对开发者透明，以及方便其他文件系统快速接入。<br>具体实现就是通过 __快照 __的方式，将快照作为中间层，提供文件的“多”读“一”写，并且适配不同的文件系统，给插件开发者 提供统一接口。新增类文件，写入代码等对文件的操作 都是通过<span data-type="color" style="color:rgb(79, 79, 79)"><span data-type="background" style="background-color:rgb(255, 255, 255)">com.intellij.openapi.vfs.VirtualFile，基于二进制流进行读写，可以把它当做原生File类来类比。</span></span><br>VituralFile是作用域是应用级别(即使在<span data-type="color" style="color:rgb(79, 79, 79)"><span data-type="background" style="background-color:rgb(255, 255, 255)">多个工程中打开，各工程展示的实例也由同一个虚拟文件实例代理</span></span>)， 对于一份快照，来自任何线程的数据读取都是允许的，但是只有主线程能够写入，官方称为 <a target="_blank" rel="noopener" href="http://www.jetbrains.org/intellij/sdk/docs/basics/architectural_overview/general_threading_rules.html">通用线程规则</a>，使用一个单独的 读写锁 实现。需要注意的是当读取文件时候，应调用VirtualFile的isValid方法是否返回true，因为本地文件已经被移除了，但是对应的VirtualFile没有被回收。<br>几种获取VirtualFile的方式：</p>
+<blockquote>
+<ol>
+<li><span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(255, 255, 255)">从一个 action </span></span>: 通过调用 <span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(239, 239, 239)">e.getData(PlatformDataKeys.VIRTUAL_FILE) 获取当前正在编辑的文件</span></span></li>
+<li><span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(255, 255, 255)">从本地系统的路径 </span></span>: <span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(239, 239, 239)">LocalFileSystem.getInstance().findFileByIoFile()</span></span></li>
+<li><span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(255, 255, 255)">从一个PSI文件：</span></span><span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(239, 239, 239)">psiFile.getVirtualFile()</span></span></li>
+<li><span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(255, 255, 255)">从文档</span></span> : <span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(239, 239, 239)">FileDocumentManager.getInstance().getFile()</span></span></li>
+</ol>
+</blockquote>
+<h3 id="PSI"><a href="#PSI" class="headerlink" title="PSI"></a>PSI</h3><p>程序结构接口 <span data-type="color" style="color:rgb(64, 72, 83)"><span data-type="background" style="background-color:rgb(255, 255, 255)">Program Structure Interface，</span></span><span data-type="color" style="color:rgb(51, 51, 51)"><span data-type="background" style="background-color:rgb(255, 255, 255)">负责解析文件，创建语法和语义代码模型。</span></span><br><strong>PsiFile</strong> 是将<span data-type="color" style="color:rgb(79, 79, 79)"><span data-type="background" style="background-color:rgb(255, 255, 255)">文件内容按照特定编程语言的元素层次结构相对应进行代理的根结构。PsiFile是所有Psi文件的基类，一种语言会有特定的实现，例如 Java语言对应PsiJavaFile类，XML对应 </span></span>XmlFile<span data-type="color" style="color:rgb(47, 47, 47)"><span data-type="background" style="background-color:rgb(255, 255, 255)"> 类</span></span><span data-type="color" style="color:rgb(79, 79, 79)"><span data-type="background" style="background-color:rgb(255, 255, 255)">。</span></span><br>PsiFile作用域是 应用级别 ，如果一个文件所属的不同项目同时打开，这个文件会被不同的PsiFile实例代理。<br>获取__PsiFile__的方式：</p>
+<blockquote>
+<ol>
+<li>从action中：e.getData(LangDataKeys.PSI_FILE)</li>
+<li>从虚拟文件中：PsiManager.getInstance(project).findFile()</li>
+<li>从文档中：PsiDocumentManager.getInstance(project).getPsiFile()</li>
+<li>从文件中的一个元素：psiElement.getContainingFile()</li>
+<li>用FilenameIndex.getFilesByName(project, name, scope)方法在项目中找到一个指定名称的文件</li>
+</ol>
+</blockquote>
+<p><span data-type="color" style="color:rgb(51, 51, 51)"><span data-type="background" style="background-color:rgb(255, 255, 255)">PSI（程序结构接口）文件表示PSI元素的层次结构（所谓的PSI树），</span></span><strong>PsiElement</strong> 是所有PSI元素的基类，Psi元素可以是PsiClass Psi类，PsiMethod Psi方法，PsiImportList Psi导入列表，PsiParameter Psi参数，总之只要是Java类文件里有的结构，都用对应的Psi元素。元素之间可以相互嵌套，成树状结构。<br>获取__PsiElements__</p>
+<blockquote>
+<ol>
+<li>从 action中: e.getData(LangDataKeys.PSI_ELEMENT) 如果光标位于一个引用上，返回的是解析引用之后的元素。</li>
+<li>从文件偏移: PsiFile.findElementAt() 返回的是最细级别的元素，如偏移量位于方法头中，返回的是PsiMethod,而不是PsiClass，虽然方法确实属于这个类.</li>
+<li>通过遍历一个 PSI file : 使用 PsiRecursiveElementWalkingVisitor</li>
+<li>通过解析一个引用 : PsiReference.resolve()</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="创建一个简单的Plugin"><a href="#创建一个简单的Plugin" class="headerlink" title="创建一个简单的Plugin"></a>创建一个简单的Plugin</h3><p>介绍完相关背景和知识后，我们实战开发2个plugin，现在开始先来实现第一个最简单的弹窗提示的Plugin，并将其 构建 打包 安装 到自己的idea中。</p>
+<h5 id="1-准备环境。安装-idea-Ultimate-2018版-其他版本也可以-，JDK8。"><a href="#1-准备环境。安装-idea-Ultimate-2018版-其他版本也可以-，JDK8。" class="headerlink" title="1. 准备环境。安装 idea Ultimate 2018版 ( 其他版本也可以 )，JDK8。"></a>1. 准备环境。安装 idea Ultimate 2018版 ( 其他版本也可以 )，JDK8。</h5><h5 id="2-新建-Plugin工程-，-顶部菜单栏-File-gt-New-gt-Project…-，然后出现如下界面，选择-IntelliJ-Platform-Plugin，SDK检查一下有没有，没有的话，下载到电脑，手动选择目录。然后-点击-Next-gt-为工程命名-gt-Next"><a href="#2-新建-Plugin工程-，-顶部菜单栏-File-gt-New-gt-Project…-，然后出现如下界面，选择-IntelliJ-Platform-Plugin，SDK检查一下有没有，没有的话，下载到电脑，手动选择目录。然后-点击-Next-gt-为工程命名-gt-Next" class="headerlink" title="2.新建 Plugin工程 ， 顶部菜单栏 File &gt; New &gt; Project… ，然后出现如下界面，选择 IntelliJ Platform Plugin，SDK检查一下有没有，没有的话，下载到电脑，手动选择目录。然后 点击 Next&gt; 为工程命名 &gt; Next"></a>2.新建 Plugin工程 ， 顶部菜单栏 File &gt; New &gt; Project… ，然后出现如下界面，选择 IntelliJ Platform Plugin，SDK检查一下有没有，没有的话，下载到电脑，手动选择目录。然后 点击 Next&gt; 为工程命名 &gt; Next</h5><p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541414927417-a437dc20-104e-4bdf-8eb4-548243fa29cd.png" alt="image.png | left | 457x448"></p>
+<h5 id="3-创建好后，工程结构-如下图，在src目录下新建一个自己的包，我这用的是-com-chenyi"><a href="#3-创建好后，工程结构-如下图，在src目录下新建一个自己的包，我这用的是-com-chenyi" class="headerlink" title="3.创建好后，工程结构 如下图，在src目录下新建一个自己的包，我这用的是 com.chenyi"></a>3.创建好后，工程结构 如下图，在src目录下新建一个自己的包，我这用的是 com.chenyi</h5><p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541415135649-3107803c-1435-4ad3-9b5e-d1549254b311.png" alt="image.png | left | 301x222"></p>
+<ol start="4">
+<li><strong>在刚刚的包下 新建一个 HelloAction 类，继承自 AnAction (全类名com.intellij.openapi.actionSystem.AnAction) ，并重写 actionPerformed 方法，当用户点击插件提供的 菜单项 时会触发该方法。与此同时还可以重写 update 方法，该方法是要显示 插件菜单项 时会触发，主要用于控制菜单项的显示与隐藏，当你打开的是xml文件时，这个时候适用于Java的插件就应该变灰不可选或者隐藏。</strong></li>
+<li><strong>编写一个弹消息的Java代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenyi;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.intellij.openapi.actionSystem.AnAction;</span><br><span class="line"><span class="keyword">import</span> com.intellij.openapi.actionSystem.AnActionEvent;</span><br><span class="line"><span class="keyword">import</span> com.intellij.openapi.ui.Messages;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: chenyi.zsq</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2018/11/5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloAction</span> <span class="keyword">extends</span> <span class="title">AnAction</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">actionPerformed</span><span class="params">(AnActionEvent anActionEvent)</span> </span>&#123;</span><br><span class="line">        Messages.showMessageDialog(<span class="string">&quot;Hello Plugin&quot;</span>, <span class="string">&quot;PluginTitle&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 以下代码用于输出当前java文件里的所有方法信息，在调试模式可以看到。</span></span><br><span class="line">        VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);</span><br><span class="line">        PsiFile psiFile = PsiManager.getInstance(e.getProject()).findFile(virtualFile);</span><br><span class="line">        Arrays.stream(psiFile.getChildren())</span><br><span class="line">            .filter(child -&gt; child <span class="keyword">instanceof</span> PsiClass)</span><br><span class="line">            .map(child -&gt; child.getChildren())</span><br><span class="line">            .flatMap(psiChild -&gt; Arrays.stream(psiChild))</span><br><span class="line">            .filter(classChild -&gt; classChild <span class="keyword">instanceof</span> PsiMethod)</span><br><span class="line">            .forEach(psiMethod -&gt; &#123;</span><br><span class="line">                </span><br><span class="line">                PsiMethod method = (PsiMethod)psiMethod;</span><br><span class="line">                StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">                sb.append(<span class="string">&quot;方法的名: &quot;</span>).append(method.getName())</span><br><span class="line">                    .append(<span class="string">&quot; 返回值类型：&quot;</span>).append(method.getReturnType().getPresentableText())</span><br><span class="line">                    .append(<span class="string">&quot; 参数:&quot;</span>).append(method.getParameters());</span><br><span class="line">                System.out.println(sb.toString());</span><br><span class="line">            &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<strong>编写 resources/META-INF/plugin.xml 文件。在<actions></actions> 标签中加入刚刚编写的Action</strong><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">idea-plugin</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>com.your.company.unique.plugin.id<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>Plugin display name here<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">vendor</span> <span class="attr">email</span>=<span class="string">&quot;support@yourcompany.com&quot;</span> <span class="attr">url</span>=<span class="string">&quot;http://www.yourcompany.com&quot;</span>&gt;</span>YourCompany<span class="tag">&lt;/<span class="name">vendor</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>&lt;![CDATA[</span><br><span class="line">      Enter short description for your plugin here.&lt;br&gt;</span><br><span class="line">      &lt;em&gt;most HTML tags may be used&lt;/em&gt;</span><br><span class="line">    ]]&gt;<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">change-notes</span>&gt;</span>&lt;![CDATA[</span><br><span class="line">      Add change notes here.&lt;br&gt;</span><br><span class="line">      &lt;em&gt;most HTML tags may be used&lt;/em&gt;</span><br><span class="line">    ]]&gt;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">change-notes</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">idea-version</span> <span class="attr">since-build</span>=<span class="string">&quot;173.0&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html</span></span><br><span class="line"><span class="comment">       on how to target different products --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- uncomment to enable plugin in all products</span></span><br><span class="line"><span class="comment">  &lt;depends&gt;com.intellij.modules.lang&lt;/depends&gt;</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">extensions</span> <span class="attr">defaultExtensionNs</span>=<span class="string">&quot;com.intellij&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Add your extensions here --&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">actions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">action</span> <span class="attr">class</span>=<span class="string">&quot;com.chenyi.HelloAction&quot;</span> <span class="attr">id</span>=<span class="string">&quot;HelloAction&quot;</span> <span class="attr">text</span>=<span class="string">&quot;第一个插件&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">add-to-group</span> <span class="attr">group-id</span>=<span class="string">&quot;WindowMenu&quot;</span> <span class="attr">anchor</span>=<span class="string">&quot;first&quot;</span>/&gt;</span><span class="comment">&lt;!--添加到菜单栏的Window标签下,位置固定在第一位 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">action</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">actions</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">idea-plugin</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<p><strong>6. 编写完之后，可以点击运行或者调试，Idea将会另起一个进程自动安装插件，可以在此调试，但是debug模式中发现，对actionPerformed 方法没响应，对update事件有响应，最后调试时将代码写到update里运行，打正式包时把代码放回actionPerformed。如果想要正式包，需要点击构建打包，会在当前工程根目录下 生成一个 .jar文件。</strong></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541416892798-de1ae4ed-1a5b-403a-adfe-24a310ac61e0.png" alt="image.png | left | 827x294"></p>
+<ol start="7">
+<li><strong>从本地磁盘安装Plugin ， 打开首选项(或Setting)-&gt; Plugins -&gt; install Plugin from disk，重启</strong></li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541419292047-d970d2fe-2a64-4f6c-8422-90f97de9f71a.png" alt="image.png | left | 304x239"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541419297170-44565d81-f5a5-4e12-810b-829da829de74.png" alt="image.png | left | 561x393"></p>
+<ol start="8">
+<li>__ 重启后可以在菜单栏下 Window标签看到刚刚开发的Plugin，点击之后会弹出消息,并显示当前编辑的文件名。__</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541419377186-5f75bf14-d8ee-4360-9c8b-da789ef2f4b3.png" alt="image.png | left | 637x325"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541419640784-d3c4894e-17ec-43bb-a65d-a61214483066.png" alt="image.png | left | 700x226"></p>
+<h4 id="至此，一个简单的Plugin开发完啦，下一篇我们将基于现实需求开发一个自动生成格式化代码插件。"><a href="#至此，一个简单的Plugin开发完啦，下一篇我们将基于现实需求开发一个自动生成格式化代码插件。" class="headerlink" title="至此，一个简单的Plugin开发完啦，下一篇我们将基于现实需求开发一个自动生成格式化代码插件。"></a>至此，一个简单的Plugin开发完啦，下一篇我们将基于现实需求开发一个自动生成格式化代码插件。</h4><p>需求：进入公司后发现，在HSF(内部一个 分布式服务框架 ) 服务间会频繁的进行跨应用服务调用，由于规范性，每个服务在调用前 都要封装一层SPI代码。用于AOP拦截入参和结果，以及对异常的捕捉。而代码往往就是 Service类的一层封装，代码类似如下：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2018/png/152699/1541420092970-acd15d85-109f-4e5f-8fe3-7b5eb33ad908.png" alt="image.png | left | 827x380"></p>
+<p>xxxSPI 和 xxxService方法名，参数都一样，返回值只要在xxxService返回值基础上getModule拆一下，开发人员同时需要创建 xxxServiceSPI和xxxServiceImplSPI，然后挨个把方法调用一遍，设置拦截器，我觉得完全可以将这部分时间省掉。<br>目前已完成大部分编码，GitHub地址：<a target="_blank" rel="noopener" href="https://github.com/zhengshiqiang47/ChenyiSPIPlugin">https://github.com/zhengshiqiang47/ChenyiSPIPlugin</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/11/06/2018-11-06-Immutable 与 Immer/" data-toggle="tooltip" data-placement="top" title="Immutable 与 Immer">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/11/01/2018-11-1-JAVA编程规约/" data-toggle="tooltip" data-placement="top" title="Java开发规约">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2018/11/05/2018-11-05-IdeaPlugin/";
+    var disqus_url = "https://blog.w2fzu.com/2018/11/05/2018-11-05-IdeaPlugin/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

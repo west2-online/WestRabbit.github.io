@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Golang的Redis简单使用及集群配置 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/24/2021-11-24-Golang的Redis简单使用及集群配置/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>Golang的Redis简单使用及集群配置</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 北朔 on
+                        2021-11-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>#Golang的Redis简单使用及集群配置</p>
+<p>###1.Go-Redis库的安装以及Redis的安装</p>
+<h4 id="Go-Redis库的安装"><a href="#Go-Redis库的安装" class="headerlink" title="Go-Redis库的安装"></a>Go-Redis库的安装</h4><p>Github地址：<a target="_blank" rel="noopener" href="https://github.com/go-redis/redis">https://github.com/go-redis/redis</a></p>
+<p>可以自己go get 或者 git 亦或直接下载放到对应文件夹里即可。</p>
+<h4 id="Redis的安装"><a href="#Redis的安装" class="headerlink" title="Redis的安装"></a>Redis的安装</h4><p>Github地址：<a target="_blank" rel="noopener" href="https://github.com/tporadowski/redis/releases">https://github.com/tporadowski/redis/releases</a></p>
+<p>找最新的zip直接下载即可。</p>
+<p>###2.简单使用<br>在代码跑之前需要打开服务端，也就是刚才下载的redis文件夹里面找到redis-server.exe，打开即可。</p>
+<h4 id="redis客户端："><a href="#redis客户端：" class="headerlink" title="redis客户端："></a>redis客户端：</h4><figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">client := redis.NewClient(<span class="variable">&amp;redis</span>.Options&#123;</span><br><span class="line"><span class="symbol">		Addr:</span> <span class="string">&quot;127.0.0.1:6379&quot;</span>,<span class="comment">//Redis的端口地址</span></span><br><span class="line"><span class="symbol">		Password:</span> <span class="string">&quot;&quot;</span>,<span class="comment">//不用密码</span></span><br><span class="line"><span class="symbol">		DB:</span> <span class="number">0</span>,<span class="comment">//采用默认DB</span></span><br><span class="line">	&#125;)</span><br><span class="line">var ctx = context.Background()</span><br></pre></td></tr></table></figure>
+<p>这里的Addr是默认的6379，如果要改的话<del>(百度吧)</del>，这里的ctx是各种操作需要的第一个参数。</p>
+<p>只要Addr一样，就可以直接访问之前存放的数据，与client在哪个go文件使用无关，因此可以存放一些即时数据不需要用到MySQL。</p>
+<p>Redis的存放是按照哈希存的，和Map数据结构类似。</p>
+<h4 id="Redis-Set"><a href="#Redis-Set" class="headerlink" title="Redis-Set"></a>Redis-Set</h4><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ping, <span class="keyword">err</span> := client.Ping(ctx).Result()<span class="comment">//检测连接</span></span><br><span class="line">fmt.Println(ping, <span class="keyword">err</span>)</span><br><span class="line">   <span class="comment">//第二个参数为Key，第三个参数为Value，第四个参数为过期时间，0为不过期</span></span><br><span class="line"><span class="keyword">err</span> = client.<span class="keyword">Set</span>(ctx,<span class="string">&quot;key&quot;</span>,<span class="string">&quot;myKey&quot;</span>,0).<span class="keyword">Err</span>()</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">	panic(<span class="keyword">err</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="Redis-Get"><a href="#Redis-Get" class="headerlink" title="Redis-Get"></a>Redis-Get</h4><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第二个参数为Key</span></span><br><span class="line">val, <span class="keyword">err</span> := client.<span class="built_in">Get</span>(ctx,<span class="string">&quot;key&quot;</span>).Result()</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">    panic(<span class="keyword">err</span>)</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(<span class="string">&quot;key&quot;</span>, val)</span><br></pre></td></tr></table></figure>
+<h4 id="Redis-Del"><a href="#Redis-Del" class="headerlink" title="Redis-Del"></a>Redis-Del</h4><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第二个参数为Key</span></span><br><span class="line">client.<span class="constructor">Del(<span class="params">ctx</span>,<span class="string">&quot;key&quot;</span>)</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="一些容器的使用"><a href="#一些容器的使用" class="headerlink" title="一些容器的使用"></a>一些容器的使用</h4><p>List：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">//List容器</span></span><br><span class="line">   <span class="keyword">client</span>.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val1&quot;</span>)</span><br><span class="line"><span class="keyword">client</span>.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val2&quot;</span>)</span><br><span class="line"><span class="keyword">client</span>.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val3&quot;</span>)</span><br><span class="line">   <span class="comment">//取List长度</span></span><br><span class="line">rLen, err := <span class="keyword">client</span>.LLen(ctx,<span class="string">&quot;list&quot;</span>).Result()</span><br><span class="line">   <span class="comment">//遍历</span></span><br><span class="line">lists,_ := <span class="keyword">client</span>.LRange(ctx,<span class="string">&quot;list&quot;</span>,<span class="number">0</span>, rLen - <span class="number">1</span>).Result()</span><br><span class="line">fmt.Println(<span class="string">&quot;list&quot;</span>,lists)</span><br><span class="line">   <span class="comment">//修改下标为0位置的值</span></span><br><span class="line"><span class="keyword">client</span>.LSet(ctx,<span class="string">&quot;list&quot;</span>,<span class="number">2</span>,<span class="string">&quot;change&quot;</span>)</span><br><span class="line"></span><br><span class="line">lists,_ = <span class="keyword">client</span>.LRange(ctx,<span class="string">&quot;list&quot;</span>,<span class="number">0</span>, rLen - <span class="number">1</span>).Result()</span><br><span class="line">fmt.Println(<span class="string">&quot;list&quot;</span>,lists)</span><br><span class="line">   <span class="comment">//清空List</span></span><br><span class="line"><span class="keyword">for</span>  ; rLen &gt; <span class="number">0</span> ; rLen-- &#123;</span><br><span class="line">	<span class="keyword">client</span>.LPop(ctx, <span class="string">&quot;list&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他容器大致和List的操作是一样的，比如Map，Set等等。</p>
+<p>它们的对应函数不一样罢了，对应参数顺序大致一样。</p>
+<h4 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h4><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">func main()&#123;</span><br><span class="line">	client := redis.NewClient(&amp;redis.Options&#123;</span><br><span class="line">		Addr: <span class="string">&quot;127.0.0.1:7000&quot;</span>,</span><br><span class="line">		Password: <span class="string">&quot;&quot;</span>,</span><br><span class="line">		<span class="keyword">DB</span>: 0,</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">var</span> ctx = context.Background()</span><br><span class="line">	ping, <span class="keyword">err</span> := client.Ping(ctx).Result()<span class="comment">//检测连接</span></span><br><span class="line">	fmt.Println(ping, <span class="keyword">err</span>)</span><br><span class="line">	<span class="comment">//第二个参数为Key，第三个参数为Value，第四个参数为过期时间，0为不过期</span></span><br><span class="line">	<span class="keyword">err</span> = client.<span class="keyword">Set</span>(ctx,<span class="string">&quot;key&quot;</span>,<span class="string">&quot;myKey&quot;</span>,0).<span class="keyword">Err</span>()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		panic(<span class="keyword">err</span>)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//第二个参数为Key</span></span><br><span class="line">	val, <span class="keyword">err</span> := client.<span class="built_in">Get</span>(ctx,<span class="string">&quot;key&quot;</span>).Result()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		panic(<span class="keyword">err</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;key&quot;</span>, val)</span><br><span class="line"></span><br><span class="line">	val2, <span class="keyword">err</span> := client.<span class="built_in">Get</span>(ctx,<span class="string">&quot;key1&quot;</span>).Result()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> == redis.Nil &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;key1 does not exists&quot;</span>)</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		panic(<span class="keyword">err</span>)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;key1&quot;</span>, val2)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//第二个参数为Key</span></span><br><span class="line">	client.Del(ctx,<span class="string">&quot;key&quot;</span>)</span><br><span class="line"></span><br><span class="line">	val3, <span class="keyword">err</span> := client.<span class="built_in">Get</span>(ctx,<span class="string">&quot;key&quot;</span>).Result()</span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">err</span> == redis.Nil &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;key does not exists&quot;</span>)</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> <span class="keyword">err</span> != nil &#123;</span><br><span class="line">		panic(<span class="keyword">err</span>)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;key&quot;</span>, val3)</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//List容器</span></span><br><span class="line">    <span class="comment">//第二个参数为Key，第三个参数为Value值，可以输入多个value值一次性Push</span></span><br><span class="line">    <span class="comment">//client.RPush(ctx,&quot;list&quot;,&quot;val1&quot;,&quot;val2&quot;,&quot;val3&quot;)</span></span><br><span class="line">    client.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val1&quot;</span>)</span><br><span class="line">	client.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val2&quot;</span>)</span><br><span class="line">	client.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val3&quot;</span>)</span><br><span class="line">    <span class="comment">//取List长度</span></span><br><span class="line">	rLen, <span class="keyword">err</span> := client.LLen(ctx,<span class="string">&quot;list&quot;</span>).Result()</span><br><span class="line">    <span class="comment">//遍历</span></span><br><span class="line">	lists,_ := client.LRange(ctx,<span class="string">&quot;list&quot;</span>,0, rLen - 1).Result()</span><br><span class="line">	fmt.Println(<span class="string">&quot;list&quot;</span>,lists)</span><br><span class="line">    <span class="comment">//修改下标为0位置的值</span></span><br><span class="line">	client.LSet(ctx,<span class="string">&quot;list&quot;</span>,2,<span class="string">&quot;change&quot;</span>)</span><br><span class="line"></span><br><span class="line">	lists,_ = client.LRange(ctx,<span class="string">&quot;list&quot;</span>,0, rLen - 1).Result()</span><br><span class="line">	fmt.Println(<span class="string">&quot;list&quot;</span>,lists)</span><br><span class="line">    <span class="comment">//清空List</span></span><br><span class="line">	<span class="keyword">for</span>  ; rLen &gt; 0 ; rLen-- &#123;</span><br><span class="line">		client.LPop(ctx, <span class="string">&quot;list&quot;</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	rLen, <span class="keyword">err</span> = client.LLen(ctx,<span class="string">&quot;list&quot;</span>).Result()</span><br><span class="line">	lists,_ = client.LRange(ctx,<span class="string">&quot;list&quot;</span>,0, rLen - 1).Result()</span><br><span class="line">	fmt.Println(<span class="string">&quot;list&quot;</span>,lists)</span><br><span class="line"></span><br><span class="line">	client.RPush(ctx,<span class="string">&quot;list&quot;</span>,<span class="string">&quot;val1&quot;</span>,<span class="string">&quot;val2&quot;</span>,<span class="string">&quot;val3&quot;</span>)</span><br><span class="line">	rLen, <span class="keyword">err</span> = client.LLen(ctx,<span class="string">&quot;list&quot;</span>).Result()</span><br><span class="line">	lists,_ = client.LRange(ctx,<span class="string">&quot;list&quot;</span>,0, rLen - 1).Result()</span><br><span class="line">	fmt.Println(<span class="string">&quot;list&quot;</span>,lists)</span><br><span class="line"></span><br><span class="line">	client.<span class="keyword">Close</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PONG &lt;nil&gt;</span><br><span class="line"><span class="type">key</span> myKey</span><br><span class="line">key1 does not exists</span><br><span class="line"><span class="type">key</span> does not exists</span><br><span class="line"><span class="type">list</span> [val1 val2 val3]</span><br><span class="line"><span class="type">list</span> [val1 val2 change]</span><br><span class="line"><span class="type">list</span> []</span><br><span class="line"><span class="type">list</span> [val1 val2 val3]</span><br></pre></td></tr></table></figure>
+<h3 id="3-Redis集群配置"><a href="#3-Redis集群配置" class="headerlink" title="3.Redis集群配置"></a>3.Redis集群配置</h3><p>因为Redis集群是半数淘汰，因此至少需要3个节点才可以使用。</p>
+<p>这里采用三主三从，可以更好的避免节点失误导致集群不可用的情况发生。</p>
+<h4 id="6个节点配置文件需要修改的地方"><a href="#6个节点配置文件需要修改的地方" class="headerlink" title="6个节点配置文件需要修改的地方"></a>6个节点配置文件需要修改的地方</h4><figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">port 你要设置的端口号                     <span class="comment">#(例如7000)           </span></span><br><span class="line">appendonly <span class="literal">yes</span>                          <span class="comment">#数据的保存为aof格式</span></span><br><span class="line">appendfilename <span class="string">&quot;appendonly.7000.aof&quot;</span>    <span class="comment">#数据保存文件   </span></span><br><span class="line">cluster-enabled <span class="literal">yes</span>                     <span class="comment">#是否开启集群                                    </span></span><br><span class="line">cluster-config-file nodes<span class="number">.7000</span>.conf     <span class="comment">#集群配置文件</span></span><br><span class="line">cluster-node-timeout <span class="number">15000</span>              <span class="comment">#节点超时时间，如果一个master节点不可到达超过了指定时间，则认为它失败了。</span></span><br><span class="line">cluster-slave-validity-factor <span class="number">10</span>        <span class="comment">#如果设置为0，则一个slave将总是尝试故障转移一个master。如果设置为一个正数，那么最大失去连接的时间是node timeout乘以这个factor。</span></span><br><span class="line">cluster-migration-barrier <span class="number">1</span>             <span class="comment">#一个master和slave保持连接的最小数量（即：最少与多少个slave保持连接）</span></span><br><span class="line">cluster-<span class="built_in">require</span>-full-coverage <span class="literal">yes</span>       <span class="comment">#如果设置为yes，这也是默认值，如果key space没有达到百分之多少时停止接受写请求。如果设置为no，将仍然接受查询请求，即使它只是请求部分key。 </span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Windows启动集群服务"><a href="#Windows启动集群服务" class="headerlink" title="Windows启动集群服务"></a>Windows启动集群服务</h4><p>将上述配置文件保存到Redis目录下，并使用这些配置文件安装服务并启动</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">安装：</span><br><span class="line">Redis路径\redis-server <span class="params">--service-install</span> Redis路径\conf文件名<span class="string">.conf</span> <span class="params">--service-name</span> redis文件端口号</span><br><span class="line">例如：</span><br><span class="line">D:\Redis\redis-server <span class="params">--service-install</span> D:\Redis\redis.7000.conf <span class="params">--service-name</span> redis7000</span><br><span class="line">启动：</span><br><span class="line">Redis路径\redis-server <span class="params">--service-start</span> <span class="params">--service-name</span> Redis端口号</span><br><span class="line">例如：</span><br><span class="line">D:\Redis\redis-server <span class="params">--service-start</span> <span class="params">--service-name</span> Redis7000</span><br></pre></td></tr></table></figure>
+<p>启动后图片：</p>
+<p><img src="./server-show.png" alt="avatar"></p>
+<p>下载ruby：</p>
+<p>url：<a target="_blank" rel="noopener" href="https://rubyinstaller.org/downloads/">https://rubyinstaller.org/downloads/</a></p>
+<p>选择without devkit的最新版本</p>
+<p>下载redis驱动：</p>
+<p>url:<a target="_blank" rel="noopener" href="https://rubygems.org/gems/redis/versions">https://rubygems.org/gems/redis/versions</a></p>
+<p>选择兼容版本即可，我用的是3.2.0</p>
+<p>安装驱动：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gem install <span class="comment">--local gem文件路径\filename.gem  </span></span><br></pre></td></tr></table></figure>
+
+<p>而现在的cluster安装方式不推荐使用redis-trib.rb，而是使用redis-cli</p>
+<p>下载正确的redis-trib.rb:<br>url:<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1hpOu7fGD9pCzpXQ6fFXJzg">https://pan.baidu.com/s/1hpOu7fGD9pCzpXQ6fFXJzg</a> 提取码：v00z</p>
+<p>开始cluster配置：</p>
+<p>打开命令行，移动到redis-trib.rb目录之后，输入命令：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-trib.rb create --replicas <span class="number">1 127.0.0</span>.<span class="number">1:7000 127</span>.<span class="number">0</span>.<span class="number">0.1:7001</span> <span class="number">127.0.0.1</span>:<span class="number">7002 127.0</span>.<span class="number">0.1:7003</span> <span class="number">127.0.0.1</span>:<span class="number">7004 127.0</span>.<span class="number">0.1:7005</span></span><br></pre></td></tr></table></figure>
+
+<p>会弹出：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Can I <span class="keyword">set</span> the above <span class="keyword">configuration</span>? (<span class="keyword">type</span> <span class="string">&#x27;yes&#x27;</span> <span class="keyword">to</span> accept):</span><br></pre></td></tr></table></figure>
+<p>输入yes回车即可</p>
+<p>Mine：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\WIN10\Desktop\Redis&gt;redis-trib.rb create --replicas <span class="number">1 127.0.0</span>.<span class="number">1:7000 127</span>.<span class="number">0</span>.<span class="number">0.1:7001</span> <span class="number">127.0.0.1</span>:<span class="number">7002 127.0</span>.<span class="number">0.1:7003</span> <span class="number">127.0.0.1</span>:<span class="number">7004 127.0</span>.<span class="number">0.1:7005</span></span><br><span class="line">&gt;&gt;&gt; Creating cluster</span><br><span class="line">&gt;&gt;&gt; Performing hash slots allocation on <span class="number">6</span> nodes...</span><br><span class="line">Using <span class="number">3</span> masters:</span><br><span class="line"><span class="number">127.0.0.1</span>:<span class="number">7000</span></span><br><span class="line"><span class="number">127.0.0.1</span>:<span class="number">7001</span></span><br><span class="line"><span class="number">127.0.0.1</span>:<span class="number">7002</span></span><br><span class="line">Adding replica <span class="number">127.0.0.1</span>:<span class="number">7003</span> to <span class="number">127.0.0.1</span>:<span class="number">7000</span></span><br><span class="line">Adding replica <span class="number">127.0.0.1</span>:<span class="number">7004</span> to <span class="number">127.0.0.1</span>:<span class="number">7001</span></span><br><span class="line">Adding replica <span class="number">127.0.0.1</span>:<span class="number">7005</span> to <span class="number">127.0.0.1</span>:<span class="number">7002</span></span><br><span class="line">M: d0e194b5a53a79782c49ef44e3643ffce<span class="number">3842a67 127</span>.<span class="number">0</span>.<span class="number">0.1:7000</span></span><br><span class="line">   slots:<span class="number">0</span>-<span class="number">5460</span> (<span class="number">5461</span> slots) master</span><br><span class="line">M: <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span> <span class="number">127.0.0.1</span>:<span class="number">7001</span></span><br><span class="line">   slots:<span class="number">5461-10922</span> (<span class="number">5462</span> slots) master</span><br><span class="line">M: <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span> <span class="number">127.0.0.1</span>:<span class="number">7002</span></span><br><span class="line">   slots:<span class="number">10923-16383</span> (<span class="number">5461</span> slots) master</span><br><span class="line">S: <span class="number">633</span>c5b3ae785086c6c6041724c0b81be92e00ed<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7003</span></span><br><span class="line">   replicates d0e194b5a53a79782c49ef44e3643ffce3842a67</span><br><span class="line">S: fe62faa1ecb26ca968433feab937c5833baf1db<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7004</span></span><br><span class="line">   replicates <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span></span><br><span class="line">S: <span class="number">20d</span>97ec5b8a129366f7a7496a85404efb<span class="number">8e71371 127</span>.<span class="number">0</span>.<span class="number">0.1:7005</span></span><br><span class="line">   replicates <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span></span><br><span class="line">Can I set the above configuration? (type &#x27;yes&#x27; to accept): yes</span><br><span class="line">&gt;&gt;&gt; Nodes configuration updated</span><br><span class="line">&gt;&gt;&gt; Assign a different config epoch to each node</span><br><span class="line">&gt;&gt;&gt; Sending CLUSTER MEET messages to join the cluster</span><br><span class="line">Waiting for the cluster to join..</span><br><span class="line">&gt;&gt;&gt; Performing Cluster Check (using node <span class="number">127.0.0.1</span>:<span class="number">7000</span>)</span><br><span class="line">M: d0e194b5a53a79782c49ef44e3643ffce<span class="number">3842a67 127</span>.<span class="number">0</span>.<span class="number">0.1:7000</span></span><br><span class="line">   slots:<span class="number">0</span>-<span class="number">5460</span> (<span class="number">5461</span> slots) master</span><br><span class="line">M: <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span> <span class="number">127.0.0.1</span>:<span class="number">7001</span></span><br><span class="line">   slots:<span class="number">5461-10922</span> (<span class="number">5462</span> slots) master</span><br><span class="line">M: <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span> <span class="number">127.0.0.1</span>:<span class="number">7002</span></span><br><span class="line">   slots:<span class="number">10923-16383</span> (<span class="number">5461</span> slots) master</span><br><span class="line">M: <span class="number">633</span>c5b3ae785086c6c6041724c0b81be92e00ed<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7003</span></span><br><span class="line">   slots: (<span class="number">0</span> slots) master</span><br><span class="line">   replicates d0e194b5a53a79782c49ef44e3643ffce3842a67</span><br><span class="line">M: fe62faa1ecb26ca968433feab937c5833baf1db<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7004</span></span><br><span class="line">   slots: (<span class="number">0</span> slots) master</span><br><span class="line">   replicates <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span></span><br><span class="line">M: <span class="number">20d</span>97ec5b8a129366f7a7496a85404efb<span class="number">8e71371 127</span>.<span class="number">0</span>.<span class="number">0.1:7005</span></span><br><span class="line">   slots: (<span class="number">0</span> slots) master</span><br><span class="line">   replicates <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span></span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line">&gt;&gt;&gt; Check for open slots...</span><br><span class="line">&gt;&gt;&gt; Check slots coverage...</span><br><span class="line">[OK] All <span class="number">16384</span> slots covered.</span><br></pre></td></tr></table></figure>
+<p>验证连接：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">输入：</span><br><span class="line">redis-cli -p <span class="number">7000</span> cluster nodes</span><br><span class="line">响应：</span><br><span class="line"><span class="number">20d</span>97ec5b8a129366f7a7496a85404efb<span class="number">8e71371 127</span>.<span class="number">0</span>.<span class="number">0.1:7005</span>@<span class="number">17005</span> slave <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span> <span class="number">0</span> <span class="number">1637803028599</span> <span class="number">6</span> connected</span><br><span class="line"><span class="number">633</span>c5b3ae785086c6c6041724c0b81be92e00ed<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7003@17003</span> slave d0e194b5a53a79782c49ef44e3643ffce<span class="number">3842a67 0</span> <span class="number">1637803027508</span> <span class="number">4</span> connected</span><br><span class="line"><span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span> <span class="number">127.0.0.1</span>:<span class="number">7002@17002</span> master - <span class="number">0</span> <span class="number">1637803028000</span> <span class="number">3</span> connected <span class="number">10923-16383</span></span><br><span class="line">d0e194b5a53a79782c49ef44e3643ffce<span class="number">3842a67 127</span>.<span class="number">0</span>.<span class="number">0.1:7000</span>@<span class="number">17000</span> myself,master - <span class="number">0</span> <span class="number">1637803028000</span> <span class="number">1</span> connected <span class="number">0</span>-<span class="number">5460</span></span><br><span class="line"><span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span> <span class="number">127.0.0.1</span>:<span class="number">7001@17001</span> master - <span class="number">0</span> <span class="number">1637803026413</span> <span class="number">2</span> connected <span class="number">5461-10922</span></span><br><span class="line">fe62faa1ecb26ca968433feab937c5833baf1db<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7004@17004</span> slave <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span> <span class="number">0</span> <span class="number">1637803029690</span> <span class="number">5</span> connected</span><br><span class="line">或者输入：</span><br><span class="line">redis-trib.rb check <span class="number">127.0.0.1</span>:<span class="number">7000</span></span><br><span class="line">响应：</span><br><span class="line">&gt;&gt;&gt; Performing Cluster Check (using node <span class="number">127.0.0.1</span>:<span class="number">7000</span>)</span><br><span class="line">M: d0e194b5a53a79782c49ef44e3643ffce<span class="number">3842a67 127</span>.<span class="number">0</span>.<span class="number">0.1:7000</span></span><br><span class="line">   slots:<span class="number">0</span>-<span class="number">5460</span> (<span class="number">5461</span> slots) master</span><br><span class="line">   <span class="number">1</span> additional replica(s)</span><br><span class="line">S: <span class="number">20d</span>97ec5b8a129366f7a7496a85404efb<span class="number">8e71371 127</span>.<span class="number">0</span>.<span class="number">0.1:7005</span>@<span class="number">17005</span></span><br><span class="line">   slots: (<span class="number">0</span> slots) slave</span><br><span class="line">   replicates <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span></span><br><span class="line">S: <span class="number">633</span>c5b3ae785086c6c6041724c0b81be92e00ed<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7003@17003</span></span><br><span class="line">   slots: (<span class="number">0</span> slots) slave</span><br><span class="line">   replicates d0e194b5a53a79782c49ef44e3643ffce3842a67</span><br><span class="line">M: <span class="number">595906624067</span>ffff9f204a5ccd2fb1c<span class="number">1911344a7</span> <span class="number">127.0.0.1</span>:<span class="number">7002@17002</span></span><br><span class="line">   slots:<span class="number">10923-16383</span> (<span class="number">5461</span> slots) master</span><br><span class="line">   <span class="number">1</span> additional replica(s)</span><br><span class="line">M: <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span> <span class="number">127.0.0.1</span>:<span class="number">7001@17001</span></span><br><span class="line">   slots:<span class="number">5461-10922</span> (<span class="number">5462</span> slots) master</span><br><span class="line">   <span class="number">1</span> additional replica(s)</span><br><span class="line">S: fe62faa1ecb26ca968433feab937c5833baf1db<span class="number">0 127.0.0</span>.<span class="number">1</span>:<span class="number">7004@17004</span></span><br><span class="line">   slots: (<span class="number">0</span> slots) slave</span><br><span class="line">   replicates <span class="number">543</span>e52694edf6db069b912fe0f1252f<span class="number">0275189f6</span></span><br><span class="line">[OK] All nodes agree about slots configuration.</span><br><span class="line">&gt;&gt;&gt; Check for open slots...</span><br><span class="line">&gt;&gt;&gt; Check slots coverage...</span><br><span class="line">[OK] All <span class="number">16384</span> slots covered.</span><br></pre></td></tr></table></figure>
+
+<p>集群demo：</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\WIN10\Desktop\Redis&gt;redis-cli -c -p <span class="number">7000</span></span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; set foo bar</span><br><span class="line">-&gt; Redirected to slot <span class="string">[12182]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7002</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7002</span>&gt; set  hello world</span><br><span class="line">-&gt; Redirected to slot <span class="string">[866]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7000</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; set good nice</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; set apple iphone</span><br><span class="line">-&gt; Redirected to slot <span class="string">[7092]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7001</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; set banana orange</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; get foo</span><br><span class="line">-&gt; Redirected to slot <span class="string">[12182]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7002</span></span><br><span class="line"><span class="string">&quot;bar&quot;</span></span><br><span class="line"><span class="number">127.0.0.1:7002</span>&gt; get apple</span><br><span class="line">-&gt; Redirected to slot <span class="string">[7092]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7001</span></span><br><span class="line"><span class="string">&quot;iphone&quot;</span></span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; get good</span><br><span class="line">-&gt; Redirected to slot <span class="string">[2195]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7000</span></span><br><span class="line"><span class="string">&quot;nice&quot;</span></span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; set gay shit</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; get gay</span><br><span class="line"><span class="string">&quot;shit&quot;</span></span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; flush all</span><br><span class="line">(error) ERR unknown command `flush`, with args beginning with: `all`,</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; flushall</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; get gay</span><br><span class="line">(nil)</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; get doo</span><br><span class="line">(nil)</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; get foo</span><br><span class="line">-&gt; Redirected to slot <span class="string">[12182]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7002</span></span><br><span class="line"><span class="string">&quot;bar&quot;</span></span><br><span class="line"><span class="number">127.0.0.1:7002</span>&gt; flush all</span><br><span class="line">(error) ERR unknown command `flush`, with args beginning with: `all`,</span><br><span class="line"><span class="number">127.0.0.1:7002</span>&gt; flushall</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7002</span>&gt; get apple</span><br><span class="line">-&gt; Redirected to slot <span class="string">[7092]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7001</span></span><br><span class="line"><span class="string">&quot;iphone&quot;</span></span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; flushall</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; get gay</span><br><span class="line">-&gt; Redirected to slot <span class="string">[2398]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7000</span></span><br><span class="line">(nil)</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; get apple</span><br><span class="line">-&gt; Redirected to slot <span class="string">[7092]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7001</span></span><br><span class="line">(nil)</span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; get banana</span><br><span class="line">(nil)</span><br><span class="line"><span class="number">127.0.0.1:7001</span>&gt; get good</span><br><span class="line">-&gt; Redirected to slot <span class="string">[2195]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7000</span></span><br><span class="line">(nil)</span><br><span class="line"><span class="number">127.0.0.1:7000</span>&gt; get key</span><br><span class="line">-&gt; Redirected to slot <span class="string">[12539]</span> located at <span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>:<span class="number">7002</span></span><br><span class="line">(nil)</span><br></pre></td></tr></table></figure>
+<h4 id="demo解释"><a href="#demo解释" class="headerlink" title="demo解释"></a>demo解释</h4><p>Redis集群中有16384个hash slots，为了计算给定的key应该在哪个hash slot上，我们简单地用这个key的CRC16值来对16384取模。（即：key的CRC16  %  16384）</p>
+<p>Redis集群中的每个节点负责一部分hash slots，假设你的集群有3个节点，那么：</p>
+<p>Node A contains hash slots from 0 to 5500</p>
+<p>Node B contains hash slots from 5501 to 11000</p>
+<p>Node C contains hash slots from 11001 to 16383</p>
+<p>因此对不同的Key，存储的节点位置是不一样的，但会自动切换到对应的节点位置。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/25/2021-11-27-直播协议选择与http-flv Demo/" data-toggle="tooltip" data-placement="top" title="直播协议选择与http-flv Demo">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/24/2021-11-24-基于TF-IDF算法及余弦相似性的文本相似度检测/" data-toggle="tooltip" data-placement="top" title="基于TF-IDF算法及余弦相似性的文本相似度检测">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/24/2021-11-24-Golang%E7%9A%84Redis%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/24/2021-11-24-Golang%E7%9A%84Redis%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E5%8F%8A%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

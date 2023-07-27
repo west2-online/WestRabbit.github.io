@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android Compose 学习笔记（一) - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/31/2021-10-31-Android Compose 学习笔记（一)/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#Compose" title="Compose">Compose</a>
+                        
+                    </div>
+                    <h1>Android Compose 学习笔记（一)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by ceningxn on
+                        2021-10-31
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Android-Compose-学习笔记（一"><a href="#Android-Compose-学习笔记（一" class="headerlink" title="Android Compose 学习笔记（一)"></a>Android Compose 学习笔记（一)</h1><h4 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h4><ol>
+<li>关于compose</li>
+<li>开始使用</li>
+<li>常用控件的使用</li>
+</ol>
+<h2 id="一、关于compose"><a href="#一、关于compose" class="headerlink" title="一、关于compose"></a>一、关于compose</h2><p>Jetpack Compose 是用于构建原生Android界面的新工具包。使用更少的代码、强大的工具和直观的Kitlin API，可以简化并加快Android界面开发。Compose围绕可组合函数构建，放弃了原有使用xml的方式编写UI，没有view类的概念，用声明式的函数构建UI</p>
+<h2 id="二、开始使用"><a href="#二、开始使用" class="headerlink" title="二、开始使用"></a>二、开始使用</h2><h4 id="1、创建一个Compose项目"><a href="#1、创建一个Compose项目" class="headerlink" title="1、创建一个Compose项目"></a>1、创建一个Compose项目</h4><p>使用Compose首先需要更新<a target="_blank" rel="noopener" href="https://developer.android.google.cn/studio">Android Studio Arctic Fox</a>版本，更新完成后就可以在New Project中看到Compose项目。<img src="newpro.png"></p>
+<p>选择Empty Compose Activity，compose最低支持API21，这里选择使用API24，点击finish完成项目创建。<img src="api.png" alt="api"></p>
+<p>可以看到，项目结构发生了改变，res包下的xml资源文件变成了kt代码文件。Activity界面多了个预览窗口。</p>
+<p><img src="image-20211027133144078.png" alt="image-20211027133144078"></p>
+<p>到这里新Compose项目就创建完成了。</p>
+<h4 id="2-在现有项目中引入Compose"><a href="#2-在现有项目中引入Compose" class="headerlink" title="2.在现有项目中引入Compose"></a>2.在现有项目中引入Compose</h4><p>同样的需要更新Android Studio为Arctic Fox或更新版本，然后需要配置一些设置和依赖</p>
+<ul>
+<li>**gradle 配置 ** app目录下的<code>build.gradle</code>添加如下代码：</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        ...</span><br><span class="line">        minSdkVersion <span class="number">21</span></span><br><span class="line">    &#125;</span><br><span class="line">    buildFeatures &#123;</span><br><span class="line">        <span class="comment">// Enables Jetpack Compose for this module</span></span><br><span class="line">        compose <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// Set both the Java and Kotlin compilers to target Java 8.</span></span><br><span class="line">    </span><br><span class="line">    compileOptions &#123;</span><br><span class="line">        sourceCompatibility JavaVersion.VERSION_1_8</span><br><span class="line">        targetCompatibility JavaVersion.VERSION_1_8</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    kotlinOptions &#123;</span><br><span class="line">        jvmTarget = <span class="string">&quot;1.8&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Kotlin-Gradle 插件</strong> 根目录下的<code>build.gradle</code>添加如下代码：</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">buildscript &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">        jcenter()</span><br><span class="line">        <span class="comment">// To download the required version of the Kotlin-Gradle plugin,</span></span><br><span class="line">        <span class="comment">// add the following repository.</span></span><br><span class="line">        maven &#123; url <span class="string">&#x27;https://dl.bintray.com/kotlin/kotlin-eap&#x27;</span> &#125;</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">        dependencies &#123;</span><br><span class="line">            classpath <span class="string">&#x27;com.android.tools.build:gradle:4.0.0-alpha01&#x27;</span></span><br><span class="line">            classpath <span class="string">&#x27;org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-eap-25&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    allprojects &#123;</span><br><span class="line">        repositories &#123;</span><br><span class="line">            google()</span><br><span class="line">            jcenter()</span><br><span class="line">            maven &#123; url <span class="string">&#x27;https://dl.bintray.com/kotlin/kotlin-eap&#x27;</span> &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Jetpack Compose工具包依赖项</strong>  app目录下的<code>build.gradle</code>：</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    <span class="comment">// You also need to include the following Compose toolkit dependencies.</span></span><br><span class="line">    implementation <span class="string">&#x27;androidx.ui:ui-tooling:0.1.0-dev02&#x27;</span></span><br><span class="line">    implementation <span class="string">&#x27;androidx.ui:ui-layout:0.1.0-dev02&#x27;</span></span><br><span class="line">    implementation <span class="string">&#x27;androidx.ui:ui-material:0.1.0-dev02&#x27;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>相比之下还是直接创建新项目方便</p>
+<h4 id="3-看一下模板的代码"><a href="#3-看一下模板的代码" class="headerlink" title="3.看一下模板的代码"></a>3.看一下模板的代码</h4><p>先把看不懂的代码删掉，留下主体。可以看到，<code>Greeting</code>、<code>DefaultPreview</code>两个方法用了<code>@Compose</code>注解，说明这是个Compose函数，<code>Greeting</code>方法接受一个字符串传给Compose库的<code>Text</code>函数用来显示文字，<code>@Preview</code>注解的<code>DefaultPreview</code>方法用来预览UI</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">ComponentActivity</span></span>() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContent &#123;</span><br><span class="line">            Greeting(<span class="string">&quot;Android&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Composable</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">Greeting</span><span class="params">(name: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">    Text(text = <span class="string">&quot;Hello <span class="variable">$name</span>!&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Preview</span></span><br><span class="line"><span class="meta">@Composable</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">DefaultPreview</span><span class="params">()</span></span> &#123;</span><br><span class="line">    Greetinfag(<span class="string">&quot;Android&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>启动看看，经典Hello Android<br><img src="%5Cmain1.jpg"></p>
+<h2 id="三、常用控件的使用"><a href="#三、常用控件的使用" class="headerlink" title="三、常用控件的使用"></a>三、常用控件的使用</h2><h3 id="1、显示文字"><a href="#1、显示文字" class="headerlink" title="1、显示文字"></a>1、显示文字</h3><p>使用<code>Text</code>即可显示文字,如想改变显示效果,则需要给<code>Text</code>添加其他参数，下面是一些常用文字显示控制操作</p>
+<h5 id="1）改变颜色，设置color参数即可"><a href="#1）改变颜色，设置color参数即可" class="headerlink" title="1）改变颜色，设置color参数即可"></a>1）改变颜色，设置<code>color</code>参数即可</h5><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Text(text = <span class="string">&quot;Hello Android!&quot;</span>, color = Color.Blue)</span><br></pre></td></tr></table></figure>
+
+<p><img src="%5CtextColor.png"></p>
+<h3 id="2、显示图片"><a href="#2、显示图片" class="headerlink" title="2、显示图片"></a>2、显示图片</h3><p>将图片放入资源文件夹，使用<code>DrawImage</code>来显示图片</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Image(</span><br><span class="line">        painter = painterResource(id = R.drawable.pic),</span><br><span class="line">        contentDescription = <span class="literal">null</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>![](D:\MyFile\ComposeLearning\pic (2).jpg)</p>
+<h3 id="3、按钮"><a href="#3、按钮" class="headerlink" title="3、按钮"></a>3、按钮</h3><p>使用<code>Button</code>来显示一个按钮，在<code>onclick</code>中传入<code>lambda</code>参数设置点击事件,并用<code>Text</code>设置按钮的显示内容</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">Button</span>(<span class="params">onClick = &#123; <span class="regexp">/*TODO*/</span> &#125;</span>)</span> &#123;</span><br><span class="line">        Text(text = <span class="string">&quot;Button&quot;</span>)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\MyFile\ComposeLearning\button.png"></p>
+<h3 id="4、多行显示"><a href="#4、多行显示" class="headerlink" title="4、多行显示"></a>4、多行显示</h3><p>想要显示多行内容,如果只是多次调用函数UI则会重叠,像这样</p>
+<p><img src="D:\MyFile\ComposeLearning\dui.png"></p>
+<p>可用<code>Column</code>来实现多行显示，类似<code>LinearLayoutd</code>的垂直分布，多列显示用<code>Row</code>,这样就能显示多个内容了</p>
+<p><img src="D:\MyFile\ComposeLearning\mutiyline.png"></p>
+<p><img src="D:\MyFile\ComposeLearning\mulityrow.png"></p>
+<h3 id="时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习https-developer-android-google-cn-courses-pathways-compose-0"><a href="#时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习https-developer-android-google-cn-courses-pathways-compose-0" class="headerlink" title="时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习https://developer.android.google.cn/courses/pathways/compose#0"></a>时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习<a target="_blank" rel="noopener" href="https://developer.android.google.cn/courses/pathways/compose#0">https://developer.android.google.cn/courses/pathways/compose#0</a></h3>
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/17/2021-11-17-Debian系统安装Proxmox VE(PVE)虚拟化管理软件/" data-toggle="tooltip" data-placement="top" title="Debian系统安装Proxmox VE(PVE)虚拟化管理软件">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/31/2021-10-31-ElasticSearch--Scroll/" data-toggle="tooltip" data-placement="top" title="ElasticSearch的滚动查询--(Scroll)">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#Compose" title="Compose">Compose</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/31/2021-10-31-Android%20Compose%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80)/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/31/2021-10-31-Android%20Compose%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80)/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

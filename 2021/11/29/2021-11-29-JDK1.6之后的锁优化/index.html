@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          JDK1.6之后的锁优化 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/29/2021-11-29-JDK1.6之后的锁优化/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                    </div>
+                    <h1>JDK1.6之后的锁优化</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Gatsby on
+                        2021-11-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h1><p><strong>JDK5-6的重要升级     适应性自旋 锁消除 锁粗化 轻量级锁 偏向锁  更高效地解决竞争问题</strong></p>
+<h2 id="自旋锁与自适应自旋"><a href="#自旋锁与自适应自旋" class="headerlink" title="自旋锁与自适应自旋"></a>自旋锁与自适应自旋</h2><ul>
+<li><p>互斥同步最大的问题就是上下文切换</p>
+</li>
+<li><p><strong>共享数据锁定只会持续很短的时间   为了这段时间挂机或恢复线程很不值得</strong></p>
+</li>
+<li><p><strong>如果不止一个核心，不如让后面的线程等一会   不放弃处理器的执行时间</strong></p>
+</li>
+<li><p><strong>为了等待    所以我们让线程执行一个忙循环（自旋）  while循环</strong></p>
+</li>
+<li><p><strong>自旋时间默认 10  如果自旋时间太长 也会白白消耗处理资源  浪费性能</strong></p>
+</li>
+<li><p><strong>自适应自旋：自旋时间不是固定的    自旋时间由上一个自旋时间和拥有者决定  如果很少成功获得锁，就会省略自旋过程  如果经常成功  就会试图更长地自旋</strong></p>
+<h2 id="锁消除"><a href="#锁消除" class="headerlink" title="锁消除"></a>锁消除</h2></li>
+<li><p>就是在<strong>即时编译器运行时，对不可能存在竞争的锁进行消除</strong></p>
+</li>
+<li><p><strong>如果数据不会逃逸出去被其他线程访问  就可以当成栈上数据   经典栈上分配 就不用加锁</strong></p>
+</li>
+<li><p><img src="https://rat-bcy.oss-cn-shenzhen.aliyuncs.com/yuque/image.png" alt="image.png"></p>
+</li>
+<li><p>字符串加法JDK5之前   会转为StringBuffer  JDK6之后是StringBuilder</p>
+</li>
+<li><p><img src="https://rat-bcy.oss-cn-shenzhen.aliyuncs.com/yuque/image%20%281%29.png" alt="image.png"></p>
+</li>
+<li><p>sb对象会在append的时候加锁   但是sb不会逃逸出去   就需要锁消除</p>
+<h2 id="锁粗化"><a href="#锁粗化" class="headerlink" title="锁粗化"></a>锁粗化</h2></li>
+<li><p>如果一系列连续操作都需要反复加锁和解锁，即使没有线程竞争，<strong>频繁的互斥同步操作也会导致不必要的性能损耗</strong></p>
+</li>
+<li><p><strong>锁粗化：对于零碎的锁 如果检测到，就要扩大锁的范围   只要加锁一次就好</strong></p>
+<h2 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h2></li>
+<li><p>JDK轻量级锁，相对sync重量级锁来说非常轻</p>
+</li>
+<li><p>轻：不是代替重   只是在没有多线程竞争下 减少重量级锁的性能损耗</p>
+</li>
+<li><p>轻量级锁    要考虑偏向锁的原理和运作过程</p>
+</li>
+<li><p>**要对HotSpot内存布局有了解  **</p>
+</li>
+<li><p><strong>HotSpot对象头  两部分   第一部分（运行时数据） 哈希码  GC年龄等   在JVM占用32或64字节   称为“Mark Word”</strong></p>
+</li>
+<li><p><strong>另一部分  存储指向方法区对象类型数据的指针</strong></p>
+</li>
+<li><p><strong>Mark Word是一个非固定的动态数据结构</strong></p>
+</li>
+<li><p><img src="https://rat-bcy.oss-cn-shenzhen.aliyuncs.com/yuque/image%20%282%29.png" alt="image.png"></p>
+</li>
+<li><p>轻量级锁工作流程   代码快进入同步块的时候，如果同步对象未被锁定（锁标志01），JVM在当前线程栈中创建一个  **锁记录（Lock Record）  **的空间  存储 Mark Word</p>
+</li>
+<li><p><img src="https://rat-bcy.oss-cn-shenzhen.aliyuncs.com/yuque/image%20%283%29.png" alt="image.png"></p>
+</li>
+<li><p>JVM用CAS操作 尝试把对象的Mark Word更新为指向Lock Record指针</p>
+</li>
+<li><p>如果成功  就代表拥有了这个对象的锁   修改锁标志位 00   表示轻量级锁定状态</p>
+</li>
+<li><p>如果更新失败了，就说明有线程竞争  先判断Mark Word是否指向当前栈帧  </p>
+</li>
+<li><p>是说明已经有锁直接进入同步块就好  没有就说明抢占  要用重量级锁</p>
+</li>
+<li><p>锁标志10</p>
+</li>
+<li><p>解锁也是用CAS操作  如果对象的Mark Word仍指向线程的锁记录  就把复制的换回来就好</p>
+</li>
+<li><p>如果有竞争在释放锁的同时，唤醒被挂起的线程</p>
+</li>
+<li><p>CAS依据：**对于绝大部分锁，在同步周期内不存在竞争  **这一经验法则</p>
+</li>
+<li><p>优势：成功避免频繁使用互斥量开销</p>
+</li>
+<li><p>劣势：如果确实存在锁竞争  除了锁开销还增加了CAS开销</p>
+<h2 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h2></li>
+<li><p>目的：<strong>消除数据在无竞争下的同步原语</strong></p>
+</li>
+<li><p><strong>CAS：消去同步使用的互斥量</strong></p>
+</li>
+<li><p><strong>偏向锁：就是消去整个同步  CAS都不用了</strong></p>
+</li>
+<li><p><strong>偏：锁会偏向于第一个获得它的线程  如果接下来锁一直没被别人获取，就永远不用同步</strong></p>
+</li>
+<li><p><strong>锁第一次被线程获取的时候 对象头标志设置为01  偏向模式 1</strong></p>
+</li>
+<li><p><strong>CAS操作把获取到锁的线程ID记录在Mark Word</strong></p>
+</li>
+<li><p><strong>CAS成功  每次持有偏向锁的线程进入相关同步块  可以不进行同步操作</strong></p>
+</li>
+<li><p><strong>一旦出现另外一个线程尝试获取锁，偏向模式马上结束 按照轻量级锁去执行</strong></p>
+</li>
+<li><p><img src="https://rat-bcy.oss-cn-shenzhen.aliyuncs.com/yuque/image%20%284%29.png" alt="image.png"></p>
+</li>
+<li><p>哈希码的位置被占问题：如果一个对象计算过哈希码之后，就不会进入偏向状态  如果同步需要计算哈希码，会撤销偏向状态改为重量级锁</p>
+</li>
+<li><p>缺点：对经常有线程竞争的程序效果不好  反而增加开销</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1></li>
+<li><p>《深入理解Java虚拟机：JVM高级特性与最佳实践》第三版  -周志明</p>
+</li>
+<li><p>《Java并发编程的艺术》   -方腾飞</p>
+</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/30/简单了解Unity的ARFoundation/" data-toggle="tooltip" data-placement="top" title="简单入门Unity的ARFoundation - 1">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/29/2021-11-29-go反射构建postgresql&opengauss简易orm/" data-toggle="tooltip" data-placement="top" title="go反射构建postgresql&opengauss简易orm">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/29/2021-11-29-JDK1.6%E4%B9%8B%E5%90%8E%E7%9A%84%E9%94%81%E4%BC%98%E5%8C%96/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/29/2021-11-29-JDK1.6%E4%B9%8B%E5%90%8E%E7%9A%84%E9%94%81%E4%BC%98%E5%8C%96/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

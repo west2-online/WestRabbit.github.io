@@ -1,0 +1,125 @@
+<hr>
+<p>title: Android Compose 学习笔记（一)<br>date: 2021/10/31<br>tags:<br>    - 20级<br>    - Android<br>    - Compose<br>author: ceningxn</p>
+<hr>
+<h1 id="Android-Compose-学习笔记（一"><a href="#Android-Compose-学习笔记（一" class="headerlink" title="Android Compose 学习笔记（一)"></a>Android Compose 学习笔记（一)</h1><h4 id="目录："><a href="#目录：" class="headerlink" title="目录："></a>目录：</h4><ol>
+<li>关于compose</li>
+<li>开始使用</li>
+<li>常用控件的使用</li>
+</ol>
+<h2 id="一、关于compose"><a href="#一、关于compose" class="headerlink" title="一、关于compose"></a>一、关于compose</h2><p>Jetpack Compose 是用于构建原生Android界面的新工具包。使用更少的代码、强大的工具和直观的Kitlin API，可以简化并加快Android界面开发。Compose围绕可组合函数构建，放弃了原有使用xml的方式编写UI，没有view类的概念，用声明式的函数构建UI</p>
+<h2 id="二、开始使用"><a href="#二、开始使用" class="headerlink" title="二、开始使用"></a>二、开始使用</h2><h4 id="1、创建一个Compose项目"><a href="#1、创建一个Compose项目" class="headerlink" title="1、创建一个Compose项目"></a>1、创建一个Compose项目</h4><p>使用Compose首先需要更新<a href="https://developer.android.google.cn/studio">Android Studio Arctic Fox</a>版本，更新完成后就可以在New Project中看到Compose项目。<img src="newpro.png"></p>
+<p>选择Empty Compose Activity，compose最低支持API21，这里选择使用API24，点击finish完成项目创建。<img src="api.png" alt="api"></p>
+<p>可以看到，项目结构发生了改变，res包下的xml资源文件变成了kt代码文件。Activity界面多了个预览窗口。</p>
+<p><img src="image-20211027133144078.png" alt="image-20211027133144078"></p>
+<p>到这里新Compose项目就创建完成了。</p>
+<h4 id="2-在现有项目中引入Compose"><a href="#2-在现有项目中引入Compose" class="headerlink" title="2.在现有项目中引入Compose"></a>2.在现有项目中引入Compose</h4><p>同样的需要更新Android Studio为Arctic Fox或更新版本，然后需要配置一些设置和依赖</p>
+<ul>
+<li>**gradle 配置 ** app目录下的<code>build.gradle</code>添加如下代码：</li>
+</ul>
+<pre><code class="kotlin">android {
+    defaultConfig {
+        ...
+        minSdkVersion 21
+    }
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose true
+    }
+    
+    ...
+    // Set both the Java and Kotlin compilers to target Java 8.
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    
+    kotlinOptions {
+        jvmTarget = &quot;1.8&quot;
+    }
+}
+</code></pre>
+<ul>
+<li><strong>Kotlin-Gradle 插件</strong> 根目录下的<code>build.gradle</code>添加如下代码：</li>
+</ul>
+<pre><code class="kotlin">buildscript {
+    repositories {
+        google()
+        jcenter()
+        // To download the required version of the Kotlin-Gradle plugin,
+        // add the following repository.
+        maven { url &#39;https://dl.bintray.com/kotlin/kotlin-eap&#39; }
+        ...
+
+        dependencies {
+            classpath &#39;com.android.tools.build:gradle:4.0.0-alpha01&#39;
+            classpath &#39;org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.60-eap-25&#39;
+        }
+    }
+    
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            maven { url &#39;https://dl.bintray.com/kotlin/kotlin-eap&#39; }
+        }
+        
+    }
+</code></pre>
+<ul>
+<li><strong>Jetpack Compose工具包依赖项</strong>  app目录下的<code>build.gradle</code>：</li>
+</ul>
+<pre><code class="kotlin">dependencies {
+    // You also need to include the following Compose toolkit dependencies.
+    implementation &#39;androidx.ui:ui-tooling:0.1.0-dev02&#39;
+    implementation &#39;androidx.ui:ui-layout:0.1.0-dev02&#39;
+    implementation &#39;androidx.ui:ui-material:0.1.0-dev02&#39;
+    ...
+}
+</code></pre>
+<p>相比之下还是直接创建新项目方便</p>
+<h4 id="3-看一下模板的代码"><a href="#3-看一下模板的代码" class="headerlink" title="3.看一下模板的代码"></a>3.看一下模板的代码</h4><p>先把看不懂的代码删掉，留下主体。可以看到，<code>Greeting</code>、<code>DefaultPreview</code>两个方法用了<code>@Compose</code>注解，说明这是个Compose函数，<code>Greeting</code>方法接受一个字符串传给Compose库的<code>Text</code>函数用来显示文字，<code>@Preview</code>注解的<code>DefaultPreview</code>方法用来预览UI</p>
+<pre><code class="kotlin">class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            Greeting(&quot;Android&quot;)
+        }
+    }
+}
+
+@Composable
+fun Greeting(name: String) {
+    Text(text = &quot;Hello $name!&quot;)
+}
+
+@Preview
+@Composable
+fun DefaultPreview() {
+    Greetinfag(&quot;Android&quot;)
+}
+</code></pre>
+<p>启动看看，经典Hello Android<br><img src="%5Cmain1.jpg"></p>
+<h2 id="三、常用控件的使用"><a href="#三、常用控件的使用" class="headerlink" title="三、常用控件的使用"></a>三、常用控件的使用</h2><h3 id="1、显示文字"><a href="#1、显示文字" class="headerlink" title="1、显示文字"></a>1、显示文字</h3><p>使用<code>Text</code>即可显示文字,如想改变显示效果,则需要给<code>Text</code>添加其他参数，下面是一些常用文字显示控制操作</p>
+<h5 id="1）改变颜色，设置color参数即可"><a href="#1）改变颜色，设置color参数即可" class="headerlink" title="1）改变颜色，设置color参数即可"></a>1）改变颜色，设置<code>color</code>参数即可</h5><pre><code class="kotlin">Text(text = &quot;Hello Android!&quot;, color = Color.Blue)
+</code></pre>
+<p><img src="%5CtextColor.png"></p>
+<h3 id="2、显示图片"><a href="#2、显示图片" class="headerlink" title="2、显示图片"></a>2、显示图片</h3><p>将图片放入资源文件夹，使用<code>DrawImage</code>来显示图片</p>
+<pre><code class="kotlin">Image(
+        painter = painterResource(id = R.drawable.pic),
+        contentDescription = null
+    )
+</code></pre>
+<p>![](D:\MyFile\ComposeLearning\pic (2).jpg)</p>
+<h3 id="3、按钮"><a href="#3、按钮" class="headerlink" title="3、按钮"></a>3、按钮</h3><p>使用<code>Button</code>来显示一个按钮，在<code>onclick</code>中传入<code>lambda</code>参数设置点击事件,并用<code>Text</code>设置按钮的显示内容</p>
+<pre><code>Button(onClick = { /*TODO*/ }) {
+        Text(text = &quot;Button&quot;)
+    }
+</code></pre>
+<p><img src="D:\MyFile\ComposeLearning\button.png"></p>
+<h3 id="4、多行显示"><a href="#4、多行显示" class="headerlink" title="4、多行显示"></a>4、多行显示</h3><p>想要显示多行内容,如果只是多次调用函数UI则会重叠,像这样</p>
+<p><img src="D:\MyFile\ComposeLearning\dui.png"></p>
+<p>可用<code>Column</code>来实现多行显示，类似<code>LinearLayoutd</code>的垂直分布，多列显示用<code>Row</code>,这样就能显示多个内容了</p>
+<p><img src="D:\MyFile\ComposeLearning\mutiyline.png"></p>
+<p><img src="D:\MyFile\ComposeLearning\mulityrow.png"></p>
+<h3 id="时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习https-developer-android-google-cn-courses-pathways-compose-0"><a href="#时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习https-developer-android-google-cn-courses-pathways-compose-0" class="headerlink" title="时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习https://developer.android.google.cn/courses/pathways/compose#0"></a>时间匆忙来不及写的更详细，大家有兴趣可以查询官方文档继续学习<a href="https://developer.android.google.cn/courses/pathways/compose#0">https://developer.android.google.cn/courses/pathways/compose#0</a></h3>

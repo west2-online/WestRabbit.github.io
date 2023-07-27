@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/page/2/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>West2ers&#39; Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">To Be A Lean Developer!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/简单了解Unity的ARFoundation/">
+        <h2 class="post-title">
+            简单入门Unity的ARFoundation - 1
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            本篇主要介绍了如何通过ARFoundation来简单的在摄像头中的现实世界生成一个物体。
+此篇文章基于ARFoundation 4.2.1 撰写，不确定在以后的时效性如何，还请留意。
+在Unity中快速上手ARFoundation前置要求在使用ARFoundation之前需要注意
+
+安卓设备需要将API版本最低要求设置在7.0或以上，且需要关闭对Vulkan图形api的支持
+IOS设备需要将......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by ELITTK on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/29/2021-11-29-JDK1.6之后的锁优化/">
+        <h2 class="post-title">
+            JDK1.6之后的锁优化
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            锁优化JDK5-6的重要升级     适应性自旋 锁消除 锁粗化 轻量级锁 偏向锁  更高效地解决竞争问题
+自旋锁与自适应自旋
+互斥同步最大的问题就是上下文切换
+
+共享数据锁定只会持续很短的时间   为了这段时间挂机或恢复线程很不值得
+
+如果不止一个核心，不如让后面的线程等一会   不放弃处理器的执行时间
+
+为了等待    所以我们让线程执行一个忙循环（自旋）  while循环
+
+自旋时间默......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Gatsby on
+        2021-11-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/29/2021-11-29-go反射构建postgresql&opengauss简易orm/">
+        <h2 class="post-title">
+            go反射构建postgresql&opengauss简易orm
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            前言本文将通过Go的反射机制，实现对OpenGauss(兼容Postgresql)的一个简单orm。
+连接数据库支持Postgresql的驱动一般都是支持OpenGauss的，这里我选择的是bmizeran/pq作为驱动。
+首先，我们需要先构建配置文件：
+1234567# app.ini[database]User = jackPassword = ********Host = **.**.......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by mirrorlied on
+        2021-11-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/29/2021-11-29-微信支持H5跳转小程序、APP/">
+        <h2 class="post-title">
+            微信支持H5跳转小程序、App
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            前言微信开放标签是微信公众平台面向网页开发者提供的扩展标签集合。通过使用微信开放标签，网页开发者可安全便捷地使用微信或系统的能力，为微信用户提供更优质的网页体验
+微信支持H5跳转小程序、App一、有哪些开放标签?
+&lt;wx-open-launch-weapp&gt; 打开小程序
+&lt;wx-open-launch-app&gt; 打开app
+
+二、接入要求
+主体要求: 仅开放给已认证的......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by LeaonY on
+        2021-11-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/29/2021-11-29-谈一个Redis漏洞——记一次服务器被挖矿经历/">
+        <h2 class="post-title">
+            谈一个Redis漏洞——记一次服务器被挖矿经历
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            谈一个Redis漏洞——记一次服务器被挖矿经历
+服务器：阿里云轻量应用服务器
+系统：centos 8.2
+
+1 事件起因2021年11月21日中午12：37分左右，在做软工作业的我突然想直接用ARDM(一个Redis可视化工具)连连服务器上的Redis看看里面现在有啥（因为之前写码的时候忘记设置过期时间了，里面有不少没啥用的key)，然后直接去服务器控制台打开6379端口（之前也这么直连过一......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by JessieLin on
+        2021-11-29
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/28/2021-11-29-ES9正则新特性/">
+        <h2 class="post-title">
+            ES9正则表达式新特性
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ES9正则表达式新特性1、正则命名分组在es9之前使用正则表达式
+123456let str = &quot;abc123abc456&quot;;const reg = /abc(.*)abc(.*)/;const result = reg.exec(str);console.log(result);//结果如下[&#x27;abc123abc456&#x27;, &#x27;123&#x......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 郑世杰 on
+        2021-11-28
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/25/2021-11-27-直播协议选择与http-flv Demo/">
+        <h2 class="post-title">
+            直播协议选择与http-flv Demo
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            直播协议选择与http-flv Demo一、概述面对网络带宽提升，直播成为不少网站、软件的必备功能。而流传输协议的选择将对直播效果产生巨大影响。这里我们将对主流的几个协议进行简单的分析，并提供一个基础的应用实现。
+二、推流方式RMTP（Real Time Message Protocol）是目前主流的推流协议，他具有较低的时延，和高稳定性。同时，有较多的相关实现，便于使用。具体内容将在后续分......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 俞润鼎 on
+        2021-11-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/24/2021-11-24-Golang的Redis简单使用及集群配置/">
+        <h2 class="post-title">
+            Golang的Redis简单使用及集群配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            #Golang的Redis简单使用及集群配置
+###1.Go-Redis库的安装以及Redis的安装
+Go-Redis库的安装Github地址：https://github.com/go-redis/redis
+可以自己go get 或者 git 亦或直接下载放到对应文件夹里即可。
+Redis的安装Github地址：https://github.com/tporadowski/redis/r......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 北朔 on
+        2021-11-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/24/2021-11-24-基于TF-IDF算法及余弦相似性的文本相似度检测/">
+        <h2 class="post-title">
+            基于TF-IDF算法及余弦相似性的文本相似度检测
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            前言在之前的一篇文章中，我简单的向大家介绍了TF-IDF算法，用以评估一个词对于一个文件集或一个语料库中的其中一份文件的重要程度。对该算法还不太了解的同学可以查看该文章
+TF-IDF算法经常用来提取一篇文章中的关键词，而关键词又经常可以作为我们判断两篇文章是否相似的依据。因此，我们可以将两篇文章间的关键词提取出来，之后采用余弦相似度计算两篇文章关键词之间的相似性，即可得出文章间的相似性。
+余......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 3927 on
+        2021-11-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/22/2021-11-22-用Unity实现抽卡（×）转盘机制/">
+        <h2 class="post-title">
+            用Unity实现抽卡（×）转盘机制
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            用Unity实现抽卡（×）转盘机制不重要的话（不看也行：
+写ds作业的时候看到一个关于unity做转盘的一个东西，还挺有意思，就摸了一下：）虽然参考链接里好像挺清楚了，但是感觉有些东西还是可以讲一下
+先上链接
+
+http://www.theappguruz.com/blog/how-to-make-a-wheel-of-fortune-in-unity-the-easiest-way
+1.基......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by d77 on
+        2021-11-22
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/3/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#14级" title="14级" rel="16">14级</a>
+                            
+                        
+                            
+                            <a href="/tags/#图像处理" title="图像处理" rel="3">图像处理</a>
+                            
+                        
+                            
+                            <a href="/tags/#教程" title="教程" rel="3">教程</a>
+                            
+                        
+                            
+                            <a href="/tags/#15级" title="15级" rel="12">15级</a>
+                            
+                        
+                            
+                            <a href="/tags/#杂文" title="杂文" rel="3">杂文</a>
+                            
+                        
+                            
+                            <a href="/tags/#iOS" title="iOS" rel="8">iOS</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Java" title="Java" rel="20">Java</a>
+                            
+                        
+                            
+                            <a href="/tags/#Web" title="Web" rel="7">Web</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Android" title="Android" rel="8">Android</a>
+                            
+                        
+                            
+                            <a href="/tags/#Linux" title="Linux" rel="2">Linux</a>
+                            
+                        
+                            
+                            <a href="/tags/#前端" title="前端" rel="12">前端</a>
+                            
+                        
+                            
+                            <a href="/tags/#嫩牛五方" title="嫩牛五方" rel="2">嫩牛五方</a>
+                            
+                        
+                            
+                            <a href="/tags/#16级" title="16级" rel="2">16级</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#18级" title="18级" rel="9">18级</a>
+                            
+                        
+                            
+                            <a href="/tags/#小程序" title="小程序" rel="2">小程序</a>
+                            
+                        
+                            
+                            <a href="/tags/#算法" title="算法" rel="2">算法</a>
+                            
+                        
+                            
+                            <a href="/tags/#Golang" title="Golang" rel="7">Golang</a>
+                            
+                        
+                            
+                            <a href="/tags/#19级" title="19级" rel="28">19级</a>
+                            
+                        
+                            
+                            <a href="/tags/#Unity" title="Unity" rel="8">Unity</a>
+                            
+                        
+                            
+                            <a href="/tags/#D届" title="D届" rel="5">D届</a>
+                            
+                        
+                            
+                            <a href="/tags/#20级" title="20级" rel="15">20级</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#产品" title="产品" rel="2">产品</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#19 级" title="19 级" rel="2">19 级</a>
+                            
+                        
+                            
+                            <a href="/tags/#JavaScript" title="JavaScript" rel="2">JavaScript</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Compose" title="Compose" rel="2">Compose</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#美术" title="美术" rel="5">美术</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#&lt;19级&gt;" title="&lt;19级&gt;" rel="2">&lt;19级&gt;</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+
+                        
+                            <p>Excited</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="https://weibo.com/west2gold">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

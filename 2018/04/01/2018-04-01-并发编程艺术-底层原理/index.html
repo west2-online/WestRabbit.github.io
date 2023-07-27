@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Java并发编程艺术-并发机制的底层原理实现 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2018/04/01/2018-04-01-并发编程艺术-底层原理/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                    <h1>Java并发编程艺术-并发机制的底层原理实现</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by CoderQiang on
+                        2018-04-01
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Java并发编程艺术-并发机制的底层原理实现"><a href="#Java并发编程艺术-并发机制的底层原理实现" class="headerlink" title="Java并发编程艺术-并发机制的底层原理实现"></a>Java并发编程艺术-并发机制的底层原理实现</h1><h2 id="1-Volatile"><a href="#1-Volatile" class="headerlink" title="1.Volatile"></a>1.Volatile</h2><h5 id="定义"><a href="#定义" class="headerlink" title="定义:"></a>定义:</h5><blockquote>
+<p>Java编程语言允许线程访问共享变量，为了确保共享变量能被准确和一致的更新，线程应该确保通过排他锁单独获得这个变量。</p>
+</blockquote>
+<p>volatile借助Java内存模型保证所有线程能够看到最新的值。(内存可见性)</p>
+<h4 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理:"></a>实现原理:</h4><p>将带有volatile变量操作的Java代码转换成汇编代码后，可以看到多了个lock前缀指令(X86平台CPU指令)。这个lock指令是关键，在多核处理器下实现两个重要操作:</p>
+<blockquote>
+<p>1.将当前处理器缓存行的数据写回到系统内存。</br><br>2.这个写回内存的操作会使其他处理器里缓存该内存地址的数据失效</p>
+</blockquote>
+<p>如果了解计算机组成原理，可以知道CPU为了提高处理速度，不和内存直接进行交互，而是使用Cache(高速缓存，通过缓存数据交互速度和内存不是一个数量级，而同时Cache的存储容量也很小)。</br>从内存将数据读到缓存后，CPU进行一系列数据操作，而操作完成时间是不可知的。而JVM对带有volatile变量进行写操作时，会发送Lock前缀指令，将数据从缓存行写入到内存。写入内存还不够，因为其他线程的缓存行中数据还是旧的，Lock指令可以让其他CPU通过监听在总线上的数据，检查自己的缓存数据是否过期，如果缓存行的地址和总线上的地址相同，则将缓存行失效，下次该线程对这个数据操作时，会重新从内存中读取，更新到缓存行。</p>
+<h2 id="2-Synchronized"><a href="#2-Synchronized" class="headerlink" title="2.Synchronized"></a>2.Synchronized</h2><p>Synchronized也是经常用到的，它给人的印象一般是”重量级锁”。在JDK1.6后，对Synchronized进行了一系列优化，引入了偏向锁和轻量级锁，对锁的存储结构和升级过程。有效减少获得锁和释放锁带来的性能消耗。</p>
+<p>Synchronized同步基础:</p>
+<blockquote>
+<p>1.普通同步方法，锁是当前实例对象。 public synchronized void test(){…}</br><br>2.静态同步方法，锁是当前类的Class对象。public static synchronized void test(…){}</br><br>3.对于同步方法块，锁是Synchronized括号中里配置的对象。synchronized(instance){…}</p>
+</blockquote>
+<p>用javap反编译class文件，可以看到Synchronized用的是monitorenter和monitorexit实现加锁。一个monitorenter必须要有monitorexit与之对应，所以同步方法会在异常处和方法返回处加入monitorexit指令。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">3</span>: monitorenter  <span class="comment">//注意此处，进入同步方法</span></span><br><span class="line"> <span class="number">4</span>: aload_0</span><br><span class="line"> <span class="number">5</span>: dup</span><br><span class="line"> <span class="number">6</span>: getfield      #<span class="number">2</span>             <span class="comment">// Field i:I</span></span><br><span class="line"> <span class="number">9</span>: iconst_1</span><br><span class="line"><span class="number">10</span>: iadd</span><br><span class="line"><span class="number">11</span>: putfield      #<span class="number">2</span>            <span class="comment">// Field i:I</span></span><br><span class="line"><span class="number">14</span>: aload_1</span><br><span class="line"><span class="number">15</span>: monitorexit   <span class="comment">//注意此处，退出同步方法</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Java对象头"><a href="#3-Java对象头" class="headerlink" title="3.Java对象头"></a>3.Java对象头</h2><p>Synchronized用到的锁存在Java对象头里,若对象非数组类型，用32bit存储(2个字宽，32虚拟机一个字宽为4字节，一个字节8bit)<br>MarkWord存储和锁相关的信息:</p>
+<p><img src="%E5%AF%B9%E8%B1%A1%E5%A4%B4.jpeg"></p>
+<p>锁有四个等级: 无锁-&gt;偏向锁-&gt;轻量级锁-&gt;重量级锁。如果存在竞争，就会不断升级，但不会降级。</p>
+<h4 id="1-偏向锁"><a href="#1-偏向锁" class="headerlink" title="1.偏向锁"></a>1.偏向锁</h4><p>多数情况下，锁不会存在竞争，而是同一个线程多次获得。当某个线程访问同步块代码时，会将锁对象和栈帧中的锁记里存储锁偏向的线程ID，以后线程在进入和退出同步块时不需要进行CAS操作来加锁和解锁，只需简单比对一下对象头中的MarkWord里的线程ID，如果一致则表示线程获得锁。若不一致，再继续测试偏向锁的标识是否为1：如果没有设置(无锁状态)，用CAS(Compare and Swap)竞争锁；如果设置了，尝试使用CAS将对象头的偏向锁指向当前线程。 </p>
+<p>当有另一个线程尝试竞争锁时，持有偏向锁的线程才会释放锁。需要等待全局安全点（在这个时间点上没有字节码正在执行），它会首先暂停拥有偏向锁的线程，然后检查持有偏向锁的线程是否活着，如果线程不处于活动状态，则将对象头设置成无锁状态，如果线程仍然活着，拥有偏向锁的栈会被执行，遍历偏向对象的锁记录，栈中的锁记录和对象头的Mark Word，要么重新偏向于其他线程，要么恢复到无锁或者标记对象不适合作为偏向锁，最后唤醒暂停的线程。</p>
+<p><img src="%E5%81%8F%E5%90%91%E9%94%81.png"></p>
+<p>Java 6，7默认开启偏向锁，可以通过JVM的参数-XX:-UsebiasedLocking=false关闭</p>
+<h4 id="2-轻量级锁"><a href="#2-轻量级锁" class="headerlink" title="2.轻量级锁"></a>2.轻量级锁</h4><p>(1)加锁</br></p>
+<p>锁记录存储在栈桢，会将对象头的MarkWord复制到锁记录。线程在执行同步块时，会尝试用CAS将对象头的MarkWord替换为指向锁记录的指针，若成功，获得锁；失败表示其他线程竞争锁，当前线程尝试使用自旋获取锁。</p>
+<p>(2)解锁</br></p>
+<p>类似于加锁反向操作，会将锁记录复制会对象头的MarkWord。若成功，表示操作过程中没有竞争发生；若失败，存在竞争，锁会膨胀成重量级锁。</p>
+<p>如下图:<br><img src="%E8%BD%BB%E9%87%8F%E7%BA%A7%E9%94%81.png"></p>
+<p>当膨胀到重量级锁时，不会再通过自选获得锁(自旋时线程处于活动状态，会消耗CPU)，而是将线程阻塞，获得锁的线程执行完后会释放重量级锁，此时唤醒因为锁阻塞的线程，进行新一轮的竞争。</p>
+<h5 id="3-其他锁概念"><a href="#3-其他锁概念" class="headerlink" title="3.其他锁概念"></a>3.其他锁概念</h5><p><b>自旋锁:</b></br>自旋锁是采用让当前线程不停地的在循环体内执行实现的，当循环的条件被其他线程改变时 才能进入临界区。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpinLock</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> AtomicReference&lt;Thread&gt; sign =<span class="keyword">new</span> AtomicReference&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    <span class="keyword">while</span>(!sign .compareAndSet(<span class="keyword">null</span>, current))&#123;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unlock</span> <span class="params">()</span></span>&#123;</span><br><span class="line">    Thread current = Thread.currentThread();</span><br><span class="line">    sign .compareAndSet(current, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用了CAS原子操作，lock函数将owner设置为当前线程，并且预测原来的值为空。unlock函数将owner设置为null，并且预测值为当前线程。</p>
+<p>当有第二个线程调用lock操作时由于owner值不为空，导致循环一直被执行，直至第一个线程调用unlock函数将owner设置为null，第二个线程才能进入临界区。</p>
+<p>由于自旋锁只是将当前线程不停地执行循环体，不进行线程状态的改变，所以响应速度更快。但当线程数不停增加时，性能下降明显，因为每个线程都需要执行，占用CPU时间。如果线程竞争不激烈，并且保持锁的时间段。适合使用自旋锁。</p>
+<hr>
+<p><b>锁的优缺点对比:</p>
+<table>
+        <tr>
+            <th>  </th>
+            <th> 优点 </th>
+            <th> 缺点 </th>
+            <th>适用场景</th>
+        </tr>
+        <tr>
+            <th>偏向锁</th>
+            <th>加锁和解锁不需要额外的消耗，和执行非同步方法比仅存在纳秒级的差距</th>
+            <th>如果线程间存在锁竞争，会带来额外的锁撤销的消耗</th>
+            <th>适用于只有一个线程访问同步块场景</th>
+        </tr>
+        <tr>
+            <th>轻量级锁</th>
+            <th>竞争的线程不会阻塞，提高了程序的响应速度</th>
+            <th>如果始终得不到锁竞争的线程使用自旋会消耗CPU</th>
+            <th>追求响应时间,锁占用时间很短</th>
+        </tr>
+        <tr>
+            <th>重量级锁</th>
+            <th>线程竞争不使用自旋，不会消耗CPU</th>
+            <th>线程阻塞，响应时间缓慢</th>
+            <th>追求吞吐量,锁占用时间较长</th>
+        </tr>
+</table>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/04/01/2018-04-01-可选值/" data-toggle="tooltip" data-placement="top" title="Swift-可选值">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/03/10/2018-04-02-same-origin/" data-toggle="tooltip" data-placement="top" title="跨域与同源策略探究">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2018/04/01/2018-04-01-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF-%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/";
+    var disqus_url = "https://blog.w2fzu.com/2018/04/01/2018-04-01-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E8%89%BA%E6%9C%AF-%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

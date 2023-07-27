@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          UI设计-COLOR - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/31/2021-10-31-UI设计-COLOR/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#美术" title="美术">美术</a>
+                        
+                    </div>
+                    <h1>UI设计-COLOR</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by wangfan on
+                        2021-10-31
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="UI设计-COLOR"><a href="#UI设计-COLOR" class="headerlink" title="UI设计-COLOR"></a>UI设计-COLOR</h1><p>​        色彩是设计构建的基础之一。它可以成为影响众多因素的强大工具，对视觉感受至关重要。色彩对我们的头脑有重大影响。它会在几秒钟内改变我们对物体的感受，并让人们做出反应，甚至采取行动。</p>
+<h4 id="技巧1-掌握60-30-10原则"><a href="#技巧1-掌握60-30-10原则" class="headerlink" title="技巧1-掌握60-30-10原则"></a>技巧1-掌握60-30-10原则</h4><p>​        60-30-10原则最早是源自于室内设计领域，室内设计师借助这一原则，创造出协调的室内设计配色。这一原则很容易理解，为了达到平衡的配色，几种色彩遵循这60%—30%—10%这样的色彩配比。其中占据60% 的是主色，而30%则是次住色，而占据10%的色彩应当为提亮色。</p>
+<p>​        这一的配色比例被认为是颇为令人愉悦的，在视觉感知上，它提供了一个颇为让人舒适的色彩层次，这样的控制让整个UI的色彩以一种可控的比例呈现出来，而不是将整个设计弄得一团糟。</p>
+<p><img src="https://i.bmp.ovh/imgs/2021/10/1727b30f4d3ae2ac.png"></p>
+<h4 id="技巧2-实用工具-色彩的对比"><a href="#技巧2-实用工具-色彩的对比" class="headerlink" title="技巧2-实用工具-色彩的对比"></a>技巧2-实用工具-色彩的对比</h4><p>​        在探讨UI的可访问性的时候，对比度始终是关键性的因素。在 A11Y 这个力求提升网页可访问性的项目当中，他们对于对比有下列一系列的建议：在配色的时候，借助色轮选择处于相对位置的对比色，让视觉上的对比足够明晰；在选择字体的时候，借助不同类型的字体差异，来创造视觉上的对比，也是如今网页设计中经常用到的技巧。</p>
+<p>​        空间上的对比营造也很有技巧，使用不同的留白来营造疏密对比。如果你想让某一部分内容更容易吸引用户的注意力，不妨让它周围有更多的留白。</p>
+<p>​        简而言之，对比是通过对立的差异化来创造吸引力。看似不同的元素实际上可以搭配起来，达到一目了然的效果。（不止色彩对比，更可以明案对比，如下图）</p>
+<p><img src="https://i.bmp.ovh/imgs/2021/10/a88777369d584bae.png"></p>
+<h4 id="技巧3-参考色彩心理学"><a href="#技巧3-参考色彩心理学" class="headerlink" title="技巧3-参考色彩心理学"></a>技巧3-参考色彩心理学</h4><p>红色<br>        颜色通常与激情，强烈或侵略性的感觉联系在一起。它象征着思想和灵魂的好坏状态，包括爱，信心，激情和愤怒。在设计中，红色的使用是吸引用户注意力的有效方式。此外，建议谨慎使用红色以避免负面反应。</p>
+<p>橙色<br>        这是一种充满活力和温暖的色彩带来的兴奋感。橙色结合了红色的力量和黄色的友善，因此它可以带来动力，热情和对生活的热爱。如果设计师需要赋予创造力和冒险精神，他们就会使用这种颜色。</p>
+<p>黄色<br>        这是幸福的颜色，象征着阳光，欢乐和温暖。黄色被认为是最容易看到的颜色。更重要的是，它具有最强大的心理意义之一。在设计中看到黄色的用户可以感受到灵感和自信。虽然，你需要记住，过多的黄色可能带来负面反应，如焦虑或恐惧的感觉。</p>
+<p>绿色<br>        它通常被称为自然，平衡和和谐的颜色。绿色带来平静和更新的感受。此外，它是增长和缺乏经验的标志。它具有比大多数其他颜色更多的正能量，但有时它与物质主义联系在一起。绿色设计完全适合与自然相关的产品。</p>
+<p>蓝色<br>        它通常代表一些企业形象，因为蓝色是信任的颜色。它通常表现出可靠性，可能会给用户带来平静的感受。然而，作为一种很酷的颜色，它也与距离和悲伤有关，因此设计师需要保持平衡。</p>
+<p>紫色<br>        由于许多国王都穿着紫色衣服，因此与皇室和财富密切相关，它对于展示一些奢侈品非常有用。它也是神秘和魔力的颜色。它混合了红色和蓝色的能量，因此它具有动力和稳定性的平衡。颜色的浓度可能会分散用户的注意力。</p>
+<p>粉色<br>        它是希望，敏感和浪漫的颜色。粉红色比红色柔软，因此它创造了无条件的爱。粉红色与年轻女性气质密切相关，因此如果目标受众主要是女孩和年轻女性，它可能是一种有效的颜色。</p>
+<p>棕色<br>        像地球母亲一样安全和保护的颜色。设计师通常使用棕色作为背景颜色，从浅到深的各种色调。它为设计带来温暖和舒适的感觉。此外，它可能用于显示经验和保证。</p>
+<p>黑色<br>        颜色有很多含义。它与悲惨的情况和死亡有关。它意味着一个谜。它可以是传统的，现代的，严肃的。一切都取决于你如何使用它以及它采用哪种颜色。黑色与任何其他颜色匹配良好，因此它非常适合背景。设计师经常用它来设置对比。</p>
+<p>白色<br>        颜色意味着纯洁和纯真，以及整体和清晰。怀特经常与一张白纸相关联，激励人们产生新的想法。然而，过多的白色会导致孤立和空虚的感觉。在设计中，白色通常用作背景颜色，特别是对于可读性是重要部分的资源。</p>
+<h4 id="技巧5-色彩协调"><a href="#技巧5-色彩协调" class="headerlink" title="技巧5-色彩协调"></a>技巧5-色彩协调</h4><p>​        明度是指色相的明暗程度，它显示了色相的明暗差别，或者说是色块的素描关系。每一色相都有其自身的光谱明度范围，加入白色会提高明度，加入黑色则会降低明度。明度在色彩的搭配中扮演着一个重要的角色。<br>​        优秀的设计作品，无论是运用同类色搭配，还是运用非同类色(补色)配置，当我们把它们还原成黑白图片时，我们就会发现这些作品的黑白灰关系非常的协调统一。这说明了画面中的各个色块融于素描关系的大区域中，融于整个画面的黑白灰关系之中，在黑白灰的关系中寻求色相的信息承载。<br>​        色块的明度关系是画面相对隐蔽的骨骼，是一个潜在的问题。画面中如果没有明度关系的支撑，画面必然显得纷繁无序，杂乱无章。只考虑色相间的协调问题，画面仍然会显得杂乱无序，到处发光。画面中的各部分色块和无色彩部分应该共同构成一个协调统一的黑白灰关系。用色相的搭配和明度变化共同为主题服务，才能达到协调统一的画面效果。<br>​                  <img src="https://i.bmp.ovh/imgs/2021/10/9fc8633c10c0843b.jpg"></p>
+<h4 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h4><p>就目前来看，数字产品的成败与否，与配色方案的选取有着紧密的关联。正确而舒适的配色方案不仅能够让用户感到舒服，而且能够赋予产品以正确的调性，传递情绪，真正创造出深入人心的产品。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/31/2021-10-31-ElasticSearch--Scroll/" data-toggle="tooltip" data-placement="top" title="ElasticSearch的滚动查询--(Scroll)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/31/2021-11-31-logo设计/" data-toggle="tooltip" data-placement="top" title="logo设计">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#美术" title="美术">美术</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/31/2021-10-31-UI%E8%AE%BE%E8%AE%A1-COLOR/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/31/2021-10-31-UI%E8%AE%BE%E8%AE%A1-COLOR/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

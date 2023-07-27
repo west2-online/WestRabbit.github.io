@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          跨域与同源策略探究 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2018/03/10/2018-04-02-same-origin/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                    </div>
+                    <h1>跨域与同源策略探究</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Chs97 on
+                        2018-03-10
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>跨域这个问题前端开发者都接触过，网上的文章也非常多，但是昨天的腾讯二面给我留了非常深刻的印象，原来跨域能问出那么多花样，难怪所有面试官都喜欢和面试者来探讨这个问题。</p>
+<h3 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h3><h4 id="一、什么是跨域"><a href="#一、什么是跨域" class="headerlink" title="一、什么是跨域"></a>一、什么是跨域</h4><p>简单的来说就是浏览器限制了向不同域发送ajax请求。</p>
+<p>不同域体现在：域名、端口、协议不同</p>
+<span id="more"></span>
+
+<h4 id="二、怎么解决跨域"><a href="#二、怎么解决跨域" class="headerlink" title="二、怎么解决跨域"></a>二、怎么解决跨域</h4><h5 id="1-JSONP"><a href="#1-JSONP" class="headerlink" title="1.JSONP"></a>1.JSONP</h5><p>JSONP在CORS出现之前，是最常见的一种跨域方案，在IE10以下的版本，是不兼容CORS的，所以如果有需要兼容IE10一下的，都会使用JSONP去解决跨域问题。</p>
+<h6 id="JSONP的基本原理："><a href="#JSONP的基本原理：" class="headerlink" title="JSONP的基本原理："></a>JSONP的基本原理：</h6><p>动态向页面添加一个script标签，浏览器对脚本请求是没有域限制的，浏览器会请求脚本，然后解析脚本，执行脚本。通过这个我们就可以实现跨域请求。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">handleResponse</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">&quot;script&quot;</span>)</span><br><span class="line">script.src = <span class="string">&quot;http://localhost:3000/?callback=handleResponse&quot;</span></span><br><span class="line"><span class="built_in">document</span>.body.insertBefore(script, <span class="built_in">document</span>.body.firstChild)</span><br></pre></td></tr></table></figure>
+
+<p>研究一下这段代码，新建一个script标签，设置标签的src属性，动态插入标签到body后面。插入以后浏览器会请求src的内容，下载下来并执行。</p>
+<p>那怎么通过回调handleResponse获得数据？src后面那段querystring又是干什么的？</p>
+<p>如果请求得到的脚本里面的代码长这样</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">handleResponse(<span class="string">&#x27;hello world&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>执行的时候是不是就可以通过回调得到data -&gt; ‘hello world’ </p>
+<p>所以jsonp其实也需要后端的支持，这个queryString就是让后端知道你前端的回调方法，然后要返回怎样的脚本给前端。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> koa = <span class="built_in">require</span>(<span class="string">&#x27;koa&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> koa()</span><br><span class="line">app.use(<span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">  ctx.body = <span class="string">`<span class="subst">$&#123;ctx.query.callback&#125;</span>(&#x27;hello world&#x27;)`</span>;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这是node的一段代码，简单的体现出了jsonp后端的处理方式。</p>
+<h6 id="JSONP的缺点"><a href="#JSONP的缺点" class="headerlink" title="JSONP的缺点"></a>JSONP的缺点</h6><p>只能发送get请求，感觉这不是正经的手段，而是一个奇淫巧技。</p>
+<p>对于，为什么浏览器对于JavaScript不做同源策略这个问题，我觉得主要原因是需要后端的支持，他需要通过后端返回的内容，并且执行，产生回调才可以取得到结果。然而ajax不一样，js可以直接拿到ajax的返回结果。</p>
+<p>还有一种可能就是，静态资源需要放到CDN上，或者引用一些公共的脚本，应该是需求导致。</p>
+<h5 id="2-CORS"><a href="#2-CORS" class="headerlink" title="2.CORS"></a>2.CORS</h5><p>CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。</p>
+<p>它允许浏览器向跨源服务器，发出<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html"><code>XMLHttpRequest</code></a>请求，从而克服了AJAX只能<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/04/same-origin-policy.html">同源</a>使用的限制。</p>
+<h6 id="什么是CORS？"><a href="#什么是CORS？" class="headerlink" title="什么是CORS？"></a>什么是CORS？</h6><p>CORS需要浏览器和服务器同时支持。目前，所有浏览器都支持该功能，IE浏览器不能低于IE10。</p>
+<p>整个CORS通信过程，都是浏览器自动完成，不需要用户参与。对于开发者来说，CORS通信与同源的AJAX通信没有差别，代码完全一样。浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。</p>
+<p>因此，实现CORS通信的关键是服务器。只要服务器实现了CORS接口，就可以跨源通信。</p>
+<p>拿Koa举个栗子。在Koa中，我们只需要在Koa中加个中间件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> koa = <span class="built_in">require</span>(<span class="string">&#x27;koa&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> cors = <span class="built_in">require</span>(<span class="string">&#x27;koa2-cors&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> koa()</span><br><span class="line">app.use(cors())</span><br><span class="line">app.use(<span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">  ctx.body = <span class="string">&#x27;hello world&#x27;</span>;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这样就能实现服务端CORS接口。</p>
+<h6 id="两种请求"><a href="#两种请求" class="headerlink" title="两种请求"></a>两种请求</h6><p>关于为什么有这两种请求的区别，我个人认为，浏览器发送预请求所消耗的资源会比简单请求还多，所以浏览器发送简单请求不需要发送预请求。而非简单请求，如果发送以后，然后被服务器拒绝了，所消耗的资源比预请求还多，所以在发送非简单请求之前，使用一个预请求来判断服务器是否允许跨域。</p>
+<p>1.简单请求</p>
+<p>同时满足一下条件为简单请求</p>
+<p>（1) 请求方法是以下三种方法之一：</p>
+<ul>
+<li>HEAD</li>
+<li>GET</li>
+<li>POST</li>
+</ul>
+<p>（2）HTTP的头信息不超出以下几种字段：</p>
+<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Last-Event-ID</li>
+<li>Content-Type：只限于三个值<code>application/x-www-form-urlencoded</code>、<code>multipart/form-data</code>、<code>text/plain</code></li>
+</ul>
+<p>如果content-type的值为<code>application/json</code>那么这个请求就是非简单请求，需要发送预请求。</p>
+<p>2.非简单请求</p>
+<p>不属于简单请求都是非简单请求，非简单请求就需要预请求。</p>
+<h6 id="预请求"><a href="#预请求" class="headerlink" title="预请求"></a>预请求</h6><p>非简单请求会在正式请求之前发送一次预请求，这个请求是浏览器发的。浏览器先向服务器询问，当前的请求域是否在服务器的许可名单中，已经服务器允许哪一些方法，哪一些请求头。只有得到服务器的答复，并且之后发送的那个正式请求是被允许的（方法和请求头），浏览器才会发送这个正式请求。</p>
+<p>“预检”请求用的请求方法是<code>OPTIONS</code>，表示这个请求是用来询问的。头信息里面，关键字段是<code>Origin</code>，表示请求来自哪个源。</p>
+<p>除了<code>Origin</code>字段，”预检”请求的头信息包括两个特殊字段。</p>
+<p><strong>Access-Control-Request-Method</strong></p>
+<p>字面意思，内容是允许的请求方法</p>
+<p><strong>Access-Control-Request-Headers</strong></p>
+<p>同字面意思，内容是允许的额外的请求头</p>
+<h5 id="3-通过iframe"><a href="#3-通过iframe" class="headerlink" title="3.通过iframe"></a>3.通过iframe</h5><p>没有特殊情况下，iframe的加载是没有跨域限制的。<code>&lt;iframe&gt;</code> 载入的任何资源是允许跨域的。我们可以通过几个手段，让iframe的内容，传递到父窗口中。</p>
+<p>1.Window.name + iframe</p>
+<ul>
+<li>window.name属性值在文档刷新后依旧存在的能力（且最大允许2M左右）。</li>
+<li>每个iframe都有包裹它的window。</li>
+<li>contenWindow返回的是<code>&lt;iframe&gt;</code>元素的window对象</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// localhost:3001/index.html</span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> iframe = <span class="built_in">document</span>.createElement(<span class="string">&#x27;iframe&#x27;</span>)</span></span><br><span class="line"><span class="javascript">    iframe.style.display = <span class="string">&#x27;none&#x27;</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> state = <span class="number">0</span> <span class="comment">// 设置状态防止页面无限刷新</span></span></span><br><span class="line"><span class="javascript">    iframe.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">if</span> (state == <span class="number">1</span>) &#123;</span></span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(iframe.contentWindow.name)</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 清除创建的iframe</span></span></span><br><span class="line"><span class="javascript">        iframe.contentWindow.document.write(<span class="string">&#x27;&#x27;</span>);</span></span><br><span class="line"><span class="javascript">        iframe.contentWindow.close();</span></span><br><span class="line"><span class="javascript">        <span class="built_in">document</span>.body.removeChild(iframe);</span></span><br><span class="line"><span class="javascript">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (state == <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="javascript">        state = <span class="number">1</span></span></span><br><span class="line"><span class="javascript">        iframe.contentWindow.location = <span class="string">&#x27;http://localhost:3001/proxy.html&#x27;</span>; <span class="comment">//加载完成，iframe指回当前域</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">// 防止 Blocked a frame with origin &quot;xxxx&quot; from accessing a cross-origin frame.错误</span></span></span><br><span class="line"><span class="javascript">      &#125;</span></span><br><span class="line"><span class="javascript">    &#125;</span></span><br><span class="line"><span class="javascript">    iframe.src = <span class="string">&#x27;http://localhost:3000/&#x27;</span>;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.body.appendChild(iframe);</span></span><br><span class="line"><span class="javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// localhost:3000,server</span></span><br><span class="line"><span class="keyword">const</span> koa = <span class="built_in">require</span>(<span class="string">&#x27;koa&#x27;</span>)</span><br><span class="line"><span class="comment">// const cors = require(&#x27;koa2-cors&#x27;)</span></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> koa()</span><br><span class="line"><span class="comment">// app.use(cors())</span></span><br><span class="line">app.use(<span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">  data = <span class="string">&#x27;\&#x27;hello world\&#x27;&#x27;</span></span><br><span class="line">  ctx.body = <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;h1&gt;<span class="subst">$&#123;data&#125;</span>&lt;/h1&gt;</span></span><br><span class="line"><span class="string">    &lt;script&gt;</span></span><br><span class="line"><span class="string">      window.name = <span class="subst">$&#123;data&#125;</span></span></span><br><span class="line"><span class="string">    &lt;/script&gt;</span></span><br><span class="line"><span class="string">  `</span>;</span><br><span class="line">&#125;);</span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>结果： 浏览器console 输出 hello world，表示我们在localhost:3001中拿到了localhost:3000的数据。</p>
+<h4 id="三、为什么浏览器需要同源策略"><a href="#三、为什么浏览器需要同源策略" class="headerlink" title="三、为什么浏览器需要同源策略"></a>三、为什么浏览器需要同源策略</h4><p>考虑一下这个场景：你打开了A网站，并且登录了A网站，A网站也记录了你的cookie信息，然后你打开一个B网站，如果没有同源策略，B网站是可以直接请求A网站的接口的，有一些比如个人信息，他就可以通过get等方法，获得到你的信息，甚至可以post等操作去修改你的信息，这样你的账户安全是受到很严重的威胁的。所以浏览器需要同源策略来保证一定的安全，攻击手段例如CSRF和XSS，下面会详细讲。</p>
+<h4 id="四、跨源网络访问"><a href="#四、跨源网络访问" class="headerlink" title="四、跨源网络访问"></a>四、跨源网络访问</h4><h5 id="1-通常允许跨域写操作"><a href="#1-通常允许跨域写操作" class="headerlink" title="1.通常允许跨域写操作"></a>1.通常允许跨域写操作</h5><p>例如：links，重定向（传统页面的跳转），以及表单提交。特定少数的HTTP请求需要添加 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/HTTP/Access_control_CORS#Preflighted_requests">preflight</a>。</p>
+<h5 id="2-通常允许跨域资源嵌入"><a href="#2-通常允许跨域资源嵌入" class="headerlink" title="2.通常允许跨域资源嵌入"></a>2.通常允许跨域资源嵌入</h5><ul>
+<li><code>&lt;script src=&quot;...&quot;&gt;&lt;/script&gt;</code> 标签嵌入跨域脚本。语法错误信息只能在同源脚本中捕捉到。</li>
+<li><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt;</code> 标签嵌入CSS。由于CSS的<a target="_blank" rel="noopener" href="http://scarybeastsecurity.blogspot.dk/2009/12/generic-cross-browser-cross-domain.html">松散的语法规则</a>，CSS的跨域需要一个设置正确的<code>Content-Type</code> 消息头。不同浏览器有不同的限制： <a target="_blank" rel="noopener" href="http://msdn.microsoft.com/zh-CN/library/ie/gg622939%28v=vs.85%29.aspx">IE</a>, <a target="_blank" rel="noopener" href="http://www.mozilla.org/security/announce/2010/mfsa2010-46.html">Firefox</a>, <a target="_blank" rel="noopener" href="http://code.google.com/p/chromium/issues/detail?id=9877">Chrome</a>, <a target="_blank" rel="noopener" href="http://support.apple.com/kb/HT4070">Safari</a> (跳至CVE-2010-0051)部分 和 <a target="_blank" rel="noopener" href="http://www.opera.com/support/kb/view/943/">Opera</a>。</li>
+<li><code>&lt;img&gt;</code>嵌入图片。支持的图片格式包括PNG,JPEG,GIF,BMP,SVG,…</li>
+<li><code>video</code>和 <code>audio</code>嵌入多媒体资源。</li>
+<li><code>@font-face</code> 引入的字体。一些浏览器允许跨域字体（ cross-origin fonts），一些需要同源字体（same-origin fonts）。</li>
+<li><code>&lt;iframe&gt;</code> 载入的任何资源。站点可以使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/HTTP/X-Frame-Options">X-Frame-Options</a>消息头来阻止这种形式的跨域交互。</li>
+</ul>
+<p>曾经就遇到过字体文件跨域问题，在引入fontawesome的时候，webpack打包之后上传到服务器，浏览器加载不到字体文件，错误显示了跨域的问题。解决方案需要在nginx配置请求字体文件返回的请求头</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">location</span> <span class="regexp">~* \.(eot|ttf|woff|svg|otf)$</span> &#123;</span><br><span class="line">     <span class="attribute">add_header</span> Access-Control-Allow-Origin *;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-canvas中img的跨域"><a href="#3-canvas中img的跨域" class="headerlink" title="3.canvas中img的跨域"></a>3.canvas中img的跨域</h5><blockquote>
+<p>HTML 规范中图片有一个 <code>crossorigin</code> 属性，结合合适的 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Glossary/CORS">CORS</a> 响应头，就可以实现在画布中使用跨域<img> 元素的图像。</p>
+</blockquote>
+<p>有一次有个需求，就是对页面进行截图，我的方案是html2canvas ,canvs2image，结果导致了部分图片截不下来，其原因就是canvas画布被污染了。</p>
+<blockquote>
+<p>尽管不通过 CORS 就可以在画布中使用图片，但是这会<strong>污染</strong>画布。一旦画布被污染，你就无法读取其数据。例如，你不能再使用画布的 <code>toBlob()</code>, <code>toDataURL()</code> 或 <code>getImageData()</code> 方法，调用它们会抛出安全错误。</p>
+</blockquote>
+<p>解决办法对画布中的图片配置<code>img.crossOrigin = &quot;Anonymous&quot;;</code></p>
+<h3 id="CSRF与XSS"><a href="#CSRF与XSS" class="headerlink" title="CSRF与XSS"></a>CSRF与XSS</h3><h4 id="一、XSS"><a href="#一、XSS" class="headerlink" title="一、XSS"></a>一、XSS</h4><blockquote>
+<p>跨站脚本（英语：Cross-site scripting，通常简称为：XSS）是一种网站应用程序的安全漏洞攻击，是代码注入的一种。它允许恶意用户将代码注入到网页上，其他用户在观看网页时就会受到影响。这类攻击通常包含了HTML以及用户端脚本语言。</p>
+<p>XSS其实是为了和CSS做区分吧。</p>
+</blockquote>
+<p>在好几年前，XSS非常流行，可以用XSS获得用户的cookie，浏览器版本等信息，比如如果使用XSS获得到了管理员的cookie，那网站可就危险了。随着行业的发展，XSS越来越受重视，浏览器也对这种手段做了一定的预防，比如同源策略？CSP?</p>
+<h5 id="1-XSS是什么"><a href="#1-XSS是什么" class="headerlink" title="1.XSS是什么"></a>1.XSS是什么</h5><h6 id="反射型"><a href="#反射型" class="headerlink" title="反射型"></a>反射型</h6><p>反射型的攻击需要攻击者去欺骗用户点击，或者脚本当作url参数注入到页面中。</p>
+<p>举个栗子</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> str = <span class="built_in">window</span>.location.href.split(<span class="string">&#x27;injection=&#x27;</span>)[<span class="number">1</span>]</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(<span class="string">&#x27;&lt;script&gt;&#x27;</span> +</span></span><br><span class="line"><span class="javascript">      <span class="built_in">decodeURIComponent</span>(str) +</span></span><br><span class="line"><span class="javascript">      <span class="string">&#x27;&lt;\/script&gt;&#x27;</span>)</span></span><br><span class="line"><span class="javascript">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>浏览器输入url+?injection=alert(1)</p>
+<p>这时候会弹出一个弹窗内容为1，这就是XSS注入的一种方式。</p>
+<h6 id="存储型"><a href="#存储型" class="headerlink" title="存储型"></a>存储型</h6><p>存储型比反射型的危害更大，因为存储型是用户把攻击代码提交到数据库中，当别的用户访问时，数据库把攻击代码返回给用户，用户就会受到攻击。</p>
+<p><a target="_blank" rel="noopener" href="https://lorexxar.cn/2015/11/19/xss-link/">xss link&amp;svg黑魔法</a></p>
+<h5 id="2-怎么预防XSS"><a href="#2-怎么预防XSS" class="headerlink" title="2.怎么预防XSS"></a>2.怎么预防XSS</h5><ol>
+<li>尽量不在特定地方输出不可信变量：script / comment / attribute / tag / style， 因为逃脱 HTMl 规则的字符串太多了。</li>
+<li>将不可信变量输出到 div / body / attribute / javascript tag / style 之前，对 <code>&amp; &lt; &gt; &quot; &#39; /</code> 进行转义</li>
+<li>将不可信变量输出 URL 参数之前，进行 URLEncode</li>
+<li>使用合适的 HTML 过滤库进行过滤。介绍个库<a target="_blank" rel="noopener" href="https://github.com/yahoo/xss-filters">Secure XSS Filters</a></li>
+<li>预防 DOM-based XSS，见 <a target="_blank" rel="noopener" href="https://www.owasp.org/index.php/DOM_based_XSS_Prevention_Cheat_Sheet">DOM based XSS Prevention Cheat Sheet</a></li>
+<li>开启 HTTPOnly cookie，让浏览器接触不到 cookie</li>
+</ol>
+<h4 id="二、CSRF"><a href="#二、CSRF" class="headerlink" title="二、CSRF"></a>二、CSRF</h4><h5 id="1-CSRF是什么"><a href="#1-CSRF是什么" class="headerlink" title="1.CSRF是什么"></a>1.CSRF是什么</h5><p>Cross-site request forgery 跨站请求伪造，也被称为 “one click attack” 或者 session riding，通常缩写为 CSRF 或者 XSRF，是一种对网站的恶意利用。CSRF 则通过伪装来自受信任用户的请求来利用受信任的网站。</p>
+<h5 id="2-怎么预防"><a href="#2-怎么预防" class="headerlink" title="2.怎么预防"></a>2.怎么预防</h5><p>从它的原理来讲，我们的目的就是，不让已经登录A网站的用户，打开B网站后，受到攻击，也就是说，不让B网站向A网站发送有效的请求，获得用户在A网站的信息或者进行破坏。</p>
+<h6 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h6><p>1.SSR</p>
+<p>大部分SSR的网站都使用form表单进行提交内容的，这时候如果B网站也构造一个和A网站一样的form表单，一样可以提交内容到A网站。</p>
+<p>我们只需要一个能验证身份的，能证明这个请求是从A发出来的，而不是B发出来的就可以了。如下面Codeforces的Login</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span> <span class="attr">action</span>=<span class="string">&quot;&quot;</span> <span class="attr">id</span>=<span class="string">&quot;enterForm&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;csrf_token&quot;</span> <span class="attr">value</span>=<span class="string">&quot;635faaad128c55d2849b89e80bf790a3&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">table</span> <span class="attr">class</span>=<span class="string">&quot;table-form&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;action&quot;</span> <span class="attr">value</span>=<span class="string">&quot;enter&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;ftaa&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;bfaa&quot;</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">               </span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">name</span>=<span class="string">&quot;_tta&quot;</span> <span class="attr">value</span>=<span class="string">&quot;243&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在生成form的时候，后台插入了一个csrf_token用来验证请求来源，这个csrf_tokenB网站是拿不到的，所以这样就能验证请求是从A发出来的而不是B。</p>
+<p>2.SPA</p>
+<p>对于SPA，非SSR，无法在form中嵌入一个csrf_token，一般后台是不会把<em>Origin</em>设置成*的，可以直接限制请求来源，有一点得注意的，请求必须保证不能用form构造出来，比如可以使用json交互。如果后台偷懒，像我一样，直接用个中间件没有设置啥的话，默认是不做跨域限制的。</p>
+<p>这时候就将身份验证信息放在localStorage或者其他地方，总之不要放在cookie中，我们每次请求带上信息。B网站是读不到这些信息的，也就无法攻击了。</p>
+<h6 id="SameSite"><a href="#SameSite" class="headerlink" title="SameSite"></a>SameSite</h6><p>关于这个SameSite好像使用得非常少。</p>
+<p>SameSite-cookies是一种机制，用于定义cookie如何跨域发送。这是谷歌开发的一种安全机制，并且现在在最新版本（Chrome Dev 51.0.2704.4）中已经开始实行了。SameSite-cookies的目的是尝试阻止CSRF（Cross-site request forgery 跨站请求伪造）以及XSSI（Cross Site Script Inclusion (XSSI) 跨站脚本包含）攻击。</p>
+<p>似乎，只有在chrome浏览器才有这个机制。</p>
+<p>这个的原理是阻止第三方cookie的发送，比如：B网站向A网站的接口发送请求，是不会带上A网站已有的cookie的，而A网站向A网站的接口发送请求，还是会带上cookie的。这是浏览器的一种机制。具体的请看参考链接中的<code>再见，CSRF：讲解set-cookie中的SameSite属性</code></p>
+<h6 id="检查来源"><a href="#检查来源" class="headerlink" title="检查来源"></a>检查来源</h6><p>验证referer字段</p>
+<p>HTTP头有一个字段叫做referer它记录了该 HTTP 请求的来源地址。后台可以根据这个字段来判断这个请求是否是从网站A发出的，如果不是，就是不合法的请求。</p>
+<h5 id="3-CSRF窃取"><a href="#3-CSRF窃取" class="headerlink" title="3.CSRF窃取"></a>3.CSRF窃取</h5><p>利用CSS手段，有很多网站其实是把token放在一个隐藏的input中的，css中有一个input的选择器，可以匹配出input中以某个字符串开头，通过选择器，加载一个外部资源，例如背景图片。但是这有个前提，需要原来的页面存在注入，例如文章里这段代码。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;https://security.love&quot;</span> <span class="attr">id</span>=<span class="string">&quot;sensitiveForm&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span> <span class="attr">id</span>=<span class="string">&quot;secret&quot;</span> <span class="attr">name</span>=<span class="string">&quot;secret&quot;</span> <span class="attr">value</span>=<span class="string">&quot;dJ7cwON4BMyQi3Nrq26i&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;mockingTheBackend.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> fragment = <span class="built_in">decodeURIComponent</span>(<span class="built_in">window</span>.location.href.split(<span class="string">&quot;?injection=&quot;</span>)[<span class="number">1</span>]);</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> htmlEncode = fragment.replace(<span class="regexp">/&lt;/g</span>,<span class="string">&quot;&amp;lt;&quot;</span>).replace(<span class="regexp">/&gt;/g</span>,<span class="string">&quot;&amp;gt;&quot;</span>);</span></span><br><span class="line"><span class="javascript">    <span class="built_in">document</span>.write(<span class="string">&quot;&lt;style&gt;&quot;</span> + htmlEncode + <span class="string">&quot;&lt;/style&gt;&quot;</span>);</span></span><br><span class="line"><span class="javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>从url中的queryString获取参数，插入到dom中，dom中加载样式，来猜解token。</p>
+<p>查看该demo的源代码就知道原理了。</p>
+<p><a target="_blank" rel="noopener" href="https://security.love/cssInjection/attacker.html">demo</a></p>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/04/cors.html">跨域资源共享 CORS 详解</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/Security/Same-origin_policy">浏览器的同源策略</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS">HTTP访问控制（CORS）</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/CORS_enabled_image">启用了 CORS 的图片</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/83773">再见，CSRF：讲解set-cookie中的SameSite属性</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/web/1102_niugang_csrf/">CSRF 攻击的应对之道</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.freebuf.com/articles/web/162687.html">利用CSS注入（无iFrames）窃取CSRF令牌</a></p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP">内容安全策略( CSP )</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.alswl.com/2017/05/xss/">XSS 攻击的处理</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/04/01/2018-04-01-并发编程艺术-底层原理/" data-toggle="tooltip" data-placement="top" title="Java并发编程艺术-并发机制的底层原理实现">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/12/17/2017-12-17-try_git+webhook/" data-toggle="tooltip" data-placement="top" title="Git WebHook简易自动部署笔记 ">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2018/03/10/2018-04-02-same-origin/";
+    var disqus_url = "https://blog.w2fzu.com/2018/03/10/2018-04-02-same-origin/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

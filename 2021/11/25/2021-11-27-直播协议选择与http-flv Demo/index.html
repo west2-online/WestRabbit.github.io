@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          直播协议选择与http-flv Demo - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/25/2021-11-27-直播协议选择与http-flv Demo/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#flv" title="flv">flv</a>
+                        
+                          <a class="tag" href="/tags/#直播" title="直播">直播</a>
+                        
+                    </div>
+                    <h1>直播协议选择与http-flv Demo</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 俞润鼎 on
+                        2021-11-25
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="直播协议选择与http-flv-Demo"><a href="#直播协议选择与http-flv-Demo" class="headerlink" title="直播协议选择与http-flv Demo"></a>直播协议选择与http-flv Demo</h1><h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>面对网络带宽提升，直播成为不少网站、软件的必备功能。而流传输协议的选择将对直播效果产生巨大影响。<br>这里我们将对主流的几个协议进行简单的分析，并提供一个基础的应用实现。</p>
+<h1 id="二、推流方式"><a href="#二、推流方式" class="headerlink" title="二、推流方式"></a>二、推流方式</h1><p>RMTP（Real Time Message Protocol）是目前主流的推流协议，他具有较低的时延，和高稳定性。<br>同时，有较多的相关实现，便于使用。具体内容将在后续分析。</p>
+<h1 id="三、拉流方式"><a href="#三、拉流方式" class="headerlink" title="三、拉流方式"></a>三、拉流方式</h1><ul>
+<li><p>HLS(Http Living Streaming)<br/><br>HLS是基于HTTP协议的，实现方式是，在服务器收到视频流的时候，根据一个分段时间将视频缓存，并封包成一个ts文件，<br>同时维护一个m3u8文件用于保存视频的分段信息。然后对于客户端而言，就是在根据m3u8文件<br>来播放一个个视频片段。而对于每次视频片段的请求，都需要因此TCP握手，这就使得分段的时间大小不仅影响了时延，<br>同时频繁的请求还会额外占用资源。<br/><br>官方的建议分段是10s。而直播的时延必然不止分段大小，通常在20s以上。<br/><br>但其分段的优势使得视频源(如清晰度)的切换相对平滑。而且也得到了较好的浏览器等的支持。</p>
+</li>
+<li><p>RTMP(Real Time Messaging Protocol)<br/><br>RTMP实际上是使用TCP作为传输协议，所以具有高可靠性，但与HLS不同的是，他使用的是长链接，因此只需要一次握手<br>即可重复传输数据。它将数据分为一个个的块，然后一个个发送。<br/><br>由于是长连接，因此对服务器的资源消耗是比较大的，因此常是作为推流方式。<br/><br>但其时延显著低于HLS协议，甚至能够达到1-3s。同时，由于不是http协议，可以防止http直接下载，具有较好的保密性<br>(技术门槛提高)。</p>
+</li>
+<li><p>RTSP(Real-Time Stream Protocol)<br/><br>RTSP类似于RTMP，但是更类似于FTP。它通过RTP传输数据，通过RTSP本身发送控制信息，而不像RTMP，直接将控制命令与数据一起封包。<br/><br>如此方式使得RTSP在实现直播的时候比较复杂，并且与RTMP一样，都具有累积时延<br/><br>但也具有实时性好，稳定性高的特点。</p>
+</li>
+<li><p>HTTP<br/><br>最后是http协议的方式。我们通过将直播的流数据(通过RTMP推流)直接打包成flv文件，然后模拟HTTP的方式发送。<br>这种方式类似于HLS，但是其通过http的方式传输flv文件，因此在第一次握手后，客户端即可不断下载服务器的flv文件(直播流)，服务器负担小。<br/><br>但是与HLS相似，都具有保密性弱的劣势。<br/><br>不过，它的时延可以达到与RTMP相似的程度。另外，原本需要使用Flash算是一个劣势，<br>但是，小破站NB，感想b站程序员开源的flv.js使得html5播放flv文件不再依赖flash。</p>
+</li>
+</ul>
+<h1 id="四、直播Demo实现"><a href="#四、直播Demo实现" class="headerlink" title="四、直播Demo实现"></a>四、直播Demo实现</h1><ul>
+<li>这里通过obs+nginx+nginx-rtmp-module实现rtmp推流+http_flv拉流。</li>
+<li>同时，依赖nginx-rtmp-module还实现了推流身份验证。</li>
+<li>具体安装过程自行百度。</li>
+</ul>
+<p>配置文件如下<br>Nginx配置1（rtmp推流配置）</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">user  nobody;</span></span><br><span class="line">worker_processes  1;</span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line">rtmp_auto_push on;</span><br><span class="line">rtmp_auto_push_reconnect 1s;</span><br><span class="line">rtmp_socket_dir /tmp;</span><br><span class="line"></span><br><span class="line">rtmp &#123;</span><br><span class="line">    out_queue           4096;</span><br><span class="line">    out_cork            8;</span><br><span class="line">    max_streams         128;</span><br><span class="line">    timeout             15s;</span><br><span class="line">    drop_idle_publisher 15s;</span><br><span class="line">    log_interval 5s; #interval used by log module to log in access.log, it is very useful for debug</span><br><span class="line">    log_size     1m; #buffer size used by log module to log in access.log</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 1935;</span><br><span class="line">        server_name localhost; #for suffix wildcard matching of virtual host name</span><br><span class="line">        application http_flv &#123;</span><br><span class="line">            live on;</span><br><span class="line">            on_publish http://xxx.com/auth;  # 推拉开始身份验证地址</span><br><span class="line">            on_publish_done http://xxx.com/on_publish_done;  # 推拉结束回调地址</span><br><span class="line">            gop_cache on; #open GOP cache for reducing the wating time for the first picture of video</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Nginx配置2（http拉流配置）</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  localhost;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">        location /live &#123;</span><br><span class="line">            flv_live on; #open flv live streaming (subscribe)</span><br><span class="line">            chunked_transfer_encoding  on; #open &#x27;Transfer-Encoding: chunked&#x27; response</span><br><span class="line">            add_header &#x27;Access-Control-Allow-Origin&#x27; &#x27;*&#x27;; #add additional HTTP header</span><br><span class="line">            add_header &#x27;Access-Control-Allow-Credentials&#x27; &#x27;true&#x27;; #add additional HTTP header</span><br><span class="line">        &#125;</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html &#123;</span><br><span class="line">            root   html;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>obs推流地址配置<br><img src="./p1.png" alt="obs推流"></p>
+<p>后端处理<br>由于nginx是通过post的方式请求的，所以通过该方法获取推流的相关信息。其中”推流地址”对应”swfurl”，”秘钥”对应”name”<br/><br>这里我们将在播的主播存于Redis中，以加速查询在播用户。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@api.route(<span class="params"><span class="string">&#x27;/auth&#x27;</span>, methods=[<span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">auth</span>():</span></span><br><span class="line">    <span class="comment"># 打开数据库连接</span></span><br><span class="line">    data = request.form</span><br><span class="line">    url = data.get(<span class="string">&#x27;swfurl&#x27;</span>)    <span class="comment"># 推流请求URL</span></span><br><span class="line">    pull_key = data.get(<span class="string">&#x27;name&#x27;</span>) <span class="comment"># 推流秘钥</span></span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">and</span> pull_key:</span><br><span class="line">        lst_query = <span class="built_in">dict</span>(urllib.parse.parse_qsl(urllib.parse.urlparse(url).query))</span><br><span class="line">        push_key = lst_query.get(<span class="string">&#x27;key&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> push_key <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="comment"># 验证秘钥</span></span><br><span class="line">            room = Room.query.<span class="built_in">filter</span>(Room.push_key == push_key, Room.pull_key == pull_key).first()</span><br><span class="line">            types = RoomType.query.<span class="built_in">filter</span>(RoomType.<span class="built_in">id</span> == room.type_id).first()</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 分类存放在播主播</span></span><br><span class="line">            <span class="keyword">if</span> room <span class="keyword">and</span> types:</span><br><span class="line">                rd.sadd(<span class="string">&quot;liver&quot;</span>, set_room_key(room))</span><br><span class="line">                rd.sadd(types.mname, set_room_key(room))</span><br><span class="line">                <span class="keyword">return</span> Response(response=<span class="string">&#x27;success&#x27;</span>, status=<span class="number">200</span>)  <span class="comment"># 返回200状态码</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Response(status=<span class="number">500</span>)  <span class="comment"># 返回500状态码</span></span><br></pre></td></tr></table></figure>
+
+<p>最后前端通过js获取拉流地址</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">LiveUrl</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> params = &#123;&#125;;</span><br><span class="line">    <span class="keyword">var</span> roomname = GetRoomName(location.href);</span><br><span class="line">    <span class="keyword">var</span> roomurl = <span class="literal">null</span>;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        <span class="attr">url</span>: RequestUrl+roomname,   <span class="comment">// 请求地址</span></span><br><span class="line">        <span class="attr">type</span>: <span class="string">&quot;post&quot;</span>,</span><br><span class="line">        <span class="attr">data</span>: params,</span><br><span class="line">        <span class="attr">async</span>:<span class="literal">false</span>,</span><br><span class="line">        <span class="attr">dataType</span>: <span class="string">&quot;json&quot;</span>,</span><br><span class="line">    &#125;).done(<span class="function"><span class="keyword">function</span> (<span class="params">ret</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!ret[<span class="string">&#x27;code&#x27;</span>]) &#123;</span><br><span class="line">            <span class="keyword">var</span> room_data = ret[<span class="string">&#x27;data&#x27;</span>];</span><br><span class="line">            roomurl = liveUrl+<span class="string">&quot;&amp;stream=&quot;</span>+room_data[<span class="string">&#x27;url&#x27;</span>];</span><br><span class="line">            RoomSet(room_data);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            alert(ret[<span class="string">&#x27;msg&#x27;</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> roomurl</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">IsLiveRound</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!IsLive(GetRoomName(location.href)))&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(IsLive(GetRoomName(location.href)));</span><br><span class="line">        $(<span class="string">&quot;#unlive&quot;</span>).html(<span class="string">&quot;主播暂时不在哦&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        $(<span class="string">&quot;#unlive&quot;</span>).html(<span class="string">&quot;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、效果展示"><a href="#五、效果展示" class="headerlink" title="五、效果展示"></a>五、效果展示</h1><p><img src="./p2.png" alt="效果1"></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/28/2021-11-29-ES9正则新特性/" data-toggle="tooltip" data-placement="top" title="ES9正则表达式新特性">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/24/2021-11-24-Golang的Redis简单使用及集群配置/" data-toggle="tooltip" data-placement="top" title="Golang的Redis简单使用及集群配置">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#flv" title="flv">flv</a>
+                        
+                          <a class="tag" href="/tags/#直播" title="直播">直播</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/25/2021-11-27-%E7%9B%B4%E6%92%AD%E5%8D%8F%E8%AE%AE%E9%80%89%E6%8B%A9%E4%B8%8Ehttp-flv%20Demo/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/25/2021-11-27-%E7%9B%B4%E6%92%AD%E5%8D%8F%E8%AE%AE%E9%80%89%E6%8B%A9%E4%B8%8Ehttp-flv%20Demo/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

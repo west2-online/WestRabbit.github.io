@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          canvas vs svg - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/24/2021-10-24--canvas vs svg/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                    </div>
+                    <h1>canvas vs svg</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by dogcat-ux on
+                        2021-10-24
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一直对于canvas和svg这二者的作用和关系一知半解，就借着博客梳理梳理，若有错误欢迎指出~</p>
+<h2 id="一-Canvas"><a href="#一-Canvas" class="headerlink" title="一.Canvas"></a>一.Canvas</h2><p>Canvas是HTML5的画布，它公开了一个或多个渲染上下文。</p>
+<p>画布本身就是张白纸，你可以移动纸张改变纸张大小（设置画布边距长宽），也可以在纸张里面绘制图像（在画布中操作）。</p>
+<h4 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h4><p>canvas在body里面定义，用js在画布上面画画。当然canvas本身就是一个标签，所以你也可以给它设置长宽背景色等。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;canvas&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="javascript"></span></span><br><span class="line"><span class="javascript"><span class="comment">//获取canvas元素</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;canvas&#x27;</span>);</span></span><br><span class="line"><span class="javascript">  <span class="comment">//创建context对象</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> ctx = canvas.getContext(<span class="string">&#x27;2d&#x27;</span>);</span></span><br><span class="line"><span class="javascript">  <span class="comment">//绘制一个绿色的矩形</span></span></span><br><span class="line"><span class="javascript">  ctx.fillStyle = <span class="string">&#x27;green&#x27;</span>;</span></span><br><span class="line"><span class="javascript">  ctx.fillRect(<span class="number">10</span>, <span class="number">10</span>, <span class="number">150</span>, <span class="number">100</span>);</span></span><br><span class="line"><span class="javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>canvas可以绘制矩形圆形等各种图像，也可以直接使用图片，canvas中使用图片必须等img完全加载后才能呈递图片。具体的画画操作不详细说明。</p>
+<h5 id="canvas坐标"><a href="#canvas坐标" class="headerlink" title="canvas坐标"></a>canvas坐标</h5><p>左上角为画布原点，向右延伸为x方向，向下延伸为Y方向。（2d画布）</p>
+<h2 id="二-SVG"><a href="#二-SVG" class="headerlink" title="二.SVG"></a>二.SVG</h2><p>svg全称<strong>Scalable Vector Graphics</strong>，意为可缩放矢量图形</p>
+<p>svg是一种使用XML描述2D图形的语言。那我们只能去看下xml了，xml简单介绍在下面。</p>
+<p>SVG 基于 XML，这意味着 SVG DOM 中的每个元素都是可用的。您可以为某个元素附加 JavaScript 事件处理器。</p>
+<p>在 SVG 中，每个被绘制的图形均被视为对象。如果 SVG 对象的属性发生变化，那么浏览器能够自动重现图形。</p>
+<h4 id="SVG-in-html"><a href="#SVG-in-html" class="headerlink" title="SVG in html"></a>SVG in html</h4><p>svg本身可以下载，并且可以用浏览器打开。</p>
+<h5 id="html"><a href="#html" class="headerlink" title="html"></a>html</h5><p>SVG 文件可通过以下标签嵌入 HTML 文档：<embed>、<object> 或者 <iframe>。</p>
+<h5 id="html5"><a href="#html5" class="headerlink" title="html5"></a>html5</h5><p>在 HTML5 中，能够将 SVG 元素直接嵌入 HTML 页面中</p>
+<h4 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h4><p>SVG的形状什么的就不多说了，svg可以绘制矩形，圆形什么的。像前端用到的图标就可以用svg代码书写出来。</p>
+<h5 id="滤镜"><a href="#滤镜" class="headerlink" title="滤镜"></a>滤镜</h5><p>这边讲一下svg的滤镜。当然css的filter本身也可以进行图像处理。</p>
+<p><filter> 标签用来定义 SVG 滤镜。<filter> 标签使用必需的 id 属性来定义向图形应用哪个滤镜。</p>
+<p><filter> 标签必须嵌套在 <defs> 标签内。<defs> 标签是 definitions 的缩写，它允许对诸如滤镜等特殊元素进行定义。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">svg</span> <span class="attr">width</span>=<span class="string">&quot;100%&quot;</span> <span class="attr">height</span>=<span class="string">&quot;100%&quot;</span> <span class="attr">version</span>=<span class="string">&quot;1.1&quot;</span></span></span><br><span class="line"><span class="tag">     <span class="attr">xmlns</span>=<span class="string">&quot;http://www.w3.org/2000/svg&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--    在这边定义--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">defs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">id</span>=<span class="string">&quot;Gaussian_Blur&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">feGaussianBlur</span> <span class="attr">in</span>=<span class="string">&quot;SourceGraphic&quot;</span> <span class="attr">stdDeviation</span>=<span class="string">&quot;3&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">defs</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--    在这边用css的形式添加滤镜--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">rect</span> <span class="attr">width</span>=<span class="string">&quot;300&quot;</span> <span class="attr">height</span>=<span class="string">&quot;100&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">style</span>=<span class="string">&quot;fill:rgb(0,0,0);stroke-width:1;</span></span></span><br><span class="line"><span class="string"><span class="tag">stroke:rgb(0,0,0);filter:url(#Gaussian_Blur)&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>html5中我们可以直接使用svg元素，这样</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;svgFilter&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--定义滤镜--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">svg</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">defs</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">filter</span> <span class="attr">id</span>=<span class="string">&quot;blur&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">feGaussianBlur</span> <span class="attr">in</span>=<span class="string">&quot;SourceGraphic&quot;</span> <span class="attr">stdDeviation</span>=<span class="string">&quot;5&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">defs</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></span><br><span class="line"></span><br><span class="line">//使用滤镜</span><br><span class="line">    .svgFilter&#123;</span><br><span class="line">      filter: url(#blur);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="滤镜标签通用属性"><a href="#滤镜标签通用属性" class="headerlink" title="滤镜标签通用属性"></a>滤镜标签通用属性</h6><p>有一些属性是每一个滤镜标签都有，都可以进行设置的。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x, y</td>
+<td>提供左上角的坐标来定义在哪里渲染滤镜效果。 （默认值：0）</td>
+</tr>
+<tr>
+<td>width, height</td>
+<td>绘制滤镜容器框的高宽（默认都为 100%）</td>
+</tr>
+<tr>
+<td>result</td>
+<td>用于定义一个滤镜效果的输出名字，以便将其用作另一个滤镜效果的输入（in）</td>
+</tr>
+<tr>
+<td>in</td>
+<td>指定滤镜效果的输入源，可以是某个滤镜导出的 <code>result</code>，也可以是下面 6 个值</td>
+</tr>
+</tbody></table>
+<p>关于svg滤镜还有很多很炫酷的效果，还可以通过矩阵数值自定义滤镜色彩效果，这里不深入讲解，有兴趣可以自己去了解。</p>
+<h2 id="三-xml"><a href="#三-xml" class="headerlink" title="三.xml"></a>三.xml</h2><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>xml指可扩展标记语言。</p>
+<p>xml被设计用来存储数据，不显示数据。</p>
+<p>XML 需要自行定义标签，且标签名称具有自我描述性。<br>XML 是 W3C 推荐的数据传输存放标准。</p>
+<h4 id="用途"><a href="#用途" class="headerlink" title="用途"></a>用途</h4><p>1.可以作为一种简单的数据库，存储并且检索数据。</p>
+<p>2.传输约定格式的文件。</p>
+<p>3.做软件的配置文件。</p>
+<h4 id="诞生"><a href="#诞生" class="headerlink" title="诞生"></a>诞生</h4><p><img src="C:\Users\黄巧丽\AppData\Roaming\Typora\typora-user-images\image-20211024104853398.png" alt="image-20211024104853398"></p>
+<p>XML的前身是<strong>SGML</strong>（The <strong>S</strong>tandard <strong>G</strong>eneralized <strong>M</strong>arkup <strong>L</strong>anguage），xml的诞生是因为</p>
+<p>1.SGML过于庞大复杂</p>
+<p>2.为了解决HTML的问题</p>
+<ul>
+<li>不能解决所有解释资料的问题 - 像是影音档或化学公式、音乐符号等其他形态的内容。</li>
+<li>性能问题 - 需要下载整份文件，才能开始对文件做搜索。</li>
+<li>扩展性、弹性、易读性均不佳。</li>
+</ul>
+<p>XML是在一个这样的背景下诞生的——为了有一个更中立的方式，让客户端自行决定要如何消化、呈现从服务端所提供的信息。</p>
+<p><strong>XML被广泛用来作为跨平台之间交互数据的形式</strong>，主要针对数据的内容，通过不同的格式化描述手段（XSLT，CSS等）可以完成最终的形式表达（生成对应的HTML，PDF或者其他的文件格式）。</p>
+<h4 id="和html的对比"><a href="#和html的对比" class="headerlink" title="和html的对比"></a>和html的对比</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>html</th>
+<th>xml</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>作用</td>
+<td>显示数据</td>
+<td>传输和存储数据</td>
+</tr>
+<tr>
+<td>语法</td>
+<td>略</td>
+<td>要求嵌套，配对，并且遵循DTD的树形结构</td>
+</tr>
+<tr>
+<td>空格</td>
+<td>多个时只显示一个</td>
+<td>输入几个显示几个</td>
+</tr>
+<tr>
+<td>与数据库的关系</td>
+<td>无直接联系</td>
+<td>与关系型和层状数据库均可对应和转换</td>
+</tr>
+<tr>
+<td>大小写敏感</td>
+<td>不区分</td>
+<td>区分</td>
+</tr>
+</tbody></table>
+<p>可以通过JavaScript 来解析xml并访问DOM</p>
+<h2 id="四-SVG与Canvas两者的区别"><a href="#四-SVG与Canvas两者的区别" class="headerlink" title="四.SVG与Canvas两者的区别"></a>四.SVG与Canvas两者的区别</h2><p>二者其实从根本上来讲不是同一个级别上的东西。</p>
+<p>canvas本身是h5的一个标签，而svg它是一种使用XML描述2D图形的语言，个人理解非要说的话svg的量级应该是类似于html的量级的，毕竟svg可以下载可以直接用浏览器打开的。</p>
+<p>svg可以直接利用css对图形进行改变，canvas不能（画布内只能用js操作）。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>svg</th>
+<th>canvas</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>渲染方式</td>
+<td>在 SVG 中，每个被绘制的图形均被视为对象。如果 SVG 对象的属性发生变化，那么浏览器能够自动重现图形。</td>
+<td>在 canvas 中，一旦图形被绘制完成，它就不会继续得到浏览器的关注。如果其位置发生变化，那么整个场景也需要重新绘制，包括任何或许已被图形覆盖的对象。</td>
+</tr>
+<tr>
+<td>特点</td>
+<td>矢量，xml，css，元素操作</td>
+<td>像素，只能脚本驱动</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>功能丰富，各种图形，滤镜，动画等</td>
+<td>功能简单，2D绘图API</td>
+</tr>
+<tr>
+<td>操作对象</td>
+<td>基于图形元素</td>
+<td>基于像素</td>
+</tr>
+<tr>
+<td>驱动</td>
+<td>支持脚本和css</td>
+<td>只能脚本驱动</td>
+</tr>
+<tr>
+<td>事件交互</td>
+<td>用户交互到图形元素(rect,path)</td>
+<td>用户交互到像素点（x,y）</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>较慢</td>
+<td>更快</td>
+</tr>
+<tr>
+<td>适合用途</td>
+<td>适合带有大型渲染区域的应用程序（比如谷歌地图）</td>
+<td>最适合图像密集型的游戏，其中的许多对象会被频繁重绘</td>
+</tr>
+<tr>
+<td>输出图形</td>
+<td>矢量图形（放大不会失真或者锯齿）</td>
+<td>标量画布（放大会失真或者锯齿）</td>
+</tr>
+</tbody></table>
+<p><img src="C:\Users\黄巧丽\AppData\Roaming\Typora\typora-user-images\image-20211026104709317.png" alt="image-20211026104709317"></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/25/2021-10-25-一键生成mapper、mapperxml等文件——MybatisX插件的使用/" data-toggle="tooltip" data-placement="top" title="一键生成mapper、mapperxml等文件——MybatisX插件的使用">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/24/2021-10-24-Uniy打包时去边框和实现窗体透明穿透/" data-toggle="tooltip" data-placement="top" title="Uniy打包时去边框和实现窗体透明穿透">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                          <a class="tag" href="/tags/#D届" title="D届">D届</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/24/2021-10-24--canvas%20vs%20svg/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/24/2021-10-24--canvas%20vs%20svg/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

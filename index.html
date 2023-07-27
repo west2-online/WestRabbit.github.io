@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>West2ers&#39; Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">To Be A Lean Developer!</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2023/07/27/2021-10-28-UI设计规范及动态海报/">
+        <h2 class="post-title">
+            UI设计规范及动态海报
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            UI设计规范及动态海报 很多初学者在开始做移动端UI设计的时候，往往对界面的一些尺寸规范不是十分清楚，很多时候都是凭借自己的感觉和经验去绘制界面，心里并没有一个清晰的概念，导致做出来的页面总是不那么尽如人意。本文整理的一些UI界面的设计规范方便初学者进一步理解界面设计。除此之外，本文还会介绍设计成员中的一员——动态海报的设计。
+UI设计规范手机端尺寸规范
+
+
+显示屏尺寸
+分辨率尺寸
+状态栏高......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 若曳 on
+        2023-07-27
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/12/02/2021-12-2-java反射机制/">
+        <h2 class="post-title">
+            <java反射机制>
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Java 反射机制（一）java反射的定义JAVA反射机制是在运行状态中，对于任意一个类，都能够知道和获取这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和获取任意一个属性；这种动态获取的信息以及动态调用对象的方法的功能称为java语言的反射机制。
+即通过反射机制可以动态的进行对类分割，将类中例如方法 变量名映射到对象中。
+（二)java 反射核心类Class
+获取cla......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by <夏天s> on
+        2021-12-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-.dat文件导入数据库/">
+        <h2 class="post-title">
+            .dat文件导入数据库
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            .dat文件导入数据库在接触了Java语言以来，我们的数据库建立或者通过自己写sql语句，或者通过导入sql文件。但是当数据量特别大的时候这两种方法的效率都不高。这时我们就会把数据存在.dat后缀的文件里，但是当我们打开navicat的时候就会发现，导入格式中并没有这个后缀。那这个后缀类型的文件该怎么导入mysql中呢，今天就来学习学习
+一.序列化序列化：用ObjectOutputStrea......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by 林喆智 on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-ES6常用语法/">
+        <h2 class="post-title">
+            ES6常用语法
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ES6常用新特性
+箭头函数
+
+```function fn1(){a,b} let fn2 = (a,b)=&gt;&#123;
+     
+ &#125;
+//等价
+
+12345678910111213141516171819202122- this指向问题  - 箭头函数不会改变this的指向（this指向箭头函数所在作用域）    - this的指向(指向调用它的函数/对象所在的作用域......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by eight nine on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-QueryDSL+JPA的一些实现/">
+        <h2 class="post-title">
+            QueryDSL+JPA的一些实现
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            QueryDSL+JPA的一些实现JPA的一些问题
+不便于多表联结查询
+在JPA中,多表之间的关系，被映射为实体类之间的关系(OneToOne,OneToMany,ManyToMany等)。如果两个实体类之间没有声明关系与外键，你就不能把两个表联结起来查询。这种约束带来了很多麻烦，因为时候并不需要显式定义两个表之间的外键就能join。如果遵循这种约束，会使得外键增多，表之间的关系变得复杂。
+......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Planeter on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-Redis中使用Lua脚本/">
+        <h2 class="post-title">
+            Redis中使用Lua脚本
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Redis中使用Lua脚本什么是LuaLua是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放。其设计目的就是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。从 Redis2.6开始， Eval命令使用内置的Lua解释器执行脚本 ，不需要单独安装 Lua
+为什么使用Lua在使用redis的过程中，我们会发现有些时候需要原子性去操作redis命令，而为了保证多条命令组合的......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Baird on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-UI设计风格（情绪）/">
+        <h2 class="post-title">
+            UI设计-COLOR
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            UI设计风格（情绪）用户界面的全称是User interface 
+是指界面的视觉设计
+但是实际上还包括了用户与界面之间的交互关系
+总的来说UI设计
+是人机交互，操作逻辑，界面视觉设计的总称
+一个优秀的设计产品，需要符合
+产品的有效性
+产品的使用效率和用户主观满意度
+了解了大概的UI设计理论
+那么，移动界面设计有什么风格呢？
+总的来说，UI设计的风格分为以下几种
+安全可靠风格，清新自然风格，......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by wangfan on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-logo设计/">
+        <h2 class="post-title">
+            logo设计
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            logo设计设计灵感无处不在。在你每天上下班看到电梯张贴的广告时，或是泡咖啡看到杯子里拉花图案时，工作中途看到窗外掉落的雨滴时亦或是一张图片…但是，当你真正开始设计logo时，往往会脑海一片空白，无法想出一个拍手叫好的创意点子。扁平化的logo看似线条简单配色单一，其实也暗藏玄机呢！要完成一个出色的logo设计首先思路要是正确的！
+logo设计的几种常见思路
+象征性
+
+象征就是采用视觉图形符......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by RY on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-react入门/">
+        <h2 class="post-title">
+            node.js学习
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            起步引入react相关文件后，script里面写JSX
+12345678910&lt;body&gt;&lt;div id=&quot;test&quot;&gt;&lt;/div&gt;&lt;script type=&quot;text/babel&quot;&gt;//JSX  //虚拟dom  const vm = &lt;h1&gt;2123&lt;/h1&gt;  //挂载到真实......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by dogcat-ux on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2021/11/30/2021-11-30-栅格的定义与使用/">
+        <h2 class="post-title">
+            栅格的定义与使用
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            栅格的定义与使用早在平面设计开始之初，就有对“栅格”的使用记录。（不过那时不叫栅格，而叫网格）因为印刷机器以及切割工具的限制，导致在页面的板式设计需要一定的出血线用于防止书籍内容的缺失，因此出现了当时非常火爆的《平面设计中的网格系统》一书。
+
+虽然这是一本非常老的书，但是设计本身就是相通，将其核心思想用在图标设计、网页设计、B 端设计当中都有着明确的指导意义
+而在设计（网页端、桌面端）产品时......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by xuetianlin on
+        2021-11-30
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    
+        <li class="next">
+            <a href="/page/2/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/tags/#14级" title="14级" rel="16">14级</a>
+                            
+                        
+                            
+                            <a href="/tags/#图像处理" title="图像处理" rel="3">图像处理</a>
+                            
+                        
+                            
+                            <a href="/tags/#教程" title="教程" rel="3">教程</a>
+                            
+                        
+                            
+                            <a href="/tags/#15级" title="15级" rel="12">15级</a>
+                            
+                        
+                            
+                            <a href="/tags/#杂文" title="杂文" rel="3">杂文</a>
+                            
+                        
+                            
+                            <a href="/tags/#iOS" title="iOS" rel="8">iOS</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Java" title="Java" rel="20">Java</a>
+                            
+                        
+                            
+                            <a href="/tags/#Web" title="Web" rel="7">Web</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Android" title="Android" rel="8">Android</a>
+                            
+                        
+                            
+                            <a href="/tags/#Linux" title="Linux" rel="2">Linux</a>
+                            
+                        
+                            
+                            <a href="/tags/#前端" title="前端" rel="12">前端</a>
+                            
+                        
+                            
+                            <a href="/tags/#嫩牛五方" title="嫩牛五方" rel="2">嫩牛五方</a>
+                            
+                        
+                            
+                            <a href="/tags/#16级" title="16级" rel="2">16级</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#18级" title="18级" rel="9">18级</a>
+                            
+                        
+                            
+                            <a href="/tags/#小程序" title="小程序" rel="2">小程序</a>
+                            
+                        
+                            
+                            <a href="/tags/#算法" title="算法" rel="2">算法</a>
+                            
+                        
+                            
+                            <a href="/tags/#Golang" title="Golang" rel="7">Golang</a>
+                            
+                        
+                            
+                            <a href="/tags/#19级" title="19级" rel="28">19级</a>
+                            
+                        
+                            
+                            <a href="/tags/#Unity" title="Unity" rel="8">Unity</a>
+                            
+                        
+                            
+                            <a href="/tags/#D届" title="D届" rel="5">D届</a>
+                            
+                        
+                            
+                            <a href="/tags/#20级" title="20级" rel="15">20级</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#产品" title="产品" rel="2">产品</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#19 级" title="19 级" rel="2">19 级</a>
+                            
+                        
+                            
+                            <a href="/tags/#JavaScript" title="JavaScript" rel="2">JavaScript</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#Compose" title="Compose" rel="2">Compose</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#美术" title="美术" rel="5">美术</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/tags/#&lt;19级&gt;" title="&lt;19级&gt;" rel="2">&lt;19级&gt;</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+
+                        
+                            <p>Excited</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="https://weibo.com/west2gold">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                            
+                            
+                            
+                        </ul>
+                    </div>
+                </section>
+                
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

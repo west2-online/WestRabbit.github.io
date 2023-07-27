@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          利用echart实现中国地图与世界地图 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2020/11/29/2020-11-29-利用echart实现中国地图与世界地图/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>利用echart实现中国地图与世界地图</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 林小葵 on
+                        2020-11-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="利用echart实现中国地图与世界地图"><a href="#利用echart实现中国地图与世界地图" class="headerlink" title="利用echart实现中国地图与世界地图"></a>利用echart实现中国地图与世界地图</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><pre><code>当前新冠病毒在全球肆虐，大家都非常关心相关讯息，而疫情地图可以直观的向我们展现有关的数据，利用echart可以较为方便地实现这一功能。
+</code></pre>
+<h2 id="一、引入"><a href="#一、引入" class="headerlink" title="一、引入"></a>一、引入</h2><ol>
+<li>引入echarts<br><code>import echarts from &#39;echarts&#39;</code></li>
+<li>引入中国/世界的地图数据js文件，引入后会自动注册地图名字和数据<br>中国地图：<br><code> import &#39;echarts/map/js/china.js&#39;</code><br>世界地图：<br><code>import &#39;echarts/map/js/world.js&#39;</code></li>
+</ol>
+<h2 id="二、echarts配置"><a href="#二、echarts配置" class="headerlink" title="二、echarts配置"></a>二、echarts配置</h2><pre><code>由于中国地图与世界地图两者配置相似，接下来我们以中国地图为例进行展示。基本配置如下：
+</code></pre>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> option = &#123;</span><br><span class="line">  series: [&#123;</span><br><span class="line">    name: <span class="string">&#x27;确诊人数&#x27;</span>,</span><br><span class="line">    type: <span class="string">&#x27;map&#x27;</span>,</span><br><span class="line">    <span class="built_in">map</span>: <span class="string">&#x27;china&#x27;</span>,</span><br><span class="line">    <span class="comment">//渲染中国地图</span></span><br><span class="line">    label: &#123;</span><br><span class="line">      <span class="comment">// 设置字体</span></span><br><span class="line">      show: <span class="keyword">true</span>,</span><br><span class="line">      <span class="built_in">color</span>: <span class="string">&#x27;#333&#x27;</span>,</span><br><span class="line">      fontSize: <span class="number">10</span></span><br><span class="line">    &#125;,</span><br><span class="line">    itemStyle: &#123;</span><br><span class="line">      <span class="comment">// 地图区域颜色</span></span><br><span class="line">      areaColor: <span class="string">&#x27;#eee&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    emphasis: &#123;</span><br><span class="line">      <span class="comment">// 鼠标位于地图上方时地图颜色和字体样式</span></span><br><span class="line">      label: &#123;</span><br><span class="line">        <span class="comment">//字体样式</span></span><br><span class="line">        <span class="built_in">color</span>: <span class="string">&#x27;#fff&#x27;</span>,</span><br><span class="line">        fontSize: <span class="number">12</span></span><br><span class="line">      &#125;,</span><br><span class="line">      itemStyle: &#123;</span><br><span class="line">        <span class="comment">//地图颜色</span></span><br><span class="line">        areaColor: <span class="string">&#x27;#ccc&#x27;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    data: []</span><br><span class="line">    <span class="comment">// 后端提供数据，格式为&#123;name:福建省;value:1&#125;</span></span><br><span class="line">  &#125;],</span><br><span class="line">  visualMap: [&#123;</span><br><span class="line">    <span class="comment">// 分段型地图颜色设置</span></span><br><span class="line">    type: <span class="string">&#x27;piecewise&#x27;</span>,</span><br><span class="line">    show: <span class="keyword">true</span>,</span><br><span class="line">    pieces: [</span><br><span class="line">      &#123;<span class="built_in">min</span>: <span class="number">10000</span>&#125;,</span><br><span class="line">      &#123;<span class="built_in">min</span>: <span class="number">1000</span>, <span class="built_in">max</span>: <span class="number">9999</span>&#125;,</span><br><span class="line">      &#123;<span class="built_in">min</span>: <span class="number">100</span>, <span class="built_in">max</span>: <span class="number">999</span>&#125;,</span><br><span class="line">      &#123;<span class="built_in">min</span>: <span class="number">10</span>, <span class="built_in">max</span>: <span class="number">99</span>&#125;,</span><br><span class="line">      &#123;<span class="built_in">min</span>: <span class="number">1</span>, <span class="built_in">max</span>: <span class="number">9</span>&#125;,</span><br><span class="line">      &#123;<span class="built_in">max</span>: <span class="number">0</span>&#125;</span><br><span class="line">    ],</span><br><span class="line">    inRange: &#123;</span><br><span class="line">      <span class="built_in">color</span>: [<span class="string">&#x27;#FFFFFF&#x27;</span>, <span class="string">&#x27;#FFAA85&#x27;</span>, <span class="string">&#x27;#FF7B69&#x27;</span>, <span class="string">&#x27;#CC2929&#x27;</span>, <span class="string">&#x27;#8C0D0D&#x27;</span>, <span class="string">&#x27;#660208&#x27;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;],</span><br><span class="line">  tooltip: &#123;</span><br><span class="line">    trigger: <span class="string">&#x27;item&#x27;</span></span><br><span class="line">    <span class="comment">// 鼠标移动至上方时显示数据</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、世界地图将国家名称映射为中文"><a href="#三、世界地图将国家名称映射为中文" class="headerlink" title="三、世界地图将国家名称映射为中文"></a>三、世界地图将国家名称映射为中文</h2><pre><code>世界地图与中国地图配置整体差异不大，只需将map的china改为world即可。
+比较大的一个不同在于echart所提供的世界地图js文件的各国国家名称为英文，需要将其映射为中文。从网上找到的中英对照中，小部分国家没有成功映射，更正后版本如下：
+</code></pre>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> nameMap = &#123;</span><br><span class="line">        Afghanistan: <span class="string">&#x27;阿富汗&#x27;</span>,</span><br><span class="line">        Singapore: <span class="string">&#x27;新加坡&#x27;</span>,</span><br><span class="line">        Angol<span class="variable">a:</span> <span class="string">&#x27;安哥拉&#x27;</span>,</span><br><span class="line">        Albani<span class="variable">a:</span> <span class="string">&#x27;阿尔巴尼亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;United Arab Emirates&#x27;</span>: <span class="string">&#x27;阿联酋&#x27;</span>,</span><br><span class="line">        Argentin<span class="variable">a:</span> <span class="string">&#x27;阿根廷&#x27;</span>,</span><br><span class="line">        Armeni<span class="variable">a:</span> <span class="string">&#x27;亚美尼亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;French Southern and Antarctic Lands&#x27;</span>:</span><br><span class="line">            <span class="string">&#x27;法属南半球和南极领地&#x27;</span>,</span><br><span class="line">        Australi<span class="variable">a:</span> <span class="string">&#x27;澳大利亚&#x27;</span>,</span><br><span class="line">        Austri<span class="variable">a:</span> <span class="string">&#x27;奥地利&#x27;</span>,</span><br><span class="line">        Azerbaijan: <span class="string">&#x27;阿塞拜疆&#x27;</span>,</span><br><span class="line">        Burundi: <span class="string">&#x27;布隆迪&#x27;</span>,</span><br><span class="line">        Belgium: <span class="string">&#x27;比利时&#x27;</span>,</span><br><span class="line">        Benin: <span class="string">&#x27;贝宁&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Burkina Faso&#x27;</span>: <span class="string">&#x27;布基纳法索&#x27;</span>,</span><br><span class="line">        Bangladesh: <span class="string">&#x27;孟加拉国&#x27;</span>,</span><br><span class="line">        Bulgari<span class="variable">a:</span> <span class="string">&#x27;保加利亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;The Bahamas&#x27;</span>: <span class="string">&#x27;巴哈马&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Bosnia and Herzegovina&#x27;</span>: <span class="string">&#x27;波斯尼亚和黑塞哥维那&#x27;</span>,</span><br><span class="line">        Belaru<span class="variable">s:</span> <span class="string">&#x27;白俄罗斯&#x27;</span>,</span><br><span class="line">        Belize: <span class="string">&#x27;伯利兹&#x27;</span>,</span><br><span class="line">        Bermud<span class="variable">a:</span> <span class="string">&#x27;百慕大&#x27;</span>,</span><br><span class="line">        Bolivi<span class="variable">a:</span> <span class="string">&#x27;玻利维亚&#x27;</span>,</span><br><span class="line">        Brazi<span class="variable">l:</span> <span class="string">&#x27;巴西&#x27;</span>,</span><br><span class="line">        Brunei: <span class="string">&#x27;文莱&#x27;</span>,</span><br><span class="line">        Bhutan: <span class="string">&#x27;不丹&#x27;</span>,</span><br><span class="line">        Botswan<span class="variable">a:</span> <span class="string">&#x27;博茨瓦纳&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Central African Republic&#x27;</span>: <span class="string">&#x27;中非共和国&#x27;</span>,</span><br><span class="line">        Canad<span class="variable">a:</span> <span class="string">&#x27;加拿大&#x27;</span>,</span><br><span class="line">        Switzerland: <span class="string">&#x27;瑞士&#x27;</span>,</span><br><span class="line">        Chile: <span class="string">&#x27;智利&#x27;</span>,</span><br><span class="line">        Chin<span class="variable">a:</span> <span class="string">&#x27;中国&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Ivory Coast&#x27;</span>: <span class="string">&#x27;象牙海岸&#x27;</span>,</span><br><span class="line">        Cameroon: <span class="string">&#x27;喀麦隆&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Democratic Republic of the Congo&#x27;</span>: <span class="string">&#x27;刚果民主共和国&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Republic of the Congo&#x27;</span>: <span class="string">&#x27;刚果共和国&#x27;</span>,</span><br><span class="line">        Colombi<span class="variable">a:</span> <span class="string">&#x27;哥伦比亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Costa Rica&#x27;</span>: <span class="string">&#x27;哥斯达黎加&#x27;</span>,</span><br><span class="line">        Cub<span class="variable">a:</span> <span class="string">&#x27;古巴&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Northern Cyprus&#x27;</span>: <span class="string">&#x27;北塞浦路斯&#x27;</span>,</span><br><span class="line">        Cypru<span class="variable">s:</span> <span class="string">&#x27;塞浦路斯&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Czech Republic&#x27;</span>: <span class="string">&#x27;捷克共和国&#x27;</span>,</span><br><span class="line">        Germany: <span class="string">&#x27;德国&#x27;</span>,</span><br><span class="line">        Djibouti: <span class="string">&#x27;吉布提&#x27;</span>,</span><br><span class="line">        Denmark: <span class="string">&#x27;丹麦&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Dominican Republic&#x27;</span>: <span class="string">&#x27;多明尼加共和国&#x27;</span>,</span><br><span class="line">        Algeri<span class="variable">a:</span> <span class="string">&#x27;阿尔及利亚&#x27;</span>,</span><br><span class="line">        Ecuador: <span class="string">&#x27;厄瓜多尔&#x27;</span>,</span><br><span class="line">        Egyp<span class="variable">t:</span> <span class="string">&#x27;埃及&#x27;</span>,</span><br><span class="line">        Eritre<span class="variable">a:</span> <span class="string">&#x27;厄立特里亚&#x27;</span>,</span><br><span class="line">        Spain: <span class="string">&#x27;西班牙&#x27;</span>,</span><br><span class="line">        Estoni<span class="variable">a:</span> <span class="string">&#x27;爱沙尼亚&#x27;</span>,</span><br><span class="line">        Ethiopi<span class="variable">a:</span> <span class="string">&#x27;埃塞俄比亚&#x27;</span>,</span><br><span class="line">        Finland: <span class="string">&#x27;芬兰&#x27;</span>,</span><br><span class="line">        Fiji: <span class="string">&#x27;斐济&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Falkland Islands&#x27;</span>: <span class="string">&#x27;福克兰群岛&#x27;</span>,</span><br><span class="line">        France: <span class="string">&#x27;法国&#x27;</span>,</span><br><span class="line">        Gabon: <span class="string">&#x27;加蓬&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;United Kingdom&#x27;</span>: <span class="string">&#x27;英国&#x27;</span>,</span><br><span class="line">        Georgi<span class="variable">a:</span> <span class="string">&#x27;格鲁吉亚&#x27;</span>,</span><br><span class="line">        Ghan<span class="variable">a:</span> <span class="string">&#x27;加纳&#x27;</span>,</span><br><span class="line">        Guine<span class="variable">a:</span> <span class="string">&#x27;几内亚&#x27;</span>,</span><br><span class="line">        Gambi<span class="variable">a:</span> <span class="string">&#x27;冈比亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Guinea Bissau&#x27;</span>: <span class="string">&#x27;几内亚比绍&#x27;</span>,</span><br><span class="line">        Greece: <span class="string">&#x27;希腊&#x27;</span>,</span><br><span class="line">        Greenland: <span class="string">&#x27;格陵兰&#x27;</span>,</span><br><span class="line">        Guatemal<span class="variable">a:</span> <span class="string">&#x27;危地马拉&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;French Guiana&#x27;</span>: <span class="string">&#x27;法属圭亚那&#x27;</span>,</span><br><span class="line">        Guyan<span class="variable">a:</span> <span class="string">&#x27;圭亚那&#x27;</span>,</span><br><span class="line">        Hondura<span class="variable">s:</span> <span class="string">&#x27;洪都拉斯&#x27;</span>,</span><br><span class="line">        Croati<span class="variable">a:</span> <span class="string">&#x27;克罗地亚&#x27;</span>,</span><br><span class="line">        Haiti: <span class="string">&#x27;海地&#x27;</span>,</span><br><span class="line">        Hungary: <span class="string">&#x27;匈牙利&#x27;</span>,</span><br><span class="line">        Indonesi<span class="variable">a:</span> <span class="string">&#x27;印度尼西亚&#x27;</span>,</span><br><span class="line">        Indi<span class="variable">a:</span> <span class="string">&#x27;印度&#x27;</span>,</span><br><span class="line">        Ireland: <span class="string">&#x27;爱尔兰&#x27;</span>,</span><br><span class="line">        Iran: <span class="string">&#x27;伊朗&#x27;</span>,</span><br><span class="line">        Iraq: <span class="string">&#x27;伊拉克&#x27;</span>,</span><br><span class="line">        Iceland: <span class="string">&#x27;冰岛&#x27;</span>,</span><br><span class="line">        Israe<span class="variable">l:</span> <span class="string">&#x27;以色列&#x27;</span>,</span><br><span class="line">        Italy: <span class="string">&#x27;意大利&#x27;</span>,</span><br><span class="line">        Jamaic<span class="variable">a:</span> <span class="string">&#x27;牙买加&#x27;</span>,</span><br><span class="line">        Jordan: <span class="string">&#x27;约旦&#x27;</span>,</span><br><span class="line">        Japan: <span class="string">&#x27;日本&#x27;</span>,</span><br><span class="line">        Kazakhstan: <span class="string">&#x27;哈萨克斯坦&#x27;</span>,</span><br><span class="line">        Keny<span class="variable">a:</span> <span class="string">&#x27;肯尼亚&#x27;</span>,</span><br><span class="line">        Kyrgyzstan: <span class="string">&#x27;吉尔吉斯斯坦&#x27;</span>,</span><br><span class="line">        Cambodi<span class="variable">a:</span> <span class="string">&#x27;柬埔寨&#x27;</span>,</span><br><span class="line">        Kosovo: <span class="string">&#x27;科索沃&#x27;</span>,</span><br><span class="line">        Kuwai<span class="variable">t:</span> <span class="string">&#x27;科威特&#x27;</span>,</span><br><span class="line">        Lao<span class="variable">s:</span> <span class="string">&#x27;老挝&#x27;</span>,</span><br><span class="line">        Lebanon: <span class="string">&#x27;黎巴嫩&#x27;</span>,</span><br><span class="line">        Liberi<span class="variable">a:</span> <span class="string">&#x27;利比里亚&#x27;</span>,</span><br><span class="line">        Liby<span class="variable">a:</span> <span class="string">&#x27;利比亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Sri Lanka&#x27;</span>: <span class="string">&#x27;斯里兰卡&#x27;</span>,</span><br><span class="line">        Lesotho: <span class="string">&#x27;莱索托&#x27;</span>,</span><br><span class="line">        Lithuani<span class="variable">a:</span> <span class="string">&#x27;立陶宛&#x27;</span>,</span><br><span class="line">        Luxembour<span class="variable">g:</span> <span class="string">&#x27;卢森堡&#x27;</span>,</span><br><span class="line">        Latvi<span class="variable">a:</span> <span class="string">&#x27;拉脱维亚&#x27;</span>,</span><br><span class="line">        Morocco: <span class="string">&#x27;摩洛哥&#x27;</span>,</span><br><span class="line">        Moldov<span class="variable">a:</span> <span class="string">&#x27;摩尔多瓦&#x27;</span>,</span><br><span class="line">        Madagascar: <span class="string">&#x27;马达加斯加&#x27;</span>,</span><br><span class="line">        Mexico: <span class="string">&#x27;墨西哥&#x27;</span>,</span><br><span class="line">        Macedoni<span class="variable">a:</span> <span class="string">&#x27;马其顿&#x27;</span>,</span><br><span class="line">        Mali: <span class="string">&#x27;马里&#x27;</span>,</span><br><span class="line">        Myanmar: <span class="string">&#x27;缅甸&#x27;</span>,</span><br><span class="line">        Montenegro: <span class="string">&#x27;黑山&#x27;</span>,</span><br><span class="line">        Mongoli<span class="variable">a:</span> <span class="string">&#x27;蒙古&#x27;</span>,</span><br><span class="line">        Mozambique: <span class="string">&#x27;莫桑比克&#x27;</span>,</span><br><span class="line">        Mauritani<span class="variable">a:</span> <span class="string">&#x27;毛里塔尼亚&#x27;</span>,</span><br><span class="line">        Malawi: <span class="string">&#x27;马拉维&#x27;</span>,</span><br><span class="line">        Malaysi<span class="variable">a:</span> <span class="string">&#x27;马来西亚&#x27;</span>,</span><br><span class="line">        Namibi<span class="variable">a:</span> <span class="string">&#x27;纳米比亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;New Caledonia&#x27;</span>: <span class="string">&#x27;新喀里多尼亚&#x27;</span>,</span><br><span class="line">        Niger: <span class="string">&#x27;尼日尔&#x27;</span>,</span><br><span class="line">        Nigeri<span class="variable">a:</span> <span class="string">&#x27;尼日利亚&#x27;</span>,</span><br><span class="line">        Nicaragu<span class="variable">a:</span> <span class="string">&#x27;尼加拉瓜&#x27;</span>,</span><br><span class="line">        Netherland<span class="variable">s:</span> <span class="string">&#x27;荷兰&#x27;</span>,</span><br><span class="line">        Norway: <span class="string">&#x27;挪威&#x27;</span>,</span><br><span class="line">        Nepa<span class="variable">l:</span> <span class="string">&#x27;尼泊尔&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;New Zealand&#x27;</span>: <span class="string">&#x27;新西兰&#x27;</span>,</span><br><span class="line">        Oman: <span class="string">&#x27;阿曼&#x27;</span>,</span><br><span class="line">        Pakistan: <span class="string">&#x27;巴基斯坦&#x27;</span>,</span><br><span class="line">        Panam<span class="variable">a:</span> <span class="string">&#x27;巴拿马&#x27;</span>,</span><br><span class="line">        Peru: <span class="string">&#x27;秘鲁&#x27;</span>,</span><br><span class="line">        Philippine<span class="variable">s:</span> <span class="string">&#x27;菲律宾&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Papua New Guinea&#x27;</span>: <span class="string">&#x27;巴布亚新几内亚&#x27;</span>,</span><br><span class="line">        Poland: <span class="string">&#x27;波兰&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Puerto Rico&#x27;</span>: <span class="string">&#x27;波多黎各&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;North Korea&#x27;</span>: <span class="string">&#x27;北朝鲜&#x27;</span>,</span><br><span class="line">        Portuga<span class="variable">l:</span> <span class="string">&#x27;葡萄牙&#x27;</span>,</span><br><span class="line">        Paraguay: <span class="string">&#x27;巴拉圭&#x27;</span>,</span><br><span class="line">        Qatar: <span class="string">&#x27;卡塔尔&#x27;</span>,</span><br><span class="line">        Romani<span class="variable">a:</span> <span class="string">&#x27;罗马尼亚&#x27;</span>,</span><br><span class="line">        Russi<span class="variable">a:</span> <span class="string">&#x27;俄罗斯&#x27;</span>,</span><br><span class="line">        Rwand<span class="variable">a:</span> <span class="string">&#x27;卢旺达&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Western Sahara&#x27;</span>: <span class="string">&#x27;西撒哈拉&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Saudi Arabia&#x27;</span>: <span class="string">&#x27;沙特阿拉伯&#x27;</span>,</span><br><span class="line">        Sudan: <span class="string">&#x27;苏丹&#x27;</span>,</span><br><span class="line">        Senega<span class="variable">l:</span> <span class="string">&#x27;塞内加尔&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Solomon Islands&#x27;</span>: <span class="string">&#x27;所罗门群岛&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Sierra Leone&#x27;</span>: <span class="string">&#x27;塞拉利昂&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;El Salvador&#x27;</span>: <span class="string">&#x27;萨尔瓦多&#x27;</span>,</span><br><span class="line">        Somaliland: <span class="string">&#x27;索马里兰&#x27;</span>,</span><br><span class="line">        Somali<span class="variable">a:</span> <span class="string">&#x27;索马里&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Republic of Serbia&#x27;</span>: <span class="string">&#x27;塞尔维亚&#x27;</span>,</span><br><span class="line">        Suriname: <span class="string">&#x27;苏里南&#x27;</span>,</span><br><span class="line">        Slovaki<span class="variable">a:</span> <span class="string">&#x27;斯洛伐克&#x27;</span>,</span><br><span class="line">        Sloveni<span class="variable">a:</span> <span class="string">&#x27;斯洛文尼亚&#x27;</span>,</span><br><span class="line">        Sweden: <span class="string">&#x27;瑞典&#x27;</span>,</span><br><span class="line">        Swaziland: <span class="string">&#x27;斯威士兰&#x27;</span>,</span><br><span class="line">        Syri<span class="variable">a:</span> <span class="string">&#x27;叙利亚&#x27;</span>,</span><br><span class="line">        Chad: <span class="string">&#x27;乍得&#x27;</span>,</span><br><span class="line">        Togo: <span class="string">&#x27;多哥共和国&#x27;</span>,</span><br><span class="line">        Thailand: <span class="string">&#x27;泰国&#x27;</span>,</span><br><span class="line">        Tajikistan: <span class="string">&#x27;塔吉克斯坦&#x27;</span>,</span><br><span class="line">        Turkmenistan: <span class="string">&#x27;土库曼斯坦&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;East Timor&#x27;</span>: <span class="string">&#x27;东帝汶&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Trinidad and Tobago&#x27;</span>: <span class="string">&#x27;特里尼达和多巴哥&#x27;</span>,</span><br><span class="line">        Tunisi<span class="variable">a:</span> <span class="string">&#x27;突尼斯&#x27;</span>,</span><br><span class="line">        Turkey: <span class="string">&#x27;土耳其&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;United Republic of Tanzania&#x27;</span>: <span class="string">&#x27;坦桑尼亚&#x27;</span>,</span><br><span class="line">        Ugand<span class="variable">a:</span> <span class="string">&#x27;乌干达&#x27;</span>,</span><br><span class="line">        Ukraine: <span class="string">&#x27;乌克兰&#x27;</span>,</span><br><span class="line">        Uruguay: <span class="string">&#x27;乌拉圭&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;United States&#x27;</span>: <span class="string">&#x27;美国&#x27;</span>,</span><br><span class="line">        Uzbekistan: <span class="string">&#x27;乌兹别克斯坦&#x27;</span>,</span><br><span class="line">        Venezuel<span class="variable">a:</span> <span class="string">&#x27;委内瑞拉&#x27;</span>,</span><br><span class="line">        Vietnam: <span class="string">&#x27;越南&#x27;</span>,</span><br><span class="line">        Vanuatu: <span class="string">&#x27;瓦努阿图&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;West Bank&#x27;</span>: <span class="string">&#x27;西岸&#x27;</span>,</span><br><span class="line">        Yemen: <span class="string">&#x27;也门&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;South Africa&#x27;</span>: <span class="string">&#x27;南非&#x27;</span>,</span><br><span class="line">        Zambi<span class="variable">a:</span> <span class="string">&#x27;赞比亚&#x27;</span>,</span><br><span class="line">        Kore<span class="variable">a:</span> <span class="string">&#x27;韩国&#x27;</span>,</span><br><span class="line">        Tanzani<span class="variable">a:</span> <span class="string">&#x27;坦桑尼亚&#x27;</span>,</span><br><span class="line">        Zimbabwe: <span class="string">&#x27;津巴布韦&#x27;</span>,</span><br><span class="line">        Congo: <span class="string">&#x27;刚果（布）&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Central African Rep.&#x27;</span>: <span class="string">&#x27;中非共和国&#x27;</span>,</span><br><span class="line">        Serbi<span class="variable">a:</span> <span class="string">&#x27;塞尔维亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Bosnia and Herz.&#x27;</span>: <span class="string">&#x27;波黑&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Czech Rep.&#x27;</span>: <span class="string">&#x27;捷克&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;W. Sahara&#x27;</span>: <span class="string">&#x27;西撒哈拉&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Lao PDR&#x27;</span>: <span class="string">&#x27;老挝&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Dem.Rep.Korea&#x27;</span>: <span class="string">&#x27;朝鲜&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Falkland Is.&#x27;</span>: <span class="string">&#x27;福克兰群岛&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Timor-Leste&#x27;</span>: <span class="string">&#x27;东帝汶&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Solomon Is.&#x27;</span>: <span class="string">&#x27;所罗门群岛&#x27;</span>,</span><br><span class="line">        Palestine: <span class="string">&#x27;巴勒斯坦&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;N. Cyprus&#x27;</span>: <span class="string">&#x27;北塞浦路斯&#x27;</span>,</span><br><span class="line">        Aland: <span class="string">&#x27;奥兰群岛&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Fr. S. Antarctic Lands&#x27;</span>: <span class="string">&#x27;法属南半球和南极陆地&#x27;</span>,</span><br><span class="line">        Mauritiu<span class="variable">s:</span> <span class="string">&#x27;毛里求斯&#x27;</span>,</span><br><span class="line">        Comoro<span class="variable">s:</span> <span class="string">&#x27;科摩罗&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Eq. Guinea&#x27;</span>: <span class="string">&#x27;赤道几内亚&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Guinea-Bissau&#x27;</span>: <span class="string">&#x27;几内亚比绍&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Dominican Rep.&#x27;</span>: <span class="string">&#x27;多米尼加共和国&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Saint Lucia&#x27;</span>: <span class="string">&#x27;圣卢西亚&#x27;</span>,</span><br><span class="line">        Dominic<span class="variable">a:</span> <span class="string">&#x27;多米尼克&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Antigua and Barb.&#x27;</span>: <span class="string">&#x27;安提瓜和巴布达&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;U.S. Virgin Is.&#x27;</span>: <span class="string">&#x27;美国原始岛屿&#x27;</span>,</span><br><span class="line">        Montserra<span class="variable">t:</span> <span class="string">&#x27;蒙塞拉特&#x27;</span>,</span><br><span class="line">        Grenad<span class="variable">a:</span> <span class="string">&#x27;格林纳达&#x27;</span>,</span><br><span class="line">        Barbado<span class="variable">s:</span> <span class="string">&#x27;巴巴多斯&#x27;</span>,</span><br><span class="line">        Samo<span class="variable">a:</span> <span class="string">&#x27;萨摩亚&#x27;</span>,</span><br><span class="line">        Bahama<span class="variable">s:</span> <span class="string">&#x27;巴哈马&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Cayman Is.&#x27;</span>: <span class="string">&#x27;开曼群岛&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Faeroe Is.&#x27;</span>: <span class="string">&#x27;法罗群岛&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;IsIe of Man&#x27;</span>: <span class="string">&#x27;马恩岛&#x27;</span>,</span><br><span class="line">        Malt<span class="variable">a:</span> <span class="string">&#x27;马耳他共和国&#x27;</span>,</span><br><span class="line">        Jersey: <span class="string">&#x27;泽西&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Cape Verde&#x27;</span>: <span class="string">&#x27;佛得角共和国&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Turks and Caicos Is.&#x27;</span>: <span class="string">&#x27;特克斯和凯科斯群岛&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;St. Vin. and Gren.&#x27;</span>: <span class="string">&#x27;圣文森特和格林纳丁斯&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;S. Sudan&#x27;</span>:<span class="string">&#x27;南苏丹&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Dem. Rep. Congo&#x27;</span>:<span class="string">&#x27;刚果（金）&#x27;</span>,</span><br><span class="line">        <span class="string">&quot;Côte d&#x27;Ivoire&quot;</span>:<span class="string">&#x27;科特迪瓦&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="四、效果图"><a href="#四、效果图" class="headerlink" title="四、效果图"></a>四、效果图</h2><p><img src="https://raw.githubusercontent.com/linxuerou0129/111/main/%E5%9B%BE%E7%89%871.png" alt="Image text"><br><img src="https://raw.githubusercontent.com/linxuerou0129/111/main/%E5%9B%BE%E7%89%872.png" alt="Image text"></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/11/29/2020-11-29-Swift 和 JS 交互(一)/" data-toggle="tooltip" data-placement="top" title="Helloworld">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/29/2020-11-29-基于西二实际情况的学生游戏团队分工/" data-toggle="tooltip" data-placement="top" title="基于西二实际情况的学生游戏团队分工">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#前端" title="前端">前端</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2020/11/29/2020-11-29-%E5%88%A9%E7%94%A8echart%E5%AE%9E%E7%8E%B0%E4%B8%AD%E5%9B%BD%E5%9C%B0%E5%9B%BE%E4%B8%8E%E4%B8%96%E7%95%8C%E5%9C%B0%E5%9B%BE/";
+    var disqus_url = "https://blog.w2fzu.com/2020/11/29/2020-11-29-%E5%88%A9%E7%94%A8echart%E5%AE%9E%E7%8E%B0%E4%B8%AD%E5%9B%BD%E5%9C%B0%E5%9B%BE%E4%B8%8E%E4%B8%96%E7%95%8C%E5%9C%B0%E5%9B%BE/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

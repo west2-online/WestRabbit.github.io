@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          ElasticSearch的滚动查询--(Scroll) - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/31/2021-10-31-ElasticSearch--Scroll/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#java" title="java">java</a>
+                        
+                    </div>
+                    <h1>ElasticSearch的滚动查询--(Scroll)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 2 on
+                        2021-10-31
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="为什么要使用Scroll滚动查询"><a href="#为什么要使用Scroll滚动查询" class="headerlink" title="为什么要使用Scroll滚动查询?"></a>为什么要使用Scroll滚动查询?</h2><ul>
+<li><code>Elasticsearch</code>是一款优秀的开源企业级搜索引擎，其查询接口主要为Search接口，提供了丰富的各类查询、排序、统计聚合等功能。</li>
+<li>但是由于它的机制，在做分页的时候要特别注意，我们构造各种条件，可以进行各种查询，但是如果数据量大，不知道大家发现一个问题没，那就是你**<code>getHits</code>，只能get到一万**</li>
+<li>为什么呢？因为之前做的分页前提是都查出来，排序，全都怼进内存里，相当于MySQL里的limit，显然想要高速取出更高量的数据是不合理的</li>
+<li>举个例子，假如每页放 10 条数据，现在要查询第 100 页，实际上是会把每个<code> shard</code> 上存储的前 1000 条数据都查到一个协调节点上，如果你有个 5 个 <code>shard</code>，那么就有 5000 条数据。你翻页的时候，翻的越深，每个<code>shard</code>返回的数据就越多，而且协调节点处理的时间也就越长。所以用 es 做分页的时候，会发现越翻到后面，就越是慢。</li>
+<li>那有什么解决方案吗？</li>
+</ul>
+<h3 id="SearchAfter"><a href="#SearchAfter" class="headerlink" title="SearchAfter"></a>SearchAfter</h3><ul>
+<li><code>Search</code>接口另一种翻页方式是<code>SearchAfter</code>，时间复杂度O(n)，空间复杂度O(1)。</li>
+<li><code>SearchAfter</code>作为一种动态指针的技术，每次查询都会携带上一次的排序值，这样下次取结果只需要从上次的位点继续扫数据。<code>SearchAfter</code>的翻页方式在性能上有了质的提升，但是其限制了用户只能一页一页往后翻，无法跳页，类似于 app 里的推荐商品不断下拉出来新的一页，所以现在很多产品，都是不允许随意翻页的，你能做的就是往下拉。</li>
+</ul>
+<h3 id="SearchScroll"><a href="#SearchScroll" class="headerlink" title="SearchScroll"></a>SearchScroll</h3><ul>
+<li><code>Search</code>接口在使用<code>SearchAfter</code>后，相比size+from的翻页方式，翻页性能有质的提升，但是和<code>SearchScroll</code>相比，性能逊色很多，用户需要获取的数据越多，翻的越深，则差别越大。</li>
+<li><code>SearchScroll</code>的翻页方式，时间复杂度O(1)，空间复杂度O(1)。</li>
+<li><code>SearchScroll</code>请求天然支持多并发方式查询，因此<code>SearchScroll</code>特别适合批量快速拉取大量数据，然后交给spark等计算平台进行后续数据分析处理。它允许我们先做查询初始化，然后再批量地拉取结果。 这有点儿像传统数据库中的 <em>cursor</em> 。</li>
+</ul>
+<h2 id="Scroll的原理"><a href="#Scroll的原理" class="headerlink" title="Scroll的原理"></a>Scroll的原理</h2><ul>
+<li>第一阶段：和传统的Search请求流程几乎一致，在Search流程的基础上进行了一些额外的特殊处理，比如Slice并发处理、Context上下文保留、Response中返回scroll_id、记录本次的游标地址方便下一次scroll请求继续获取数据等等。</li>
+<li>第二阶段：Scroll请求大大简化，Search中的许多流程都不要再次进行，仅需要执行query、fetch、response三个阶段。而完整的search请求包含rewrite、can_match、dfs、query、fetch、dfs_query、expand、response等复杂的流程。</li>
+</ul>
+<p><code>其中很重要的一部分，就是在创建SearchContext的时候</code></p>
+<h3 id="CreateContext"><a href="#CreateContext" class="headerlink" title="CreateContext"></a>CreateContext</h3><ul>
+<li>创建<code>SearchContex</code>后，如果是<code>scroll</code>请求，则在<code>searchContext</code>中设置<code>ScrollContext</code>。<code>ScrollContext</code>中主要包含<code>context</code>的有效时间、上一次访问了哪个文档等信息</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Map&lt;String, Object&gt; context = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">long</span> totalHits = -<span class="number">1</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">float</span> maxScore;</span><br><span class="line"><span class="keyword">public</span> ScoreDoc lastEmittedDoc;</span><br><span class="line"><span class="keyword">public</span> Scroll scroll;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Scroll的简单使用"><a href="#Scroll的简单使用" class="headerlink" title="Scroll的简单使用"></a>Scroll的简单使用</h2><ul>
+<li><p>为了使用 <code>scroll</code>，初始搜索请求应该在查询中指定 <code>scroll</code> 参数，这可以告诉 <code>Elasticsearch</code> 需要保持搜索的上下文环境多久，如 <code>?scroll=1m</code>。</p>
+</li>
+<li><p>```java<br>curl -XGET ‘localhost:9200/west2/try/_search?scroll=1m’ -d ‘<br>{</p>
+<pre><code>&quot;query&quot;: &#123;
+    &quot;match&quot; : &#123;
+        &quot;title&quot; : &quot;elasticsearch&quot;
+    &#125;
+&#125;
+</code></pre>
+<p>}</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 使用上面的请求返回的结果中包含一个 `scroll_id`，它是一个base64编码的长字符串 ，这个 ID 可以被传递给 `scroll` API 来检索下一个批次的结果。</span><br><span class="line"></span><br><span class="line">- ```java</span><br><span class="line"><span class="title">  curl -XGET  &#x27;localhost:</span><span class="number">9200</span>/_search/scroll&#x27;  -d&#x27;</span><br><span class="line">  &#123;</span><br><span class="line">      <span class="string">&quot;scroll&quot;</span> : <span class="string">&quot;1m&quot;</span>, </span><br><span class="line">      <span class="string">&quot;scroll_id&quot;</span> : <span class="string">&quot;cXVlcnlUaGVuRmV0Y2g7NTsxMDk5NDpkUmpiR2FjOFNhNnlCM1ZDMWpWYnRROzEwOTk1OmRSamJHYWM4U2E2eUIzVkMxalZidFE7MTA5OTM6ZFJqYkdhYzhTYTZ5QjNWQzFqVmJ0UTsxMTE5MDpBVUtwN2lxc1FLZV8yRGVjWlI2QUVBOzEwOTk2OmRSamJHYWM4U2E2eUIzVkMxalZidFE7MDs=&quot;</span> </span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>每次对 <code>scroll</code> API 的调用返回了结果的下一个批次知道没有更多的结果返回，也就是直到 <code>hits</code> 数组空了。</p>
+</li>
+<li><p>注意查询每次返回一个新字段 <code>_scroll_id</code>。每次我们做下一次查询， 我们必须把前一次查询返回的字段 <code>_scroll_id</code> 传递进去。</p>
+</li>
+</ul>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><ul>
+<li><p>详细的整合使用就不在此赘述，可以尝试创建<code>elasticsearchTemplate</code>的bean，使用两个核心方法<code>elasticsearchTemplate.startScroll()</code> 与 <code>elasticsearchTemplate.continueScroll()</code></p>
+</li>
+<li><p>Search和Scroll的核心区别，主要是在query阶段需要处理并发的scroll请求，fetch阶段需要得到本次返回给用户的最后一个文档，然后告知data节点的context，这样下次请求就可以继续从上一个记录点进行搜索。</p>
+</li>
+</ul>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/31/2021-10-31-Android Compose 学习笔记（一)/" data-toggle="tooltip" data-placement="top" title="Android Compose 学习笔记（一)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/31/2021-10-31-UI设计-COLOR/" data-toggle="tooltip" data-placement="top" title="UI设计-COLOR">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                          <a class="tag" href="/tags/#java" title="java">java</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/31/2021-10-31-ElasticSearch--Scroll/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/31/2021-10-31-ElasticSearch--Scroll/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Android 弹簧动画(kotlin) - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/26/2021-10-30-Android弹簧动画/kotlin 弹簧动画/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>Android 弹簧动画(kotlin)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Hintt on
+                        2021-10-26
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1.简介"></a>1.简介</h2><p>在Android中，动画（animations）可以添加视觉提示，向用户通知应用中的动态。当界面状态发生改变时（例如有新内容加载或有新操作可用时），动画尤其有用。动画还为应用增加了优美的外观，使其拥有更高品质的外观和风格。</p>
+<p>而Android 根据用户需要，提供不同的动画 API：</p>
+<ul>
+<li>Animate bitmaps：一般运用于为静态图片添加动画</li>
+<li>Animate UI visibility and motion：一般用于为界面可见性和动作添加动画</li>
+<li>Physics-based motion：基于物理特性为View添加动画（如弹簧动画、投掷动画）</li>
+<li>Animate layout changes ：为布局更改添加动画</li>
+</ul>
+<p>本文将介绍如何用弹簧动画来让页面更加美观。</p>
+<p><strong>示例</strong></p>
+<img src="1635224166076.gif" alt="1635224166076" style="zoom:80%;" />
+
+<h2 id="2-弹簧动画"><a href="#2-弹簧动画" class="headerlink" title="2.弹簧动画"></a>2.弹簧动画</h2><p>在自然界中，弹簧的弹力是一种引导相互作用和运动的力。而在Android界面中，Android 支持库包含基于物理特性的动画 API，它们依靠物理定律来控制动画的发生方式,让动画应尽可能运用现实世界的物理定律，以使其看起来更自然。例如，它们应在目标发生变化时保持动量，并在任何变化期间进行平稳过渡。</p>
+<p>下图演示了弹簧释放效果。圆圈中间的加号 (+) 表示通过触摸手势施加的力。</p>
+<p><img src="spring-release.gif" alt="spring-release"></p>
+<h2 id="3-代码详解"><a href="#3-代码详解" class="headerlink" title="3.代码详解"></a>3.代码详解</h2><h3 id="3-1弹簧动画的生命周期"><a href="#3-1弹簧动画的生命周期" class="headerlink" title="3.1弹簧动画的生命周期"></a>3.1弹簧动画的生命周期</h3><p>在弹簧动画中，我们利用<code>SpringForce</code> 类来自定义弹簧的刚度、阻尼比以及最终位置。动画一开始，弹簧弹力便会更新每一帧的动画值和速度。动画会一直持续，直到弹簧弹力达到平衡状态。</p>
+<h3 id="3-2弹簧制作的步骤"><a href="#3-2弹簧制作的步骤" class="headerlink" title="3.2弹簧制作的步骤"></a>3.2弹簧制作的步骤</h3><h4 id="3-2-1-添加支持库"><a href="#3-2-1-添加支持库" class="headerlink" title="3.2.1 添加支持库"></a>3.2.1 添加支持库</h4><p>在<code>bulid.grade</code>中添加依赖</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">&quot;androidx.dynamicanimation:dynamicanimation:1.1.0-alpha03&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>可查看最新版本，我的是 <code>1.1.0-aloha03</code></p>
+<p><a target="_blank" rel="noopener" href="https://developer.android.google.cn/jetpack/androidx/versions">https://developer.android.google.cn/jetpack/androidx/versions</a></p>
+<h4 id="3-2-2-创建弹簧动画"><a href="#3-2-2-创建弹簧动画" class="headerlink" title="3.2.2 创建弹簧动画"></a>3.2.2 创建弹簧动画</h4><p>弹簧力定义了弹簧的刚度、阻尼比以及静止位置。一旦启动了<code>SpringAnimation</code>，在每一帧上，弹簧力将更新动画的值和速度。动画将继续运行，直到弹簧力达到平衡。如果在动画中使用的弹簧是无阻尼的，动画将永远不会达到平衡。相反，它将永远振荡。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> imageView =findViewById&lt;View&gt;(R.id.imageView)</span><br><span class="line"><span class="keyword">val</span> springAnim = imageView.let &#123; img -&gt;</span><br><span class="line">        SpringAnimation(img, DynamicAnimation.TRANSLATION_Y, <span class="number">100f</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>SpringAnimation</code>类是由<code>SpringForce</code>驱动的动画。它定义了弹簧动画的初始值。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//源码</span></span><br><span class="line"><span class="keyword">public</span> &lt;K&gt; SpringAnimation(K <span class="keyword">object</span>, FloatPropertyCompat&lt;K&gt; property,float finalPosition) &#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="keyword">object</span>, property);</span><br><span class="line">        mSpring = new SpringForce(finalPosition);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>object</code>: 想要实现弹簧动画的对象</p>
+<p><code>FloatPropertyCompat&lt;K&gt; property</code>:将对象的属性动画化</p>
+<ul>
+<li><code>TRANSLATION_X</code>、<code>TRANSLATION_Y</code> 和 <code>TRANSLATION_Z</code>：这些属性用于控制视图所在的位置，值为视图的布局容器所设置的左侧坐标、顶部坐标和高度的增量。<ul>
+<li><code>TRANSLATION_X</code> 表示左侧坐标。</li>
+<li><code>TRANSLATION_Y</code> 表示顶部坐标。</li>
+<li><code>TRANSLATION_Z</code> 表示视图相对于其高度的深度。</li>
+</ul>
+</li>
+</ul>
+<p><code>float finalPosition</code>:对象最终停留的位置</p>
+<p>这样，一个弹簧动画的初始值就被定义好了。</p>
+<h4 id="3-2-3-设置起始速度"><a href="#3-2-3-设置起始速度" class="headerlink" title="3.2.3 设置起始速度"></a>3.2.3 设置起始速度</h4><p>当然，如果只定义了初始化，那么你将会看到一个不动的动画，这是因为没有设置起始速度，弹簧的速度为0，那么动画自然是不动的。现在我们来设置一下初始固定值。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">springAnim.setStartVelocity(<span class="number">3.0F</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>将“dp/秒”转换为“像素/秒”</strong></p>
+<p>弹簧的速度必须以“像素/秒”为单位。如果需要提供固定值作为起始速度值，那么请以“dp/秒”为单位提供，然后将其转换为以“像素/秒”为单位。要进行转换，请使用 <code>TypedValue</code> 类中的 <code>applyDimension()</code> 方法。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> pixelPerSecond: <span class="built_in">Float</span> = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpPerSecond, resources.displayMetrics)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-4-设置弹簧属性"><a href="#3-2-4-设置弹簧属性" class="headerlink" title="3.2.4 设置弹簧属性"></a>3.2.4 设置弹簧属性</h4><h5 id="阻尼比"><a href="#阻尼比" class="headerlink" title="阻尼比"></a>阻尼比</h5><p><strong>阻尼</strong>就是使自由振动衰减的各种摩擦和其他阻碍作用，而<strong>阻尼比</strong>用于描述弹簧振动逐渐衰减的状况。调用 <code>setDampingRatio()</code> 方法并传递要增加到弹簧上的阻尼比。该方法会返回设置了阻尼比的弹簧弹力对象。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">springAnim.spring.dampingRatio = <span class="number">0.1F</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>当阻尼比大于 1 时，会出现过阻尼现象。它会使对象快速地返回到静止位置。</li>
+<li>当阻尼比等于 1 时，会出现临界阻尼现象。这会使对象在最短时间内返回到静止位置。</li>
+<li>当阻尼比小于 1 时，会出现欠阻尼现象。这会使对象多次经过并越过静止位置，然后逐渐到达静止位置。</li>
+<li>当阻尼比等于零时，便会出现无阻尼现象。这会使对象永远振动下去。</li>
+</ul>
+<p>系统中提供以下阻尼比常量：</p>
+<ul>
+<li><code>DAMPING_RATIO_HIGH_BOUNCY</code>：弹性很强的弹簧的阻尼比。值为 0.2（图1）</li>
+<li><code>DAMPING_RATIO_MEDIUM_BOUNCY</code>：低弹性弹簧的阻尼比。值为0.75</li>
+<li><code>DAMPING_RATIO_LOW_BOUNCY</code>：中等弹性弹簧的阻尼比。值为0.5</li>
+<li><code>DAMPING_RATIO_NO_BOUNCY</code>:无弹性弹簧的阻尼比。这个阻尼比将创建一个临界阻尼弹簧，在没有振荡的最短时间内返回平衡。值为1.0</li>
+</ul>
+<p>默认阻尼比设置为 <code>DAMPING_RATIO_MEDIUM_BOUNCY</code></p>
+<p><img src="high_bounce.gif" alt="high_bounce" style="zoom:50%;" /><img src="low_bounce.gif" alt="low_bounce" style="zoom:50%;" /><img src="medium_bounce.gif" alt="medium_bounce" style="zoom:50%;" /><img src="no_bounce.gif" alt="no_bounce" style="zoom:50%;" /></p>
+<h5 id="刚度"><a href="#刚度" class="headerlink" title="刚度"></a>刚度</h5><p><strong>刚度</strong>定义了用于衡量弹簧强度的弹簧常量。不在静止位置的坚硬弹簧可对所连接的对象施加更大的力。调用 <code>setStiffness()</code> 方法并传递要增加到弹簧上的刚度值。该方法会返回设置了刚度的弹簧弹力对象。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">springAnim.spring.stiffness = STIFFNESS_HIGH</span><br></pre></td></tr></table></figure>
+
+<p>系统中提供了以下刚度常量：</p>
+<ul>
+<li><code>STIFFNESS_HIGH</code>：用于极刚性弹簧的刚度常数。值为10000.0</li>
+<li><code>STIFFNESS_MEDIUM</code>：中等刚度弹簧的刚度常数。这是弹簧力的默认刚度。值为1500.0</li>
+<li><code>STIFFNESS_LOW</code>：低刚度弹簧的刚度常数。值为200.0</li>
+<li><code>STIFFNESS_VERY_LOW</code>：刚度很低的弹簧的刚度常数。值为50.0</li>
+</ul>
+<p>Hint: 刚度的值必须为正数！</p>
+<h4 id="3-2-5-启动动画"><a href="#3-2-5-启动动画" class="headerlink" title="3.2.5 启动动画"></a>3.2.5 启动动画</h4><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">springAnim.start()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-6-取消动画"><a href="#3-2-6-取消动画" class="headerlink" title="3.2.6 取消动画"></a>3.2.6 取消动画</h4><p>我们可以取消动画或跳至动画结尾处。如果用户突然退出应用或视图变得不可见时，就可以使用取消动画。</p>
+<p>有两种方法可以终止动画。<code>cancel()</code> 方法可在动画当前所在的值处终止它。<code>skipToEnd()</code> 方法可使动画跳至最终值，然后终止它。</p>
+<p>在终止动画之前，请务必先查看弹簧的状态。如果状态为无阻尼，则动画永远不会到达静止位置。要查看弹簧的状态，请调用 <code>canSkipToEnd()</code> 方法。如果弹簧处于有阻尼状态，则该方法会返回 <code>true</code>，否则返回 <code>false</code>。</p>
+<p><code>cancel()</code> 方法只能对主线程调用。</p>
+<h4 id="3-2-7-其他属性"><a href="#3-2-7-其他属性" class="headerlink" title="3.2.7 其他属性"></a>3.2.7 其他属性</h4><h5 id="监听器"><a href="#监听器" class="headerlink" title="监听器"></a>监听器</h5><p><code>DynamicAnimation</code> 类提供了两个监听器：<code>OnAnimationUpdateListener</code> 和 <code>OnAnimationEndListener</code>。这些监听器会监听动画中的更新，例如当动画值发生变化和动画结束时。</p>
+<h5 id="设置动画起始值和范围"><a href="#设置动画起始值和范围" class="headerlink" title="设置动画起始值和范围"></a>设置动画起始值和范围</h5><p>要设置动画的起始值，请调用 <code>setStartValue()</code> 方法并传递动画的起始值。如果未设置起始值，则动画将使用对象属性的当前值作为起始值。</p>
+<p>如果要将属性值限制在特定范围内，则可以设置最小动画值和最大动画值。如果您在为具有内在范围的属性（如 Alpha 透明度的范围为 0 到 1）添加动画效果，这样做还有助于控制范围。</p>
+<ul>
+<li>要设置最小值，请调用 <code>setMinValue()</code> 方法并传递属性的最小值。</li>
+<li>要设置最大值，请调用 <code>setMaxValue()</code> 方法并传递属性的最大值。</li>
+</ul>
+<p>这两种方法都将返回正在为其设置值的动画。</p>
+<h5 id="创建自定义弹簧弹力"><a href="#创建自定义弹簧弹力" class="headerlink" title="创建自定义弹簧弹力"></a>创建自定义弹簧弹力</h5><p>如果我们不想使用默认弹簧弹力，可以创建自定义弹簧弹力。创建弹簧弹力之后，便可以自定义阻尼比和刚度等属性。</p>
+<ol>
+<li><p>创建一个 <code>SpringForce</code>对象。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> force = SpringForce()</span><br></pre></td></tr></table></figure></li>
+<li><p>通过调用相应的方法来分配属性。您还可以创建一个方法链。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">force.setDampingRatio(DAMPING_RATIO_LOW_BOUNCY).setStiffness(STIFFNESS_LOW)</span><br></pre></td></tr></table></figure></li>
+<li><p>调用<code>setSpring()</code>方法将弹簧设置为动画效果。</p>
+</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/26/2021-10-26--移动开发的准备/" data-toggle="tooltip" data-placement="top" title="移动端开发的准备">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/25/2021-10-26-Supervisor自启动Flask项目/" data-toggle="tooltip" data-placement="top" title="Supervisor自启动Flask项目">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/26/2021-10-30-Android%E5%BC%B9%E7%B0%A7%E5%8A%A8%E7%94%BB/kotlin%20%E5%BC%B9%E7%B0%A7%E5%8A%A8%E7%94%BB/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/26/2021-10-30-Android%E5%BC%B9%E7%B0%A7%E5%8A%A8%E7%94%BB/kotlin%20%E5%BC%B9%E7%B0%A7%E5%8A%A8%E7%94%BB/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          埋点与数据分析(一) - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/27/2021-10-27-埋点与数据分析（一）/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#产品" title="产品">产品</a>
+                        
+                    </div>
+                    <h1>埋点与数据分析(一)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 华颖星 on
+                        2021-10-27
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="埋点与数据分析-一"><a href="#埋点与数据分析-一" class="headerlink" title="埋点与数据分析(一)"></a>埋点与数据分析(一)</h1><blockquote>
+<p>埋点分析(event tracking)，是网站分析的一种常用数据采集方法。数据埋点是一种良好的私有化部署数据采集方式。——百度百科</p>
+</blockquote>
+<p>用户在使用产品的过程中，一般会产生两种数据：过程数据、结果数据。</p>
+<p><strong>过程数据</strong>是用户完成某个目标前的操作记录数据。<strong>结果数据</strong>是用户一系列操作后完成目标的数据。</p>
+<p>一个结果数据的产生，可能是由多个操作组成的，这里就会产生多个过程数据。如果要对产品进行后续优化，通过分析过程数据，能够更容易找到用户流失的环节，从而为产品的优化和迭代提供重要的决策依据，所以过程数据具有很高的分析价值。</p>
+<p>但是，将所有过程数据都记录下来是显然不现实的。<strong>数据埋点，就是针对产品需要关注的特定事件进行数据采集和上报的一种解决方案。</strong></p>
+<p>定义数据埋点及数据埋点的交接主要分为5个步骤：</p>
+<p><strong>定义数据指标—数据收集方法—埋点整理（埋点包含的参数整理）—文档输出—埋点验收</strong></p>
+<p>五个步骤大概分为两篇文章进行解释，本篇将主要介绍前两个步骤。</p>
+<h3 id="一、定义数据指标"><a href="#一、定义数据指标" class="headerlink" title="一、定义数据指标"></a>一、定义数据指标</h3><blockquote>
+<p><strong>数据指标</strong>：对当前业务有参考价值的可统计数据。</p>
+</blockquote>
+<p>数据分析往往是为了提升某个数据指标或降低某个数据指标，从而发现潜在问题/寻找潜在机会，数据指标则定义了你数据分析的目的。</p>
+<p>什么样的数据可以衡量产品的优劣？什么方面的数据对于产品维护和优化是十分重要的？对于不同的需求，所需要的数据指标往往不一样：</p>
+<ul>
+<li>产品（功能点击量、使用率、功能留存、核心路径转化、改版效果、用户行为等）</li>
+<li>运营（用户新增、活跃、流失、付费转化、分享等）</li>
+<li>渠道（渠道新增、落地页pv/uv、渠道转化、渠道留存率、ROI等）</li>
+</ul>
+<p>那么在具体项目中应该如何指定呢？这里提供两种方法：</p>
+<h4 id="数据指标定义方法"><a href="#数据指标定义方法" class="headerlink" title="数据指标定义方法"></a>数据指标定义方法</h4><h5 id="1-确认模块或产品特性：确认与模块特性相关的关键指标"><a href="#1-确认模块或产品特性：确认与模块特性相关的关键指标" class="headerlink" title="1. 确认模块或产品特性：确认与模块特性相关的关键指标"></a><strong>1. 确认模块或产品特性：确认与模块特性相关的关键指标</strong></h5><p>市面上的产品或功能基本能用以下几个模块进行划分：</p>
+<ul>
+<li>内容类型产品：关注用户使用时长和频次<ul>
+<li>常用指标：浏览数、浏览时长、内容互动（弹幕、评论、点赞）</li>
+</ul>
+</li>
+<li>社交类型产品：关注用户与用户之间的关系密度（紧密、多少）、用户活跃程度<ul>
+<li>常用指标：发布量（社区使用）、互动量、关系密度（关注用户数、发送消息数）</li>
+</ul>
+</li>
+<li>交易类型产品：关注用户交易规模和整个交易流程的转化率<ul>
+<li>常用流程：详情页转化率（核心场景转化率）、金额（总交易规模）、客单价、复购率</li>
+</ul>
+</li>
+<li>工具类型产品：关注用户使用频次和使用完成度<ul>
+<li>常用指标：使用量、频次、流程达成率（目标产品的用户流程较为简单，查看用户是否完成整个流程）</li>
+</ul>
+</li>
+</ul>
+<p>Tips：做竞品分析时，可将同目功能放在一起对比指标数据。</p>
+<h5 id="2-确认核心业务：确认体现核心业务健康程度的指标"><a href="#2-确认核心业务：确认体现核心业务健康程度的指标" class="headerlink" title="2.确认核心业务：确认体现核心业务健康程度的指标"></a><strong>2.确认核心业务：确认体现核心业务健康程度的指标</strong></h5><p>使用场景：业务简单、单一，或制定综合指标时可适用。</p>
+<p>确认核心业务的方法：平台靠什么盈利。</p>
+<p>举几个比较常见的例子：</p>
+<ul>
+<li>平台靠用户浏览广告进行盈利，核心业务卖广告，体现核心业务健康情况的关键指标为平台流量。</li>
+<li>平台靠售卖商品进行盈利，体现核心业务健康情况的关键指标为GMV总销售额。</li>
+<li>平台靠售卖会员进行盈利，体现核心业务健康情况的关键指标为会员用户量。</li>
+</ul>
+<p>这种方法确认的指标较为笼统，可作为公司公用指标进行使用，各个部门根据该指标进行拆分。</p>
+<ul>
+<li>如公司今年的关键指标为会员用户量；</li>
+<li>运营对应指标-每月新增用户**人；</li>
+<li>产品对应指标-每月留存用户保持在总用户的**%；</li>
+<li>销售对应指标-每月用户购买会员订单为**单；</li>
+<li>这种定义数据指标的适用场景较少，可以主要学习第一种确认数据指标的方法。</li>
+</ul>
+<h3 id="二、数据收集方法"><a href="#二、数据收集方法" class="headerlink" title="二、数据收集方法"></a>二、数据收集方法</h3><p>数据收集方法就是埋点该埋在哪里？该怎么埋？这里摘录了两种方法：①基于业务流程；②基于功能被使用情况，根据业务需求选择即可。</p>
+<h4 id="1-基于业务流程进行埋点"><a href="#1-基于业务流程进行埋点" class="headerlink" title="1. 基于业务流程进行埋点"></a><strong>1. 基于业务流程进行埋点</strong></h4><p>简单的理解就是：梳理业务流程，再统计各流程的数据。</p>
+<p>这种埋点方式可以发现用户前后的两个环节是否有巨大断层，或者远低或远高于行业水平，从而优化各个环节的转化率（其实就是漏斗）。</p>
+<ul>
+<li>适用场景：页面层级清晰有明确的业务流程，每个页面有明确的业务目标（下单、支付）。</li>
+<li>使用方法：梳理业务流程后在各个页面或各个行为进行埋点即可。</li>
+</ul>
+<p><strong>Tips：做漏斗的时候，记住用户行为一定是有连贯性的、有顺序的、有时间限制的。收集前要和开发说清楚是基于用户还是事件的。</strong></p>
+<p>下面举个例子来说明，基于用户和基于事件的区别：</p>
+<p>先说一下为什么有时间限制，用户在半年前浏览了平台的3篇文章，半年后他在平台通过一篇文章购买了商品。用户本次购买商品很大几率与半年前浏览内容无关，所以漏斗需将行为设置时间限制（设置时间限制可以让开发同学打一个小标签，在时间范围内进行了某种行为的用户才会被统计在漏斗内）。</p>
+<p>中间是根据业务流程梳理的需要统计的页面。左边是根据事件进行埋点得到的数据，右边为真实用户数据（去重后），可以看出基于用户/事件得到的数据是不同的。</p>
+<p><a target="_blank" rel="noopener" href="https://user-images.githubusercontent.com/89892783/139202323-d13f224d-e993-442e-93b5-b4bf9bda1c78.png"><img src="https://user-images.githubusercontent.com/89892783/139202323-d13f224d-e993-442e-93b5-b4bf9bda1c78.png" alt="图片"></a></p>
+<div align=center>来源：http://www.woshipm.com/data-analysis/3317995.html</div>
+当然事件和用户可以都进行统计，这样可以算出其他的一些数据，比如用户平均浏览多少个商品、平均浏览多少个分类、购买成功页面有多少用户进行分享。
+
+<h4 id="2-以功能模块拆解进行埋点"><a href="#2-以功能模块拆解进行埋点" class="headerlink" title="2. 以功能模块拆解进行埋点"></a><strong>2. 以功能模块拆解进行埋点</strong></h4><p>功能模块拆解，也可以理解为对应数据指标的细化。收集数据时，如果数据有明显的周期性，则以该周期作为单位进行收集和比较。</p>
+<p>如某应用周末用户活跃度明显上升，则建议以周为单位进行收集。与往期数据对比时，建议同比上一周的数据或本周六的数据同比上周六的数据，这样可减少数据之间的干扰性。</p>
+<p>下面以社交模块为例，这种埋点方式可以体现功能模块的健康程度。</p>
+<p><a target="_blank" rel="noopener" href="https://user-images.githubusercontent.com/89892783/139202484-a517a27b-510b-4d5c-9210-c2311425b46f.png"><img src="https://user-images.githubusercontent.com/89892783/139202484-a517a27b-510b-4d5c-9210-c2311425b46f.png" alt="image-20211027211936194"></a></p>
+<div align=center>来源：http://www.woshipm.com/data-analysis/3317995.html</div>
+
+
+<h4 id="3-解释几种常见的埋点采集方式"><a href="#3-解释几种常见的埋点采集方式" class="headerlink" title="3. 解释几种常见的埋点采集方式"></a><strong>3. 解释几种常见的埋点采集方式</strong></h4><p>代码埋点、无埋点、可视化埋点、全埋点、前端埋点、后端埋点，叫法很多，实际上可以简单的分为客户端埋点（即前端）与服务器埋点（即后端）。</p>
+<p>而前端埋点根据实现方式可分为可视化埋点与代码埋点，后端埋点统一都是代码埋点方式。</p>
+<h5 id="代码埋点"><a href="#代码埋点" class="headerlink" title="代码埋点"></a><strong>代码埋点</strong></h5><blockquote>
+<p><strong>概念</strong>  ：代码埋点是指在产品开发阶段，PM通过对产品上线后需要做的数据分析的场景，设计数据需求，撰写数据需求文档，然后交由开发在每个需要采集的数据点写入代码，通过写入的代码进行数据监测与上报。代码埋点又会分为前端埋点与后端埋点，前端埋点是指在web、app这样的产品内写入代码，而后端埋点是指在数据服务器内写入代码。</p>
+<p><strong>应用场景</strong> ：需要分析app内用户事件、需要进行多维用户行为分析、需要精确分析服务器端数据</p>
+<p><strong>优势</strong> ：1. 同时适用于客户端与服务器端数据采集 2. 可进行多维度属性定义，采集数据进行自动分类 3. 后端代码埋点可提高数据准确度，适用于精细数据分析</p>
+<p><strong>劣势</strong> ：1. 前期需做好埋点设计 2. 开发工作量大，出错率高 3. 版本更新后有可能需要部分重新埋点</p>
+<p><strong>实现方式</strong> ：PM整理数据需求、PM与开发沟通确定埋点文档、开发进行手动埋点、PM根据业务需求进行数据分析、埋点方案迭代调整</p>
+<p>注：大型公司，开发产品较多，会碰到比较通用的埋点需求，因此会开发适合此类通用需求的SDK以减少埋点工作量。而中小型、产品数量较少的公司，会选择纯手动代码埋点或借助外部SDK的方式，开展埋点工作。</p>
+</blockquote>
+<h5 id="无埋点（全埋点、可视化埋点）"><a href="#无埋点（全埋点、可视化埋点）" class="headerlink" title="无埋点（全埋点、可视化埋点）"></a><strong>无埋点（全埋点、可视化埋点）</strong></h5><blockquote>
+<p><strong>概念</strong>  ：无埋点属于前端埋点的一种方式，开发通过加入“无埋点”采集代码，对网页或者APP上所有的可交互事件元素进行解析并监测，当有用户操作行为（交互事件）发生时，即对此事件进行采集、上报，因此“无埋点”与“全埋点”是相同的概念。无埋点并不是不用写入任何代码，而是通过代码将所有事件元素解析后，以可视化的方式呈现，让PM、运营经理等可以根据需要自行手动选取、标定。为了与开发逐一进行代码写入的方式进行区分，被称作可视化埋点。可视化埋点通常通过第三方工具实现，美国Heap公司于2013年将无埋点方案推向商业化。</p>
+<p><strong>应用场景</strong> ：产品上线初期无明确业务和交易数据、只需要对web界面进行分析</p>
+<p><strong>优势</strong> ：1. 部署简单，工作量小2. 数据全量采集，前期数据设计要求低 3. 使用简单，业务人员可自行操作</p>
+<p><strong>劣势</strong> ：1. 无法记录详细事件属性 2. 因为缺乏事件属性，分类报告生成繁琐，需手动添加事件属性 3. 属于前端埋点，数据准确度偏低</p>
+<p><strong>实现方式</strong> ：开发在产品中加入全埋点监测代码、PM/运营根据需要进行可视化埋点选择、PM/运营进行数据分析应用</p>
+<p>注：因为不存在完全不依赖统计代码就可以实现数据收集的方式，所以无埋点的说法并不准确。</p>
+</blockquote>
+<h5 id="前端埋点"><a href="#前端埋点" class="headerlink" title="前端埋点"></a><strong>前端埋点</strong></h5><blockquote>
+<p><strong>概念</strong> ：前端埋点也称客户端埋点，指在APP或者web产品中植入代码，对用户在产品内的行为事件数据进行收集，用户一旦触发了该事件，就会上传埋点代码中定义的、需要上传的有关该事件的信息。前端埋点会包含代码埋点与可视化埋点方式。</p>
+<p><strong>应用场景</strong> ：产品运营阶段初期，功能简单，无深度分析需求；分析事件与后端无交互；</p>
+<p><strong>优势</strong> ：可统计app内与服务器无交互事件数据</p>
+<p><strong>劣势</strong> ：出现丢数据的情况，和自己的业务数据库数据对不上。这是前端数据采集的先天缺陷，因为网络异常，或者统计口径不一致，都会导致数据对不上</p>
+<p>注：数据埋点过程中通过公共事件设置，减少工作量</p>
+</blockquote>
+<h5 id="后端埋点"><a href="#后端埋点" class="headerlink" title="后端埋点"></a><strong>后端埋点</strong></h5><blockquote>
+<p><strong>概念</strong> ：后端埋点也称服务器端埋点，通过开发在服务器端写入代码，采集客户端与服务器端会存在交互的事件数据，以及存储在业务服务器中的业务数据。</p>
+<p><strong>应用场景</strong> ：产品功能复杂，需进行深度下钻与多维分析；用户行为数据与业务数据整合分析；数据保密性高；分析项与后端交互，前后端均可采集的数据；涉及充值、退订等的重要事件</p>
+<p><strong>优势</strong> ：1. 避免多个客户端埋点 2. 采集数据准确</p>
+<p><strong>劣势</strong> ：1. 客户端与服务器端无请求交互的数据 2. 无法进行客户端行为事件精确统计（如提交订单，用户可能是点击了3次才提交成功）</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>可视化埋点</th>
+<th>前端代码埋点</th>
+<th>后端代码埋点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>准确度</td>
+<td>低</td>
+<td>中</td>
+<td>高</td>
+</tr>
+<tr>
+<td>前期工作量</td>
+<td>低</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>后期工作量</td>
+<td>高</td>
+<td>中</td>
+<td>低</td>
+</tr>
+<tr>
+<td>可采集数据点</td>
+<td>页面访问数据（PV/UV） 元素点击数据（Banner点击）</td>
+<td>页面访问数据 元素点击全量数据 页面内表单 加入购物车等可接受部分失真数据</td>
+<td>页面访问数据 业务数据 元素有效点击数据 预定/订单/充值等需要绝对准确的交易数据</td>
+</tr>
+<tr>
+<td>使用事件与产品</td>
+<td>Web、简单App</td>
+<td>Web、简单App</td>
+<td>复杂App</td>
+</tr>
+<tr>
+<td>产品举例</td>
+<td>IBM企业官网</td>
+<td>人人都是产品经理社区网站</td>
+<td>淘宝、拼多多APP</td>
+</tr>
+</tbody></table>
+<p>可以尝试多个外部工具搭配使用，减少内部自己开发，借助使用了分布式框架可以对亿级数据实时分析的工具提高分析速度等。比如通过Google  Analytics做网页分析，通过Heap  Analytics初识可视化埋点，通过第三方系统app、小程序、服务器等全端数据采集SDK，实现多维的深度用户行为分析等。</p>
+<p>用好所有工具的基础都是对自己产品逻辑、业务的清晰分析。从而能够在前期设计良好的埋点方案、在后期分析时根据业务需求灵活应用数据，有分析结果之后能够做出准确的判断与运营决策。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/27/2021-10-27-springboot基础四层自动生成/" data-toggle="tooltip" data-placement="top" title="Springboot开发工具renren">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/10/26/2021-10-26--移动开发的准备/" data-toggle="tooltip" data-placement="top" title="移动端开发的准备">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#产品" title="产品">产品</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/27/2021-10-27-%E5%9F%8B%E7%82%B9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/27/2021-10-27-%E5%9F%8B%E7%82%B9%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%80%EF%BC%89/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

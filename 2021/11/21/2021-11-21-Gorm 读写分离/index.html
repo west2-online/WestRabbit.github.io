@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Gorm 读写分离 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/21/2021-11-21-Gorm 读写分离/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>Gorm 读写分离</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by FanOne on
+                        2021-11-21
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Gorm-读写分离"><a href="#Gorm-读写分离" class="headerlink" title="Gorm 读写分离"></a>Gorm 读写分离</h1><h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><blockquote>
+<p>在gorm v2版本中，我们可以看到已经支持读写分离，那读写分离是基于主从复制的，所以我们要先配置mysql的主从复制</p>
+</blockquote>
+<h1 id="1-为什么需要主从复制？"><a href="#1-为什么需要主从复制？" class="headerlink" title="1. 为什么需要主从复制？"></a>1. 为什么需要主从复制？</h1><ul>
+<li><p>在业务复杂的系统中，有这么一个情景：如果有一句sql语句需要<code>锁表</code>，导致暂时<code>不能使用读</code>的服务，那么就很影响运行中的业务。使用主从复制，让主库负责写，从库负责读，这样，即使主库出现了锁表的情景，通过读从库也可以保证业务的正常运作。</p>
+</li>
+<li><p>做数据的<code>热备</code></p>
+</li>
+<li><p>业务量越来越大，I/O访问频率过高，单机无法满足，此时做多库的存储，降低磁盘I/O访问的频率，提高单个机器的I/O性能。</p>
+</li>
+</ul>
+<h1 id="2-什么是主从复制？"><a href="#2-什么是主从复制？" class="headerlink" title="2. 什么是主从复制？"></a>2. 什么是主从复制？</h1><blockquote>
+<p>MySQL 主从复制是指数据可以从一个MySQL数据库服务器<strong>主节点</strong>复制到<code>一个</code>或<code>多个</code><strong>从节点</strong>。</p>
+</blockquote>
+<p>MySQL 默认采用<code>异步复制</code>方式，这样从节点不用一直访问主服务器来更新自己的数据，数据的更新可以在远程连接上进行，从节点可以复制主数据库中所有的数据库或者特定的数据库，或者特定的表。</p>
+<h1 id="3-原理"><a href="#3-原理" class="headerlink" title="3. 原理"></a>3. 原理</h1><ul>
+<li><code>master服务器</code>将数据的改变记录二进制<code>binlog日志</code>，当master上的数据发生<code>改变</code>时，则将其改变写入二进制日志中。</li>
+<li><code>slave服务器</code>会在一定时间间隔内对master二进制日志进行探测其是否发生改变，如果发生改变，则开始一个<code>I/OThread</code>请求master二进制事件。</li>
+<li>同时主节点为每个I/O线程启动一个dump线程，用于向其发送二进制事件，并保存至从节点本地的中继日志中。</li>
+<li>从节点将<code>启动SQL线程</code>从中继日志中读取二进制日志，在本地重放，使得其数据和主节点的保持一致。</li>
+<li>最后I/OThread和SQLThread将进入睡眠状态，等待下一次被唤醒。</li>
+</ul>
+<p><strong>总结：</strong></p>
+<ul>
+<li><code>从库</code>生成两个线程,一个I/O线程,一个SQL线程，一定要保证这两个是<code>开启</code>的状态。</li>
+<li><code>I/O线程</code>会去请求主库的binlog，并将得到的binlog写到本地的relay-log(中继日志)文件中。</li>
+<li>主库会生成一个<code>log dump线程</code>，用来给<strong>从库I/O线程传binlog</strong>。</li>
+<li>SQL线程，会读取<code>relay log</code>文件中的日志，并解析成sql语句逐一执行。</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/61cff6760c87420c8dea886786833118.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<h1 id="4-配置"><a href="#4-配置" class="headerlink" title="4. 配置"></a>4. 配置</h1><h2 id="4-1-准备两台服务器-已经安装了MySQL"><a href="#4-1-准备两台服务器-已经安装了MySQL" class="headerlink" title="4.1 准备两台服务器(已经安装了MySQL)"></a>4.1 准备两台服务器(已经安装了MySQL)</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">master:xxx</span><br><span class="line">slave:xxx</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-2-修改配置"><a href="#4-2-修改配置" class="headerlink" title="4.2 修改配置"></a>4.2 修改配置</h2><blockquote>
+<p>两台机子同时创建一个同名的数据库。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database test_db charset=utf8mb4;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-1-master-主服务器"><a href="#4-2-1-master-主服务器" class="headerlink" title="4.2.1 master 主服务器"></a>4.2.1 master 主服务器</h3><ul>
+<li>找到 <code>my.cnf</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/mysql/my.cnf</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/9cd8ea80eda64710925029665a09c324.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>添加这些信息</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">在mysqld模块中添加如下配置信息</span></span><br><span class="line">[mysqld]</span><br><span class="line">log-bin=master-bin #二进制文件名称</span><br><span class="line">binlog-format=ROW  #二进制日志格式，有row、statement、mixed三种格式，row指的是把改变的内容复制过去，而不是把命令在从服务器上执行一遍，statement指的是在主服务器上执行的SQL语句，在从服务器上执行同样的语句。MySQL默认采用基于语句的复制，效率比较高。mixed指的是默认采用基于语句的复制，一旦发现基于语句的无法精确的复制时，就会采用基于行的复制。</span><br><span class="line">server-id=1            # 要求各个服务器的id必须不一样</span><br><span class="line">binlog-do-db=test_db   # 同步的数据库名称</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置从服务器登录主服务器的账号授权</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> replication slave <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;root&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>刷新权限</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重启master服务器</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysql restart</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在mysql中查看<code>master</code>的<code>status</code></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> master stataus</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/0852372ce6e24c758ad31915d074b26c.png" alt="在这里插入图片描述"></p>
+<h3 id="4-2-2-slave-从服务器"><a href="#4-2-2-slave-从服务器" class="headerlink" title="4.2.2 slave 从服务器"></a>4.2.2 slave 从服务器</h3><ul>
+<li>找到 <code>my.cnf</code>文件</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/25ccefcc9aaf4c77903972b08d44160d.png" alt="在这里插入图片描述"></p>
+<ul>
+<li>配置信息</li>
+</ul>
+<p>这个<code>server-id</code>记得一定要和主服务器的<code>不一样</code>！<br><img src="https://img-blog.csdnimg.cn/7051760a049a412e8e1894d64f14a462.png" alt="在这里插入图片描述"></p>
+<ul>
+<li><p>重启<code>mysql</code>服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure></li>
+<li><p>连接主服务器</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">change master <span class="keyword">to</span> master_host<span class="operator">=</span><span class="string">&#x27;主服务地址&#x27;</span>,master_user<span class="operator">=</span><span class="string">&#x27;root&#x27;</span>,master_password<span class="operator">=</span><span class="string">&#x27;root&#x27;</span>,master_port<span class="operator">=</span><span class="number">3306</span>,master_log_file<span class="operator">=</span><span class="string">&#x27;master-bin.000001&#x27;</span>,master_log_pos<span class="operator">=</span><span class="number">154</span>;</span><br></pre></td></tr></table></figure>
+<p>这个<code>master_log_file</code>就是上面那个<code>show master stataus</code>的信息。<br>这个<code>master_log_pos</code>就是上面那个<code>show master stataus</code>的信息。</p>
+<ul>
+<li><p>启动slave</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">start</span> slave</span><br></pre></td></tr></table></figure></li>
+<li><p>查看slave</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> slave status \G(注意没有分号)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://img-blog.csdnimg.cn/b3759985a65f493c9c6a72befba02c23.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<p>当我们看着这两个都是<code>YES</code>的时候就可以了，注意不能是其他<code>CONNECTING</code></p>
+<ul>
+<li>停止slave</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stop slave</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-3-验证"><a href="#4-2-3-验证" class="headerlink" title="4.2.3 验证"></a>4.2.3 验证</h3><ul>
+<li><p><code>master</code> 主服务器<br><img src="https://img-blog.csdnimg.cn/0eab6bfa3e3a4ce885ca48ce097afc85.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+</li>
+<li><p><code>slave</code> 子服务器</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/dcac1adf2149488f93780365dcd9b8e6.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>两个服务器都是<code>空</code>的状态</p>
+<p>那首先我们可以先在<code>master节点</code>上进行插入一条语句</p>
+<p><img src="https://img-blog.csdnimg.cn/80e10f6157154f939e19b437d12b208f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_19,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>然后在<code>slave节点</code>上查看<br><img src="https://img-blog.csdnimg.cn/89b6c4e69d3c4bdd9fb2e660c4d69a53.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_14,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"><br>于是我们看到已经实现<code>主从复制</code>了。</p>
+<h1 id="5-设置连接mysql"><a href="#5-设置连接mysql" class="headerlink" title="5. 设置连接mysql"></a>5. 设置连接mysql</h1><ul>
+<li>构建mysql连接集群</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Db1Dsn = <span class="string">&quot;root:root@tcp(localhost:3306)/db_ex1?charset=utf8&amp;parseTime=true&quot;</span></span><br><span class="line"><span class="keyword">var</span> Db2Dsn = <span class="string">&quot;root:root@tcp(localhost:3306)/db_ex2?charset=utf8&amp;parseTime=true&quot;</span></span><br><span class="line"><span class="keyword">var</span> Db3Dsn = <span class="string">&quot;root:root@tcp(localhost:3306)/db_ex3?charset=utf8&amp;parseTime=true&quot;</span></span><br><span class="line"><span class="keyword">var</span> Db4Dsn = <span class="string">&quot;root:root@tcp(localhost:3306)/db_ex4?charset=utf8&amp;parseTime=true&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>主数据库连接</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> DB, _ = gorm.Open(mysql.Open(Db1Dsn), &amp;gorm.Config&#123;&#125; <span class="comment">// `db1` 作为 sources（DB 的默认连接）</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义数据库模型</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123; <span class="comment">// 用户</span></span><br><span class="line">	Name <span class="keyword">string</span></span><br><span class="line">	Sex <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Address <span class="keyword">struct</span> &#123; <span class="comment">// 地址</span></span><br><span class="line">	Local <span class="keyword">string</span></span><br><span class="line">	Number <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Product <span class="keyword">struct</span> &#123; <span class="comment">// 产品</span></span><br><span class="line">	Title <span class="keyword">string</span></span><br><span class="line">	ImgUrl <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> UserStruct <span class="keyword">struct</span> &#123; <span class="comment">// 用户</span></span><br><span class="line">	ID <span class="keyword">uint</span></span><br><span class="line">	Age <span class="keyword">uint</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="6-mysql数据库的主从配置-读为主，写为从"><a href="#6-mysql数据库的主从配置-读为主，写为从" class="headerlink" title="6. mysql数据库的主从配置(读为主，写为从)"></a>6. mysql数据库的主从配置(读为主，写为从)</h1><p><strong>注意：一定要在这步骤之前确保各个数据库之间都已经达到主从复制的状态</strong></p>
+<ul>
+<li>数据库的迁移连接</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_ = DB.Set(<span class="string">&quot;gorm:table_options&quot;</span>, <span class="string">&quot;charset=utf8mb4&quot;</span>).</span><br><span class="line">	AutoMigrate(&amp;User&#123;&#125;,&amp;Address&#123;&#125;,&amp;Product&#123;&#125;, &amp;Pet&#123;&#125;, &amp;Order&#123;&#125;, &amp;UserStruct)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置数据库的读写(哪个数据库进行读，哪个数据库进行写)</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">_ = DB.Use(dbresolver.</span><br><span class="line">		Register(dbresolver.Config&#123;</span><br><span class="line">		<span class="comment">// `db2` 作为 sources，`db3`、`db4` 作为 replicas</span></span><br><span class="line">		Sources:  []gorm.Dialector&#123;mysql.Open(Db2Dsn)&#125;,</span><br><span class="line">		Replicas: []gorm.Dialector&#123;mysql.Open(Db3Dsn), mysql.Open(Db4Dsn)&#125;,</span><br><span class="line">		Policy: dbresolver.RandomPolicy&#123;&#125;,		<span class="comment">// sources/replicas 负载均衡策略</span></span><br><span class="line">	&#125;).</span><br><span class="line">		Register(dbresolver.Config&#123;</span><br><span class="line">		<span class="comment">// `db1` 作为 sources（DB 的默认连接），对于 `User`、`Address` 使用 `db5` 作为 replicas</span></span><br><span class="line">		Replicas: []gorm.Dialector&#123;mysql.Open(Db5Dsn)&#125;,</span><br><span class="line">	&#125;, &amp;User&#123;&#125;, &amp;Address&#123;&#125;).</span><br><span class="line">		Register(dbresolver.Config&#123;</span><br><span class="line">		<span class="comment">// `db6`、`db7` 作为 sources，对于 `orders`、`Product` 使用 `db8` 作为 replicas</span></span><br><span class="line">		Sources:  []gorm.Dialector&#123;mysql.Open(Db6Dsn), mysql.Open(Db7Dsn)&#125;,</span><br><span class="line">		Replicas: []gorm.Dialector&#123;mysql.Open(Db8Dsn)&#125;,</span><br><span class="line">	&#125;, <span class="string">&quot;orders&quot;</span>, &amp;Product&#123;&#125;))</span><br></pre></td></tr></table></figure>
+
+<p><code>sources</code>：主源，主要用来进行<code>写操作</code>。</p>
+<p><code>replicas</code>：次源，主要用来进行<code>读操作</code>。</p>
+<h1 id="7-读写验证"><a href="#7-读写验证" class="headerlink" title="7. 读写验证"></a>7. 读写验证</h1><p>这个我们配置的时候就是配置userStruct是通过<code>db3/db4</code>进行读取，<code>db2</code>进行写的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> userStruct UserStruct</span><br><span class="line"><span class="comment">// Global Resolver 示例</span></span><br><span class="line">db.Model(&amp;UserStruct&#123;&#125;).Find(&amp;userStruct,<span class="number">1</span>) <span class="comment">// replicas `db3`/`db4`</span></span><br><span class="line">userStruct.Age=<span class="number">24</span></span><br><span class="line">db.Save(&amp;userStruct) <span class="comment">// sources `db2`</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>db4</li>
+</ul>
+<p><img src="https://gitee.com/cocainecong/my-image-host/raw/master/2021/images/image-20211121182341902.png" alt="image-20211121182341902"></p>
+<ul>
+<li>db3</li>
+</ul>
+<p><img src="https://gitee.com/cocainecong/my-image-host/raw/master/2021/images/image-20211121182312868.png" alt="image-20211121182312868"></p>
+<ul>
+<li>db2</li>
+</ul>
+<p><img src="https://gitee.com/cocainecong/my-image-host/raw/master/2021/images/image-20211121182320456.png" alt="image-20211121182320456"></p>
+<h1 id="8-总结"><a href="#8-总结" class="headerlink" title="8. 总结"></a>8. 总结</h1><ol>
+<li>当我们是读操作的时候，grom会把我们的读操作作用于<code>replicas</code>中。</li>
+<li>当我们涉及写操作，比如<code>create</code>,<code>update</code>之类的会从<code>source</code>中操作。</li>
+<li>如果没有指定特殊的表进行特殊的操作的话，是默认在没有特殊规定的数据库进行读或是写，比如上面例子的<code>userStruct</code>是在<code>db2</code>和<code>db3/db4</code>这三个数据库进行操作，而不是在其他固定写其他表的<code>db5</code>，<code>db8</code>和<code>db6/db7</code>数据库。</li>
+</ol>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/22/2021-11-22-用Unity实现抽卡（×）转盘机制/" data-toggle="tooltip" data-placement="top" title="用Unity实现抽卡（×）转盘机制">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/17/2021-11-17-Debian系统安装Proxmox VE(PVE)虚拟化管理软件/" data-toggle="tooltip" data-placement="top" title="Debian系统安装Proxmox VE(PVE)虚拟化管理软件">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/21/2021-11-21-Gorm%20%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/21/2021-11-21-Gorm%20%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

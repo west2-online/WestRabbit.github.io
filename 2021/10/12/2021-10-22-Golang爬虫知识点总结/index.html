@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Golang爬虫知识点总结 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/10/12/2021-10-22-Golang爬虫知识点总结/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>Golang爬虫知识点总结</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by FanOne on
+                        2021-10-12
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h1><p><img src="https://img-blog.csdnimg.cn/832f52c810a24568b25d763ed484e90b.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_20,color_FFFFFF,t_70,g_se,x_16" alt="请添加图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/7010dc7d3ad446e6a693f6d26aa8cd5e.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBA5bCP55Sf5Yeh5LiA,size_20,color_FFFFFF,t_70,g_se,x_16" alt="在这里插入图片描述"></p>
+<p>Golang中提供了<code>net/http</code>这个包原生支持<code>request</code>和<code>response</code>。</p>
+<h1 id="1-发送请求"><a href="#1-发送请求" class="headerlink" title="1. 发送请求"></a>1. 发送请求</h1><ul>
+<li>构造客户端</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> client http.Client</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>构造GET请求：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reqList, err := http.NewRequest(<span class="string">&quot;GET&quot;</span>, URL, <span class="literal">nil</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>构造POST请求</li>
+</ul>
+<p>Go中提供了一个<code>cookiejar.New</code>的函数方法，用于保留生成<code>Cookie</code>信息，这个是为了一些网站要登陆才能爬取的情况，所以我们登陆完之后，会有一个cookie，这个cookie是<code>存储用户信息</code>的，也就是这个信息是让服务器知道<code>是谁</code>进行这一次的访问！比如说登陆学校的教务处进行爬取课表，因为课表每个人都可能是不同的，所以就需要登陆，让服务器知道这是谁的课表信息，所以就需要在请求头上加上<code>cookie</code>进行伪装爬取。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">jar, err := cookiejar.New(<span class="literal">nil</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="built_in">panic</span>(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造<code>POST</code>请求的时候，可以把要传输的数据进行封装好，与<code>URL</code>一起构造</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> client http.Client</span><br><span class="line">Info :=<span class="string">&quot;muser=&quot;</span>+muserid+<span class="string">&quot;&amp;&quot;</span>+<span class="string">&quot;passwd=&quot;</span>+password</span><br><span class="line"><span class="keyword">var</span> data = strings.NewReader(Info)</span><br><span class="line">req, err := http.NewRequest(<span class="string">&quot;POST&quot;</span>, URL, data)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>添加请求头</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">req.Header.Set(<span class="string">&quot;Connection&quot;</span>, <span class="string">&quot;keep-alive&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;Pragma&quot;</span>, <span class="string">&quot;no-cache&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;no-cache&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;Upgrade-Insecure-Requests&quot;</span>, <span class="string">&quot;1&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/x-www-form-urlencoded&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;User-Agent&quot;</span>, <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;Accept&quot;</span>, <span class="string">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9&quot;</span>)</span><br><span class="line">req.Header.Set(<span class="string">&quot;Accept-Language&quot;</span>, <span class="string">&quot;zh-CN,zh;q=0.9&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>发送请求</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">resp, _:= client.Do(req)  <span class="comment">// 发送请求</span></span><br><span class="line">bodyText, _ := ioutil.ReadAll(resp.Body)  <span class="comment">// 使用缓冲区读取网页内容</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>关于cookie</strong></li>
+</ul>
+<p>上文也提到了一个包，当发送完请求之后，cookie就会保存在这个<code>client.Jar</code>这个包中</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myStr:=fmt.Sprintf(<span class="string">&quot;%s&quot;</span>,client.Jar)   <span class="comment">//强制类型转化 指针装到string</span></span><br></pre></td></tr></table></figure>
+
+<p>我们处理打印出这个<code>client.Jar</code>这个包的信息之后，选出响应的<code>cookie</code>，然后放在请求头上面即可！就能处理登陆情况下的cookie问题了。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">req.Header.Set(<span class="string">&quot;Cookie&quot;</span>, <span class="string">&quot;ASP.NET_SessionId=&quot;</span>+cook)</span><br></pre></td></tr></table></figure>
+
+
+<p>至此，发送请求部分就完全完成了！</p>
+<h1 id="2-解析网页"><a href="#2-解析网页" class="headerlink" title="2. 解析网页"></a>2. 解析网页</h1><h2 id="2-1-CSS选择器"><a href="#2-1-CSS选择器" class="headerlink" title="2.1 CSS选择器"></a>2.1 CSS选择器</h2><p><code>github.com/PuerkitoBio/goquery</code> 提供了<code>.NewDocumentFromReader</code>方法进行网页的解析。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">doc, err := goquery.NewDocumentFromReader(resp.Body)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-Xpath-语法"><a href="#2-2-Xpath-语法" class="headerlink" title="2.2 Xpath 语法"></a>2.2 Xpath 语法</h2><p><code>github.com/antchfx/htmlquery</code> 提供了<code>.Parse</code>方法进行网页的解析</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root, _ := htmlquery.Parse(resp.Body)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-3-Regex-正则"><a href="#2-3-Regex-正则" class="headerlink" title="2.3 Regex 正则"></a>2.3 Regex 正则</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">reId, _ := regexp.Compile(<span class="string">`id=(\d+)`</span>)  <span class="comment">// 正则匹配</span></span><br><span class="line">allId := reId.FindAll(bodyText,<span class="number">1</span>)</span><br><span class="line"><span class="keyword">for</span> _,item := <span class="keyword">range</span> allId &#123;</span><br><span class="line">	id=<span class="keyword">string</span>(item)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-获取节点信息"><a href="#3-获取节点信息" class="headerlink" title="3. 获取节点信息"></a>3. 获取节点信息</h1><h2 id="3-1-CSS-选择器"><a href="#3-1-CSS-选择器" class="headerlink" title="3.1 CSS 选择器"></a>3.1 CSS 选择器</h2><p>通过2.1，我们拿到上一步解析出来的<code>doc</code>之后，可以进行<code>css选择器语法</code>，进行结点的选择。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">doc.Find(<span class="string">&quot;#main &gt; div.right &gt; div.detail_main_content&quot;</span>).</span><br><span class="line">			Each(<span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>, s *goquery.Selection)</span></span> &#123;</span><br><span class="line">			Data.title = s.Find(<span class="string">&quot;p&quot;</span>).Text()</span><br><span class="line">			Data.time = s.Find(<span class="string">&quot;#fbsj&quot;</span>).Text()</span><br><span class="line">			Data.author = s.Find(<span class="string">&quot;#author&quot;</span>).Text()</span><br><span class="line">			Data.count = Read_Count(Read_Id)</span><br><span class="line">			fmt.Println(Data.title, Data.time, Data.author,Data.count)</span><br><span class="line">		&#125;)</span><br><span class="line"></span><br><span class="line">doc.Find(<span class="string">&quot;#news_content_display&quot;</span>).Each(<span class="function"><span class="keyword">func</span><span class="params">(i <span class="keyword">int</span>, s *goquery.Selection)</span></span> &#123;</span><br><span class="line">			Data.content = s.Find(<span class="string">&quot;p&quot;</span>).Text()</span><br><span class="line">			fmt.Println(Data.content)</span><br><span class="line">		&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="3-2-Xpath-语法"><a href="#3-2-Xpath-语法" class="headerlink" title="3.2 Xpath 语法"></a>3.2 Xpath 语法</h2><p>通过3.2，我们拿到上一步解析出来的<code>root</code>之后，可以进行<code>Xpath语法的编写</code>，进行结点的选择。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">tr := htmlquery.Find(root, <span class="string">&quot;//*[@id=&#x27;LB_kb&#x27;]/table/tbody/tr/td&quot;</span>)   <span class="comment">//使用Xpath进行结点信息的获取</span></span><br><span class="line"><span class="keyword">for</span> _, row := <span class="keyword">range</span> tr &#123; <span class="comment">//len(tr)=13</span></span><br><span class="line">	classNames := htmlquery.Find(row, <span class="string">&quot;./font&quot;</span>)</span><br><span class="line">	classPosistions := htmlquery.Find(row,<span class="string">&quot;./text()[4]&quot;</span>)</span><br><span class="line">	classTeachers := htmlquery.Find(row,<span class="string">&quot;./text()[5]&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(classNames)!=<span class="number">0</span> &#123;</span><br><span class="line">		className = htmlquery.InnerText(classNames[<span class="number">0</span>])</span><br><span class="line">		classPosistion = htmlquery.InnerText(classPosistions[<span class="number">0</span>])</span><br><span class="line">		classTeacher = htmlquery.InnerText(classTeachers[<span class="number">0</span>])</span><br><span class="line">	  fmt.Println(className)</span><br><span class="line">	  fmt.Println(classPosistion)</span><br><span class="line">	  fmt.Println(classTeacher)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="4-保存信息"><a href="#4-保存信息" class="headerlink" title="4. 保存信息"></a>4. 保存信息</h1><h2 id="4-1-使用原生SQL语句把数据保存Mysql中"><a href="#4-1-使用原生SQL语句把数据保存Mysql中" class="headerlink" title="4.1 使用原生SQL语句把数据保存Mysql中"></a>4.1 使用原生SQL语句把数据保存Mysql中</h2><ul>
+<li>定义数据库链接参数</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	usernameClass = <span class="string">&quot;root&quot;</span></span><br><span class="line">	passwordClass = <span class="string">&quot;root&quot;</span></span><br><span class="line">	ipClass       = <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">	portClass     = <span class="string">&quot;3306&quot;</span></span><br><span class="line">	dbnameClass   = <span class="string">&quot;class&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>连接数据库</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> DB *sql.DB</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InitDB</span><span class="params">()</span></span>&#123;</span><br><span class="line">	path := strings.Join([]<span class="keyword">string</span>&#123;usernameClass, <span class="string">&quot;:&quot;</span>, passwordClass, <span class="string">&quot;@tcp(&quot;</span>, ipClass, <span class="string">&quot;:&quot;</span>, portClass, <span class="string">&quot;)/&quot;</span>, dbnameClass, <span class="string">&quot;?charset=utf8&quot;</span>&#125;, <span class="string">&quot;&quot;</span>)</span><br><span class="line">	DB, _ = sql.Open(<span class="string">&quot;mysql&quot;</span>, path)</span><br><span class="line">	DB.SetConnMaxLifetime(<span class="number">10</span>)</span><br><span class="line">	DB.SetMaxIdleConns(<span class="number">5</span>)</span><br><span class="line">	<span class="keyword">if</span> err := DB.Ping(); err != <span class="literal">nil</span>&#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;opon database fail&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;connect success&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义数据类型</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Class <span class="keyword">struct</span> &#123;</span><br><span class="line">	classData   <span class="keyword">string</span></span><br><span class="line">	teacherName <span class="keyword">string</span></span><br><span class="line">	position    <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>插入数据</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InsertData</span><span class="params">(Data Class)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">	tx, err := DB.Begin()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span>&#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;tx fail&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	stmt, err := tx.Prepare(<span class="string">&quot;INSERT INTO class_data (`class`,`teacher`,`position`) VALUES (?, ?, ?)&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span>&#123;  <span class="comment">// 数据的插入</span></span><br><span class="line">		fmt.Println(<span class="string">&quot;Prepare fail&quot;</span>,err)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	_, err = stmt.Exec(Data.classData,Data.teacherName,Data.position)  <span class="comment">//执行事务</span></span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span>&#123;</span><br><span class="line">		fmt.Println(<span class="string">&quot;Exec fail&quot;</span>,err)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	_ = tx.Commit()  <span class="comment">// 提交事务</span></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-2-使用GORM把数据保存到Mysql中"><a href="#4-2-使用GORM把数据保存到Mysql中" class="headerlink" title="4.2 使用GORM把数据保存到Mysql中"></a>4.2 使用GORM把数据保存到Mysql中</h2><ul>
+<li>构造GORM模型model</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> NewD <span class="keyword">struct</span> &#123;</span><br><span class="line">	gorm.Model</span><br><span class="line">	Title   <span class="keyword">string</span> <span class="string">`gorm:&quot;type:varchar(255);not null;&quot;`</span></span><br><span class="line">	Time    <span class="keyword">string</span> <span class="string">`gorm:&quot;type:varchar(256);not null;&quot;`</span></span><br><span class="line">	Author  <span class="keyword">string</span> <span class="string">`gorm:&quot;type:varchar(256);not null;&quot;`</span></span><br><span class="line">	Count   <span class="keyword">string</span> <span class="string">`gorm:&quot;type:varchar(256);not null;&quot;`</span></span><br><span class="line">	Content <span class="keyword">string</span> <span class="string">`gorm:&quot;type:longtext;not null;&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>连接数据库</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> db *gorm.DB</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> err error</span><br><span class="line">	path := strings.Join([]<span class="keyword">string</span>&#123;userName_New, <span class="string">&quot;:&quot;</span>, password_New, <span class="string">&quot;@tcp(&quot;</span>,ip_New, <span class="string">&quot;:&quot;</span>, port_New, <span class="string">&quot;)/&quot;</span>, dbName_New, <span class="string">&quot;?charset=utf8&quot;</span>&#125;, <span class="string">&quot;&quot;</span>)</span><br><span class="line">	db, err = gorm.Open(<span class="string">&quot;mysql&quot;</span>, path)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="built_in">panic</span>(err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">&quot;SUCCESS&quot;</span>)</span><br><span class="line">	_ = db.AutoMigrate(&amp;NewD&#123;&#125;)</span><br><span class="line">	sqlDB := db.DB()</span><br><span class="line">	sqlDB.SetMaxIdleConns(<span class="number">10</span>)</span><br><span class="line">	sqlDB.SetMaxOpenConns(<span class="number">100</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>写入数据</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">NewA := NewD&#123;</span><br><span class="line">	Title:   Data.title,</span><br><span class="line">	Time:    Data.time,</span><br><span class="line">	Author:  Data.author,</span><br><span class="line">	Count:   Data.count,</span><br><span class="line">	Content: Data.content,</span><br><span class="line">&#125;</span><br><span class="line">err = db.Create(&amp;NewA).Error  <span class="comment">// 在数据库中创建一条数据</span></span><br></pre></td></tr></table></figure>
+
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/10/21/2021-11-4-浅析jvm（一）/" data-toggle="tooltip" data-placement="top" title="<浅析JVM原理>">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/11/29/2020-11-29-Swift 和 JS 交互(一)/" data-toggle="tooltip" data-placement="top" title="Helloworld">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/10/12/2021-10-22-Golang%E7%88%AC%E8%99%AB%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/";
+    var disqus_url = "https://blog.w2fzu.com/2021/10/12/2021-10-22-Golang%E7%88%AC%E8%99%AB%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

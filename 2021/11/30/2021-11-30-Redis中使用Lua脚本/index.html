@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Redis中使用Lua脚本 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/30/2021-11-30-Redis中使用Lua脚本/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                    </div>
+                    <h1>Redis中使用Lua脚本</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Baird on
+                        2021-11-30
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="Redis中使用Lua脚本"><a href="#Redis中使用Lua脚本" class="headerlink" title="Redis中使用Lua脚本"></a>Redis中使用Lua脚本</h2><h3 id="什么是Lua"><a href="#什么是Lua" class="headerlink" title="什么是Lua"></a>什么是Lua</h3><p><code>Lua</code>是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放。其设计目的就是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。从 <code>Redis2.6</code>开始， <code>Eval</code>命令使用内置的<code>Lua</code>解释器执行脚本 ，不需要单独安装 <code>Lua</code></p>
+<h3 id="为什么使用Lua"><a href="#为什么使用Lua" class="headerlink" title="为什么使用Lua"></a>为什么使用Lua</h3><p>在使用<code>redis</code>的过程中，我们会发现有些时候需要原子性去操作<code>redis</code>命令，而为了保证多条命令组合的原子性，<code> Redis</code>提供了简单的事务功能以及集成<code>Lua</code>脚本来解决这个问题。其中<code>redis</code>事务是基于乐观锁，<code>lua</code>脚本是基于<code>redis</code>的单线程执行命令。</p>
+<h3 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h3><ul>
+<li>减少网络开销，将多个请求通过脚本的形式一次发送，减少网络时延</li>
+<li>原子操作，<code>Redis</code>会将整个脚本作为一个整体执行，中间不会被其他请求插入。因此在脚本运行过程中无需担心会出现竞态条件，<code>无需使用事务</code></li>
+<li>复用，客户端发送的脚本会永久存在<code>Redis</code>中，这样其他客户端可以复用这一脚本，而不需要使用代码完成相同的逻辑</li>
+</ul>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h5 id="1-EVAL"><a href="#1-EVAL" class="headerlink" title="1.EVAL"></a>1.<code>EVAL</code></h5><p>命令格式——<code>EVAL script numkeys key [key …] arg [arg …]</code></p>
+<p>- <code>script</code>:用到的<code>Lua</code>脚本，不必定义为一个<code>Lua</code>函数<br>- <code>numkeys</code>:指定key [key …]中key的个数，也就是指定的<code>Lua</code>脚本需</p>
+<p>要处理键的数量<br>- <code>key [key …]</code>: 传递给<code>Lua</code>脚本零到多个键，通过<code>KEYS[INDEX]</code>获取<br>- <code>arg [arg …]</code>: 附加参数，通过<code>ARGV[INDEX]</code>获取</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// eg1：numkeys=1，keys数组只有1个元素key1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; EVAL <span class="string">&quot;return KEYS[1]&quot;</span> <span class="number">1</span> key1</span><br><span class="line"><span class="string">&quot;key1&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// eg2：numkeys=0，arg数组元素中有1个元素value1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; EVAL <span class="string">&quot;return ARGV[1]&quot;</span> <span class="number">0</span> value1</span><br><span class="line"><span class="string">&quot;value1&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中在<code> Lua</code> 脚本中，可以使用两个不同函数来执行<code> Redis</code> 命令，它们分别是： <code>redis.call()</code> 和<code> redis.pcall()</code></p>
+<h5 id="2-SCRIPT-LOAD-SCRIPT-EXISTS"><a href="#2-SCRIPT-LOAD-SCRIPT-EXISTS" class="headerlink" title="2.SCRIPT LOAD - SCRIPT EXISTS"></a>2.<code>SCRIPT LOAD - SCRIPT EXISTS</code></h5><ul>
+<li>SCRIPT LOAD命令格式——<code>SCRIPT LOAD script</code></li>
+</ul>
+<p>-SCRIPT LOAD 将脚本 <code>script</code> 添加到<code>Redis</code>服务器的脚本缓存中，并不立即执行这个脚本，而是会立即对输入的脚本进行求值。并返回给定脚本的 <code>SHA </code>校验和。</p>
+<p>-下文中<code>EVALSHA</code> 命令中的<code>sha1</code>参数，就是<code>SCRIPT LOAD</code> 命令执行的结果。</p>
+<p>-如果给定的脚本已经在缓存里面了，那么不执行任何操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//SCRIPT LOAD加载脚本，得到sha1值</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; SCRIPT LOAD <span class="string">&quot;redis.call(&#x27;SET&#x27;, KEYS[1], ARGV[1]); return 1;&quot;</span></span><br><span class="line"><span class="string">&quot;05f21e1ea87d154c7433c59641ef1383d6ab47c9&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SCRIPT EXISTS命令格式——<code>SCRIPT EXISTS sha1 [sha1 …]</code></li>
+</ul>
+<p>-给定一个或多个脚本的<code>SHA</code>校验和，返回一个包含 0 和 1 的列表，表示校验和所指定的脚本是否存在在缓存中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; SCRIPT EXISTS <span class="number">05f</span>21e1ea87d154c7433c59641ef1383d6ab47c9</span><br><span class="line"><span class="number">1</span>) (integer) <span class="number">1</span></span><br><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; SCRIPT EXISTS <span class="number">05f</span>21e1ea87d154c7433c59641ef1383d6ab47c2</span><br><span class="line"><span class="number">1</span>) (integer) <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="3-EVALSHA"><a href="#3-EVALSHA" class="headerlink" title="3.EVALSHA"></a>3.<code>EVALSHA</code></h5><p>命令格式——<code>EVALSHA sha1 numkeys key [key …] arg [arg …]</code></p>
+<p>-在脚本被加入到缓存之后，通过<code>EVALSHA</code>命令，可以使用脚本的 <code>SHA </code>校验和来调用这个脚本。</p>
+<p>-脚本可以在缓存中保留无限长的时间，直到执行<code>SCRIPT FLUSH</code>为止。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; EVALSHA <span class="number">05f</span>21e1ea87d154c7433c59641ef1383d6ab47c9 <span class="number">1</span> <span class="function">key1 <span class="title">value1</span></span></span><br><span class="line"><span class="function"><span class="params">(integer)</span> 1</span></span><br><span class="line"><span class="function">127.0.0.1:6379&gt; get key1</span></span><br><span class="line"><span class="function">&quot;value1&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="4-SCRIPT-FLUSH"><a href="#4-SCRIPT-FLUSH" class="headerlink" title="4.SCRIPT FLUSH"></a>4.<code>SCRIPT FLUSH</code></h5><p>命令格式——<code>SCRIPT FLUSH</code></p>
+<p>-用于清除<code>Redis</code>服务端所有 <code>Lua</code> 脚本缓存</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">6379</span>&gt; SCRIPT FLUSH</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-SCRIPT-KILL"><a href="#5-SCRIPT-KILL" class="headerlink" title="5.SCRIPT KILL"></a>5.<code>SCRIPT KILL</code></h5><p>命令格式——<code>SCRIPT FLUSH</code></p>
+<p>-杀死当前正在运行的 <code>Lua</code> 脚本</p>
+<p>-仅当这个脚本没有执行过任何写操作时，命令才生效</p>
+<p>-主要用于终止运行时间过长的脚本，比如一个因为 BUG 而发生无限 loop 的脚本</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li><code>lua</code>脚本中的<code>redis</code>操作的key最好都是通过 <code>keys</code>来传递，而不要写死,否则在<code>redis</code> <code>cluster</code>的情况下可能有问题</li>
+<li>我们无法清除某一个脚本的缓存，只可以清除所有的缓存，一般情况下没有必要清除，因为即使有大量的脚本也不会太占用内存</li>
+<li><code>script kill</code>命令只可以杀死正在运行的只读脚本，修改了数据的脚本只能使用 <code>shutdown nosave</code>命令杀死</li>
+<li>脚本执行的默认超时时间为 <code>5分钟</code>，可以通过<code>redis.conf</code>配置文件的<code>lua-time-limit</code>配置项修改</li>
+<li>脚本即使到达了超时时间，也不会停止执行，因为这违反了<code>lua</code>脚本的原子性</li>
+</ul>
+<h3 id="简单编写Lua脚本文件"><a href="#简单编写Lua脚本文件" class="headerlink" title="简单编写Lua脚本文件"></a>简单编写Lua脚本文件</h3><p>当 <code>Lua</code> 脚本存在较多逻辑的时候，就很有必要单独编写一个独立的<code>Lua</code>文件，下面我们来做一个尝试：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">redis.call(<span class="string">&#x27;set&#x27;</span>,KEYS[<span class="number">1</span>],ARGV[<span class="number">1</span>])</span><br><span class="line">redis.call(<span class="string">&#x27;set&#x27;</span>,KEYS[<span class="number">2</span>],ARGV[<span class="number">2</span>])</span><br><span class="line">local num1 = tonumber(redis.call(<span class="string">&#x27;get&#x27;</span>,KEYS[<span class="number">1</span>]))</span><br><span class="line">local num2 = tonumber(redis.call(<span class="string">&#x27;get&#x27;</span>,KEYS[<span class="number">2</span>]))</span><br><span class="line"><span class="keyword">if</span> num1 &gt; num2 then</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">end</span><br><span class="line"><span class="keyword">if</span> num1 == num2 then</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">end</span><br><span class="line"><span class="keyword">if</span> num1 &lt; num2 then</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>将它取名并保存起来，接下来就可以在<code>linux</code>操作系统上执行下面的命令进行测试:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">redis</span>-cli --eval &lt;文件名&gt; key<span class="number">1</span> key<span class="number">2</span> , &lt;value<span class="number">1</span>&gt; &lt;value<span class="number">2</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SpringBoot集成Redis调用Lua脚本"><a href="#SpringBoot集成Redis调用Lua脚本" class="headerlink" title="SpringBoot集成Redis调用Lua脚本"></a>SpringBoot集成Redis调用Lua脚本</h3><p>其中对<code>Redis</code>的操作，主要用到了<code>SpringBoot</code>里的<code>RedisTemplate</code>模板，在完成所需脚本的编写后，添加到<code>SpringBoot</code>项目的resources目录下，目录结构为:<code>src/resources/xxx.lua</code>。<code>RedisTemplate</code>提供了两种方法执行<code>Lua</code>脚本：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//script-脚本资源,keys-列表</span></span><br><span class="line">&lt;T&gt; <span class="function">T <span class="title">execute</span><span class="params">(RedisScript&lt;T&gt; script,List&lt;K&gt; keys,Object.... args)</span></span></span><br><span class="line"><span class="function"><span class="comment">//加入了两个参数:为参数序列化方法以及结果序列化方法</span></span></span><br><span class="line"><span class="function">&lt;T&gt; T <span class="title">execute</span><span class="params">(RedisScript&lt;T&gt; script,RedisSerializer&lt;?&gt; argsSerializer,RedisSerializer&lt;T&gt; resultSerializer,List&lt;K&gt; keys,Object.... args)</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>RedisScript</code>参数决定了<code>Lua</code>脚本资源的同时，也决定了返回值类型，我们在开发中，默认使用的是<code>DefaultRedisScript</code>实现对象。接下来看一下实现的方式，不提供序列化方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execLuaWithoutSerializer</span><span class="params">()</span></span>&#123;</span><br><span class="line">    DefaultRedisScript&lt;JSONObject&gt; script = <span class="keyword">new</span> DefaultRedisScript&lt;&gt;();</span><br><span class="line">    script.setResultType(JSONObject.class);</span><br><span class="line">    script.setLocation(<span class="keyword">new</span> ClassPathResource(<span class="string">&quot;/xxx.lua&quot;</span>));</span><br><span class="line">    List&lt;String&gt; keys =ImmutableList.of(<span class="string">&quot;lua:id&quot;</span>,<span class="string">&quot;lua:name&quot;</span>);</span><br><span class="line">    JSONObject sum =redisTemplate.execute(script, keys);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在调用时传入了一个List，存储两个Key值，需要注意调用时设置的<code>ResultType</code>必须与脚本中的返回类一致。</p>
+<p>关于更具体的使用，可能会在下次博客中，跟处理<code>lua</code>限流操作中遇到的一些问题放在一起讲。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/30/2021-11-30-QueryDSL+JPA的一些实现/" data-toggle="tooltip" data-placement="top" title="QueryDSL+JPA的一些实现">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/30/2021-11-30-UI设计风格（情绪）/" data-toggle="tooltip" data-placement="top" title="UI设计-COLOR">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#20级" title="20级">20级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/30/2021-11-30-Redis%E4%B8%AD%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/30/2021-11-30-Redis%E4%B8%AD%E4%BD%BF%E7%94%A8Lua%E8%84%9A%E6%9C%AC/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

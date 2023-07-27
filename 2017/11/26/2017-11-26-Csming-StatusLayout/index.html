@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          StatusLayout - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2017/11/26/2017-11-26-Csming-StatusLayout/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#14级" title="14级">14级</a>
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                    <h1>StatusLayout</h1>
+                    <h2 class="subheading">显示不同状态的布局；在一个应用中，通常都会有数据为空、网络断开、正在加载等一系列状态；于是我做了一个控件来统一管理这些状态；一来方便使用，二来方便风格统一；</h2>
+                    <span class="meta">
+                        Posted by Csming on
+                        2017-11-26
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="StatusLayout"><a href="#StatusLayout" class="headerlink" title="StatusLayout"></a>StatusLayout</h1><p>首先附上github项目地址；<a target="_blank" rel="noopener" href="https://github.com/csming1995/statuslayout">https://github.com/csming1995/statuslayout</a></p>
+<p>之前看过很多网上已有的做法，大多都已经将状态都涵盖了；这样的做法，可能很难包裹所有的业务需求；</p>
+<p>于是，突发奇想，是否能够提供给使用者更自由的使用方式；比如，提供给使用者自定义某状态布局，甚至自定义状态及布局的自由；</p>
+<hr>
+<p>这是一个复杂度不太高，但是代码设计感比较强一点的开源库~；</p>
+<p>先看一下源码；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StatusLayout</span> <span class="keyword">extends</span> <span class="title">FrameLayout</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">&quot;StatusLayout.FrameLayout&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * DEFAULT EMPTY NET_ERROR 默认的三种状态</span></span><br><span class="line"><span class="comment">     * DEFAULT 为用户第一次使用该组件时指定的属性状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EMPTY = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NET_ERROR = <span class="number">3</span>;</span><br><span class="line">    <span class="comment">//rivate static final int LOADING = 3;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 属性值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String mInitMessage;</span><br><span class="line">    <span class="keyword">private</span> Drawable mInitImage;</span><br><span class="line">    <span class="keyword">private</span> String mInitStrInBtn;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Map 用键值对存储 状态-视图</span></span><br><span class="line"><span class="comment">     * List 用于存储子控件,即内容</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer, View&gt; mMapMessageViews;</span><br><span class="line">    <span class="keyword">private</span> List&lt;View&gt; mNormalViews;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LayoutInflater mLayoutInflater;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认页</span></span><br><span class="line"><span class="comment">     * 空数据页</span></span><br><span class="line"><span class="comment">     * 网络错误页</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> LinearLayout mDefaultView;<span class="comment">//默认页</span></span><br><span class="line">    <span class="keyword">private</span> LinearLayout mDefaultEmptyMessageView;</span><br><span class="line">    <span class="keyword">private</span> LinearLayout mDefaultNetErrorView;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StatusLayout</span><span class="params">(Context context)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(context, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StatusLayout</span><span class="params">(Context context, AttributeSet attrs)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StatusLayout</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</span><br><span class="line">        mContext = context;</span><br><span class="line">        init(attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 一些初始化工作</span></span><br><span class="line"><span class="comment">     * 初始化DefaultView</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(AttributeSet attrs)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == mNormalViews) mNormalViews = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == mMapMessageViews) mMapMessageViews = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == mLayoutInflater)&#123;</span><br><span class="line">            mLayoutInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        TypedArray mValueArray = mContext.obtainStyledAttributes(attrs, R.styleable.StatusLayoutValue);</span><br><span class="line"></span><br><span class="line">        mInitMessage = mValueArray.getString(R.styleable.StatusLayoutValue_attr_message);</span><br><span class="line">        mInitImage = mValueArray.getDrawable(R.styleable.StatusLayoutValue_attr_image_src);</span><br><span class="line">        mInitStrInBtn = mValueArray.getString(R.styleable.StatusLayoutValue_attr_str_btn);</span><br><span class="line"></span><br><span class="line">        setEmptyMessageView();</span><br><span class="line">        setNetErrorMessageView();</span><br><span class="line">        setDefaultView(mInitMessage, mInitImage, mInitStrInBtn);</span><br><span class="line">        mValueArray.recycle();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加载完布局后 使默认视图显示</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onFinishInflate</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onFinishInflate();</span><br><span class="line">        showDefaultView();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 测量</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> widthMeasureSpec</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> heightMeasureSpec</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);</span><br><span class="line">        measureChildren(widthMeasureSpec, heightMeasureSpec);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过addView函数在被调用时,对child View进行初始化</span></span><br><span class="line"><span class="comment">     * 获取子控件信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> child</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> params</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(View child, ViewGroup.LayoutParams params)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.addView(child, params);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; getChildCount(); i ++)&#123;</span><br><span class="line">            mNormalViews.add(getChildAt(i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showDefaultView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        showStatusView(DEFAULT);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showEmptyMessageView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        showStatusView(EMPTY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showNetErrorView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        showStatusView(NET_ERROR);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置为有数据状态</span></span><br><span class="line"><span class="comment">     * 使当前View的子View显示</span></span><br><span class="line"><span class="comment">     * 子View为RecyclerView</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> #setContentView(boolean)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showNormalView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        hiddenStatusViews();</span><br><span class="line">        setContentView(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 设置子View的显示或隐藏状态</span></span><br><span class="line"><span class="comment">     * 子View存储于一个list中</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> isShown</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">boolean</span> isShown)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isShown)&#123;</span><br><span class="line">            <span class="keyword">for</span> (View v : mNormalViews)&#123;</span><br><span class="line">                v.setVisibility(VISIBLE);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (View v : mNormalViews)&#123;</span><br><span class="line">                v.setVisibility(GONE);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 无参调用的设置网络错误页</span></span><br><span class="line"><span class="comment">     * 用于内部调用</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setNetErrorMessageView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == mDefaultNetErrorView)&#123;</span><br><span class="line">            mDefaultNetErrorView = (LinearLayout)mLayoutInflater.inflate(R.layout.status_layout_net_error_message, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        mMapMessageViews.put(NET_ERROR, mDefaultNetErrorView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 有参调用的设置网络错误页</span></span><br><span class="line"><span class="comment">     * 提供给外部使用者</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> message</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> image</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNetErrorMessageView</span><span class="params">(String message, Drawable image)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == mDefaultNetErrorView)&#123;</span><br><span class="line">            mDefaultNetErrorView = (LinearLayout)mLayoutInflater.inflate(R.layout.status_layout_net_error_message, <span class="keyword">null</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mDefaultNetErrorView = (LinearLayout)mMapMessageViews.get(NET_ERROR);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        TextView mTvNetError = (TextView)mDefaultNetErrorView.findViewById(R.id.tv_net_error_view);</span><br><span class="line">        ImageView mIvNetError = (ImageView)mDefaultNetErrorView.findViewById(R.id.iv_net_error_view);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != message)&#123;</span><br><span class="line">            mTvNetError.setText(message);</span><br><span class="line">            mTvNetError.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mTvNetError.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != image)&#123;</span><br><span class="line">            mIvNetError.setImageDrawable(image);</span><br><span class="line">            mIvNetError.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mIvNetError.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mMapMessageViews.put(NET_ERROR, mDefaultNetErrorView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 无参调用空数据页面</span></span><br><span class="line"><span class="comment">     * 用于内部调用</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == mDefaultEmptyMessageView) &#123;</span><br><span class="line">            mDefaultEmptyMessageView = (LinearLayout)mLayoutInflater.inflate(R.layout.status_layout_empty_message, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        mMapMessageViews.put(EMPTY, mDefaultEmptyMessageView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(<span class="keyword">int</span> messageId, <span class="keyword">int</span> imageId, <span class="keyword">int</span> messageInBtnId)</span></span>&#123;</span><br><span class="line">        String messageInBtn = mContext.getString(messageInBtnId);</span><br><span class="line">        setEmptyMessageView(messageId, imageId, messageInBtn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(<span class="keyword">int</span> messageId, <span class="keyword">int</span> imageId, String messageInBtn)</span></span>&#123;</span><br><span class="line">        Drawable image = ContextCompat.getDrawable(mContext, imageId);</span><br><span class="line">        setEmptyMessageView(messageId, image, messageInBtn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(<span class="keyword">int</span> messageId, Drawable image, String messageInBtn)</span></span>&#123;</span><br><span class="line">        String message = mContext.getString(messageId);</span><br><span class="line">        setEmptyMessageView(message, image, messageInBtn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 有参调用设置空数据页</span></span><br><span class="line"><span class="comment">     * 提供给外部使用者</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> message</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> image</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> messageInBtn</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(String message, Drawable image, String messageInBtn)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == mDefaultEmptyMessageView)&#123;</span><br><span class="line">            mDefaultEmptyMessageView = (LinearLayout)mLayoutInflater.inflate(R.layout.status_layout_empty_message, <span class="keyword">null</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mDefaultEmptyMessageView = (LinearLayout)mMapMessageViews.get(EMPTY);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        TextView mTvEmpty = (TextView)mDefaultEmptyMessageView.findViewById(R.id.tv_empty_view);</span><br><span class="line">        ImageView mIvEmpty = (ImageView)mDefaultEmptyMessageView.findViewById(R.id.iv_empty_view);</span><br><span class="line">        Button mBtnEmpty = (Button)mDefaultEmptyMessageView.findViewById(R.id.btn_empty_view);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != message)&#123;</span><br><span class="line">            mTvEmpty.setText(message);</span><br><span class="line">            mTvEmpty.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mTvEmpty.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != image)&#123;</span><br><span class="line">            mIvEmpty.setImageDrawable(image);</span><br><span class="line">            mIvEmpty.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mIvEmpty.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != messageInBtn) &#123;</span><br><span class="line">            mBtnEmpty.setText(message);</span><br><span class="line">            mBtnEmpty.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mBtnEmpty.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        mMapMessageViews.put(EMPTY, mDefaultEmptyMessageView);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 有参调用 设置默认页</span></span><br><span class="line"><span class="comment">     * 用于内部使用</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> message</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> image</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> messageInBtn</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setDefaultView</span><span class="params">(String message, Drawable image, String messageInBtn)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == mDefaultView)&#123;</span><br><span class="line">            mDefaultView = (LinearLayout)mLayoutInflater.inflate(R.layout.status_layout_default_message, <span class="keyword">null</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mDefaultView = (LinearLayout)mMapMessageViews.get(DEFAULT);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        TextView mTvDefault = (TextView)mDefaultView.findViewById(R.id.tv_default_view);</span><br><span class="line">        ImageView mIvDefault = (ImageView)mDefaultView.findViewById(R.id.iv_default_view);</span><br><span class="line">        Button mBtnDefault = (Button)mDefaultView.findViewById(R.id.btn_default_view);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != message)&#123;</span><br><span class="line">            mTvDefault.setText(message);</span><br><span class="line">            mTvDefault.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mTvDefault.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != image)&#123;</span><br><span class="line">            mIvDefault.setImageDrawable(image);</span><br><span class="line">            mIvDefault.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mIvDefault.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != messageInBtn) &#123;</span><br><span class="line">            mBtnDefault.setText(message);</span><br><span class="line">            mBtnDefault.setVisibility(VISIBLE);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            mBtnDefault.setVisibility(GONE);</span><br><span class="line">        &#125;</span><br><span class="line">        mMapMessageViews.put(DEFAULT, mDefaultView);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 外部添加状态</span></span><br><span class="line"><span class="comment">     * 若状态与已有状态碰撞</span></span><br><span class="line"><span class="comment">     * 跳出错误</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> view</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IllegalNumException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStatus</span><span class="params">(<span class="keyword">int</span> key, View view)</span> <span class="keyword">throws</span> IllegalNumException </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="number">1</span> == key||<span class="number">2</span> == key||<span class="number">3</span> == key) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalNumException();</span><br><span class="line">        &#125;</span><br><span class="line">        mMapMessageViews.put(key, view);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 显示指定状态页</span></span><br><span class="line"><span class="comment">     * 并将其他页面隐藏</span></span><br><span class="line"><span class="comment">     * 用于内部以及外部电泳</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showStatusView</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">        setContentView(<span class="keyword">false</span>);</span><br><span class="line">        View mMessageView = mMapMessageViews.get(key);</span><br><span class="line">        hiddenStatusViews();</span><br><span class="line">        addView(mMessageView);</span><br><span class="line">        mMessageView.setVisibility(VISIBLE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 隐藏mMapMessageViews的所有页面</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">hiddenStatusViews</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (View v : mMapMessageViews.values())&#123;</span><br><span class="line">            removeView(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>首先是：</strong> 这三个方法初始化了三种基本布局；这三个方法用于定义了每一种布局的默认状态下的文字及图片；首先在初始化的时候调用；</li>
+<li>他们最终是将初始化后的布局，加入mMapMessageViews中保存；mMapMessageViews的键值对为：状态-布局；我们后面在显示的时候，将会从这个map中，通过状态key，获取对应的布局；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(<span class="keyword">int</span> messageId, <span class="keyword">int</span> imageId, <span class="keyword">int</span> messageInBtnId)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(<span class="keyword">int</span> messageId, <span class="keyword">int</span> imageId, String messageInBtn)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(<span class="keyword">int</span> messageId, Drawable image, String messageInBtn)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmptyMessageView</span><span class="params">(String message, Drawable image, String messageInBtn)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNetErrorMessageView</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNetErrorMessageView</span><span class="params">(String message, Drawable image)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setDefaultView</span><span class="params">(String message, Drawable image, String messageInBtn)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>然后：</strong> 在onFinishInflate()布局加载完成后，先显示defaultView</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onFinishInflate</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onFinishInflate();</span><br><span class="line">    showDefaultView();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>showDefaultView()方法，和其他的showXxx()方法一样:</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showDefaultView</span><span class="params">()</span></span>&#123;</span><br><span class="line">        showStatusView(DEFAULT);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终调用的是showStatusView()这个方法；而showStatusView()方法，传入一个key，然后从mMapMessageViews中获取对应的布局，并隐藏其他布局，最后显示当前布局；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showStatusView</span><span class="params">(<span class="keyword">int</span> key)</span></span>&#123;</span><br><span class="line">        setContentView(<span class="keyword">false</span>);</span><br><span class="line">        View mMessageView = mMapMessageViews.get(key);</span><br><span class="line">        hiddenStatusViews();</span><br><span class="line">        addView(mMessageView);</span><br><span class="line">        mMessageView.setVisibility(VISIBLE);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后这里有一个setContentView()函数，他的意义在于，控制子布局的显示与隐藏；</p>
+<p>因为，我们的布局，在有数据状态下，应该显示的是其子布局的内容；</p>
+<p>例如：一个RecyclerView；</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.csm.Component.StatusLayout</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">&quot;@+id/statuslayout_demo&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:attr_message</span>=<span class="string">&quot;@string/str_there_has_nothing&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">app:attr_image_src</span>=<span class="string">&quot;@mipmap/ic_launcher&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">android.support.v7.widget.RecyclerView</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:id</span>=<span class="string">&quot;@+id/rv_demo&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:src</span>=<span class="string">&quot;@mipmap/ic_launcher_round&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">com.csm.Component.StatusLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>那么调用setContentView()，就可以控制其子布局的显示与隐藏；主要在于遍历布局下的所有子布局，然后设置他们的显示隐藏；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 设置子View的显示或隐藏状态</span></span><br><span class="line"><span class="comment">    * 子View存储于一个list中</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> isShown</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">boolean</span> isShown)</span></span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (isShown)&#123;</span><br><span class="line">           <span class="keyword">for</span> (View v : mNormalViews)&#123;</span><br><span class="line">               v.setVisibility(VISIBLE);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">           <span class="keyword">for</span> (View v : mNormalViews)&#123;</span><br><span class="line">               v.setVisibility(GONE);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上就是布局内容的显示部分；</p>
+<hr>
+<p>然后，关键的，如何提供给使用者自定义状态及对应布局的逻辑，主要是维护了一个map,以及几种状态值；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Map&lt;Integer, View&gt; mMapMessageViews;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * DEFAULT EMPTY NET_ERROR 默认的三种状态</span></span><br><span class="line"><span class="comment">     * DEFAULT 为用户第一次使用该组件时指定的属性状态</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> EMPTY = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NET_ERROR = <span class="number">3</span>;</span><br></pre></td></tr></table></figure>
+
+<p>以上三种是默认值；</p>
+<p>如果使用者需要自定义状态及布局，则只能定义除了这三个数字以外的数字；</p>
+<p>为此，我特意编写了一个Exception类型：如果使用者自定义的key是1/2/3的话，则抛出错误；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by csm on 2017/7/7.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IllegalNumException</span> <span class="keyword">extends</span> <span class="title">Exception</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IllegalNumException</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IllegalNumException</span><span class="params">(String gripe)</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(gripe);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printStackTrace</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.printStackTrace();</span><br><span class="line">        System.out.print(<span class="string">&quot;You can&#x27;t choice 1,2,3 as your status key&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>该开源库已经上传到github上了；</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/csming1995/statuslayout">https://github.com/csming1995/statuslayout</a></p>
+<p>各种求star；</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/12/17/2017-12-17-try_git+webhook/" data-toggle="tooltip" data-placement="top" title="Git WebHook简易自动部署笔记 ">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/05/31/2017-05-31-Java-pattern-23/" data-toggle="tooltip" data-placement="top" title="Java设计模式">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#14级" title="14级">14级</a>
+                        
+                          <a class="tag" href="/tags/#Android" title="Android">Android</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2017/11/26/2017-11-26-Csming-StatusLayout/";
+    var disqus_url = "https://blog.w2fzu.com/2017/11/26/2017-11-26-Csming-StatusLayout/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;    
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

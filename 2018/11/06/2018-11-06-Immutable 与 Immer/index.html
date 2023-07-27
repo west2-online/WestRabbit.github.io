@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Immutable 与 Immer - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2018/11/06/2018-11-06-Immutable 与 Immer/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#Web" title="Web">Web</a>
+                        
+                          <a class="tag" href="/tags/#嫩牛五方" title="嫩牛五方">嫩牛五方</a>
+                        
+                    </div>
+                    <h1>Immutable 与 Immer</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by chs97 on
+                        2018-11-06
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="Immutable-与-Immer"><a href="#Immutable-与-Immer" class="headerlink" title="Immutable 与 Immer"></a>Immutable 与 Immer</h1><h3 id="Mutable"><a href="#Mutable" class="headerlink" title="Mutable"></a>Mutable</h3><p>在前端中，对象是一个很重要的类型，为了优化以及尽量节省内存，所以对象保存的都是一个引用。比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">const</span> b = obj</span><br><span class="line">b.a = <span class="number">2</span></span><br><span class="line">obj.a === <span class="number">2</span><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>这就是副作用，<code>b = obj</code>  是将<code>obj</code>的引用赋值给<code>b</code> 所以<code>b</code>和<code>obj</code>在内存中的地址是一样的，导致了<code>b</code>修改了<code>obj</code>也会跟着修改。</p>
+<p>在js中，有很多方法都是有副作用的。比如<code>Array</code>的方法<code>push shift </code>等等。。。这些方法都会改变原来的数组，所以叫做有副作用。副作用其实是很危险的，特别对于构建比较大型的应用以及团队合作来说，一个对象被多次引用，某个地方修改了这个对象可能导致整个应用崩溃或者产生一个无法理解的bug。举个例子。</p>
+<p>之前做的某游戏中，物体对象有个属性，引用了一个公共的对象，在开发中对象之间的引用很常见的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = [&#123;<span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="number">0</span>&#125;, ......]</span><br><span class="line"><span class="keyword">const</span> fish = &#123;<span class="attr">path</span>: path&#125;</span><br><span class="line"><span class="comment">// path是fish的移动轨迹，path[0]是fish的出生点</span></span><br><span class="line"><span class="comment">// 在过程中，fish.path进行了移动的才做 及 path[i].x += dx; path[i].y += dy</span></span><br></pre></td></tr></table></figure>
+
+<p>但是这个<code>dx</code> <code>dy</code>很小，游戏运行的时间长了以后，发现某些物体突然在屏幕中出现。</p>
+<p>这就是引用带来的副作用，导致整个项目很难维护，A开发者不知道B开发者在哪里修改了这些对象，所以遇到需要引用一个对象的时候，尽量使用<code>deepCopy</code></p>
+<p>在<code>函数式</code>编程中，不可变、无副作用是一个是一个很重要的原则。</p>
+<h3 id="Immutable"><a href="#Immutable" class="headerlink" title="Immutable"></a>Immutable</h3><h4 id="无副作用"><a href="#无副作用" class="headerlink" title="无副作用"></a>无副作用</h4><p>无副作用就是不会改变原始值包括传入的参数以及其他作用域下的变量。</p>
+<p>在js中有许多方法就是无副作用的，比如Array的<code>map</code> <code>reduce</code>等等。</p>
+<p><code>map</code>返回的就是一个新的数组，而不是修改原来的数组。</p>
+<p><code>string</code>的方法都是无副作用的，方法都会返回一个新的string，比如<code>slice</code>，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> str = <span class="string">&#x27;12345678&#x27;</span></span><br><span class="line">str.slice(<span class="number">2</span>, <span class="number">3</span>) <span class="comment">// &quot;3&quot;</span></span><br><span class="line">str <span class="comment">// &quot;12345678&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="不可变性"><a href="#不可变性" class="headerlink" title="不可变性"></a>不可变性</h4><p>创建之后就不能修改了。如果修改了就返回一个新的对象，而不是被修改之后的旧的对象。</p>
+<p>同样的<code>string</code>就是一个不可变的， <code>number</code>也是不可变的。</p>
+<p>我们希望对象也能是不可变的，这样能带来许多好处。</p>
+<p>比如不需要并发锁，因为所有对象都是独一无二的，并且是不可变的。</p>
+<p>降低Mutable带来的复杂度，因为不需要去考虑这个对象被谁引用了，修改了他会带来什么后果。</p>
+<h4 id="好处"><a href="#好处" class="headerlink" title="好处"></a>好处</h4><h5 id="1-更容易检测数据变化"><a href="#1-更容易检测数据变化" class="headerlink" title="1.更容易检测数据变化"></a>1.更容易检测数据变化</h5><p>如果是引用，修改完的对象和旧对象是相等的。比如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="keyword">const</span> b = a</span><br><span class="line">b.a = <span class="number">2</span></span><br><span class="line">a === b <span class="comment">// true</span></span><br><span class="line"><span class="comment">// 期望</span></span><br><span class="line">a.a === <span class="number">1</span> &amp;&amp; b.a === <span class="number">2</span> &amp;&amp; a !== b</span><br></pre></td></tr></table></figure>
+
+<p>如果对象是不可变性的，就可以得到我们期望的结果，并且只需要简单的对比2个对象的引用是否一致就知道对象是否发生了变化。</p>
+<h5 id="2-安全"><a href="#2-安全" class="headerlink" title="2.安全"></a>2.安全</h5><p>所有的操作都不会影响到原对象，不会影响到其他逻辑。</p>
+<h4 id="怎么做"><a href="#怎么做" class="headerlink" title="怎么做"></a>怎么做</h4><p>不可变还是很容易的，只要对对象做一个深拷贝，就能做到immutable，但是程序涉及到的对象操作实在是太多了，每一次操作都需要拷贝一份，一个对象就是一棵树，每次拷贝一次这棵树消耗的代价实在是太大。</p>
+<p><a target="_blank" rel="noopener" href="https://facebook.github.io/immutable-js/">Immutable.js</a> 是比较流行的一个immutable的库，该库自己维护了一个数据结构，优化了每次深拷贝的消耗，对原始对象尽可能的复用。有个流行的图：</p>
+<p><img src="https://zhenhua-lee.github.io/img/immutable/change.gif" alt="img"></p>
+<p>每次修改对象只需要对路径上的节点进行处理，其他节点都可以直接复用，这里运用了一个惰性的思想，如果这个子树没操作过就不需要拷贝，等什么时候使用到了再进行拷贝。<br>通过惰性以及复用的这种思想来尽量减少拷贝的操作。</p>
+<h3 id="Immer"><a href="#Immer" class="headerlink" title="Immer"></a>Immer</h3><p>immer 是使用<code>Proxy</code>和<code>Object.defineProperty</code>来做到immutable以及懒初始化的优化。</p>
+<p><img src="https://github.com/mweststrate/immer/raw/master/images/hd/immer.png" alt="immer-hd.png"></p>
+<p>immer有这几个过程，current state 通过 produce 函数变成 draft state ，draft state 是immer对current的一些处理，使得方便优化immutable，提高效率。immer会将current state 包装内部自己的一个对象：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  modified, // 是否被修改过</span><br><span class="line">  finalized, // 是否已经完成（所有 setter 执行完，并且已经生成了 copy）</span><br><span class="line">  parent, // 父级对象</span><br><span class="line">  base, // 原始对象（也就是 obj）</span><br><span class="line">  copy, // base（也就是 obj）的浅拷贝，使用 Object.assign(Object.create(null), obj) 实现</span><br><span class="line">  proxies, // 存储每个 propertyKey 的代理对象，采用懒初始化策略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>包装之后就方便进行惰性初始化等操作了。 最后执行完所有的更改操作后，通过包装的这些对象，进行再次处理，返回 next state。</p>
+<p>immer 通过劫持 object的getter和setter。来做到懒初始化的，当访问到某个子树的时候（把对象看成一棵树）才会对这棵子树进行一次初始化（生成代理对象）</p>
+<p>最后返回修改后结果的一个对象，这个对象通过树上modified的标记来处理，如果这颗子树没有被标记成modified，那么会返回原始对象。举个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> currentState = &#123;</span><br><span class="line">    <span class="attr">a</span>: &#123;<span class="attr">value</span>: <span class="number">1</span>&#125;,</span><br><span class="line">    <span class="attr">b</span>: &#123;<span class="attr">value</span>: <span class="number">2</span>&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nextState = produce(<span class="function">(<span class="params">draft</span>) =&gt;</span> &#123;</span><br><span class="line">    draft.a.value = <span class="number">3</span></span><br><span class="line">&#125;)</span><br><span class="line">nextState.b === currentState.b <span class="comment">// true</span></span><br><span class="line"><span class="comment">// draft.a.modified = true draft.b.modified = false</span></span><br><span class="line"><span class="comment">// 所以在draft中 b是没有被修改过的，直接返回base</span></span><br></pre></td></tr></table></figure>
+
+<p>一个大概的思路就是：</p>
+<ol>
+<li>修改不影响原始对象</li>
+<li>返回新的对象</li>
+<li>性能要高（惰性 懒初始化），减少拷贝次数</li>
+</ol>
+<h4 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h4><p>proxy是es6的新特性，使用方法很简单，作用就是对对象做一个代理。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;&#125;</span><br><span class="line"><span class="keyword">const</span> handler = &#123;</span><br><span class="line">    <span class="function"><span class="title">get</span>(<span class="params">target, props</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;getter&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(obj, handler)</span><br><span class="line">proxy.a === <span class="string">&#x27;getter&#x27;</span> <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>immer的源码还是算比较少的，建议自己阅读一遍源码。主要思想就是惰性和复用，并且把对象考虑成一棵树。</p>
+<h4 id="react的优化"><a href="#react的优化" class="headerlink" title="react的优化"></a>react的优化</h4><p>在react的中，有一个方法叫做<code>shouldComponentUpdate</code> 这个方法可以让我们控制该组件是否需要<code>rerender</code>，因为在<code>PureComponent</code>中是否需要<code>rerender</code>是通过对浅比较来判断是否需要重新渲染的。如下demo，点击<code>same count</code> render次数不会变，，但是点击<code>same data</code> render次数是会增加的，尽管点击前后的state是一样的。</p>
+<p><a target="_blank" rel="noopener" href="https://codesandbox.io/s/qkq6w3vpz9"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit qkq6w3vpz9"></a></p>
+<p>如果可以通过一种方式让<code>state</code>的更改能够通过简单的比较得到是否发生过变更，就能优化掉这个渲染次数的问题了。</p>
+<p>immer就可以做到。</p>
+<p><a target="_blank" rel="noopener" href="https://codesandbox.io/s/9yl2wlpr7o"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit 9yl2wlpr7o"></a></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>immutable在前端的应用还是很广的，特别是在react上，可以做很大的性能提升。</p>
+<p>很多人潜意识中immutable就是配合react redux等使用，但是其实并不是</p>
+<p><a target="_blank" rel="noopener" href="https://codesandbox.io/s/r0z448jxm4"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt="Edit Vue Template"></a></p>
+<p>同样的，在handleSameData方法中，{title: ‘123’}对vue来说是一个新的对象，所以会发起重新渲染。</p>
+<p>但是handleSameDataImmer这就不会进行重新渲染。</p>
+<ol>
+<li><p>对于各个框架的优化手段 其实最重要的就是一个 渲染次数，如果能降低不必要的渲染，那么应用的性能将大幅度提高。</p>
+</li>
+<li><p>对于一些函数应该尽量是无副作用的，相同的入参的返回值应该是相同的。</p>
+</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34691516">精读《Immer.js》源码</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/11/07/2018-11-07-深入 Spring DispatcherServlet/" data-toggle="tooltip" data-placement="top" title="深入 Spring DispatcherServlet">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/11/05/2018-11-05-IdeaPlugin/" data-toggle="tooltip" data-placement="top" title="IDEA&Android Studio Plugin开发">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#15级" title="15级">15级</a>
+                        
+                          <a class="tag" href="/tags/#Web" title="Web">Web</a>
+                        
+                          <a class="tag" href="/tags/#嫩牛五方" title="嫩牛五方">嫩牛五方</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2018/11/06/2018-11-06-Immutable%20%E4%B8%8E%20Immer/";
+    var disqus_url = "https://blog.w2fzu.com/2018/11/06/2018-11-06-Immutable%20%E4%B8%8E%20Immer/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

